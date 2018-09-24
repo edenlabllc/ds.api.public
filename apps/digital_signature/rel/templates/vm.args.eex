@@ -1,0 +1,14 @@
+## Name of the node
+-name <%= release_name %>@127.0.0.1
+
+## Cookie for distributed erlang
+-setcookie ${ERLANG_COOKIE}
+
+# Enable SMP automatically based on availability
+-smp auto
+
+# Sets scheduler-forced wakeup interval
+-sfwi 500
+
+# Disables scheduler compaction of load
+-scl false

@@ -1,0 +1,59 @@
+language: elixir
+git:
+  depth: 1000
+services:
+  - postgresql
+addons:
+  postgresql: "9.6"
+  apt:
+    packages:
+      - docker-ce
+elixir:
+  - 1.6.6
+otp_release:
+  - 20.3.8
+notifications:
+  slack:
+    rooms:
+      - secure: "MAZDwNhuRd9NtHMrbVjKwjMZdAACrdKIcJwzNdORnowmYja11WruAOdtjC6N/dlIAlL1vJRlA0BXswg3M44uqt3zHXY7e3JPMfVDpLUH8b/CwdRhNK7N/CnSse7kZ5P7v8AVXk567Jm84b7fhJzGZkobRhT/R2hdPMHA/M50cOObUzY62ZEucROyvuwuDhmJYaZoUGK6X2tOpmxBtf1RQm5rVNFZWXhhtyupn/m2Hy8meTFdEdEyGoCQYtI8BCuD9Pa5XKWwZ28b38ws9ZlKV/kiDpwq0Uz1k+SKlzpo7zVZkEbdCHJF/e6JnetRmpm6i05zQdzMqc3gCC09rbZMlCoSTtcRvGZmE94YaOKd24qJK504ZJzl8PnkaUA3JXVUo4PpZqiA71sBPBe15qpnoURPMqzYKeqTHrNlhYXNBVibncl09OSSSNxBOgH0n2uqeTLS2ZXVpHUEUw6OQ8yQ6tR63qnW27xxSesewxZWvoKDOt1HLkhYAaRR4p/UOI4ae0iyUwAIBvuSH0gviqethMQ+vUWNDlI7bL7CTkiBGCApkHJPL5bPoJIE00LyuA2K7KBJsuv4ojzQ23K4zYaHTNG+7Z/nriePcJFoox1JY74apPf0VQrrPs6nxv6g6mXn9riuaU9g3jUyFwTEKUgd9FfrIHgFHZpV1jF9isByUGY="
+    on_success: always
+
+env:
+  global:
+    - APPS='{"synchronizer_crl":"crl_service", "api":"ds.api"}'
+    - DOCKER_NAMESPACE=edenlabllc
+    - NO_ECTO_SETUP=true
+    - POSTGRES_VERSION=9.6
+    - DS_KAFKA_PARTITIONS=10
+    # Docker and GitHub credentials
+    - secure: "MFfU4+uwBQQvq0n/thF95J5+JKtgkPeJPxB1Ac7/oqa8nWnD8qg/MbO3olN7Fz15YiJ8uZ3GaLYKub8ln2XALWhFdd9VAJYPiAlYkyPeWdQHqqxtHcMeoUCME+PDxjlkzDUXH9y5QVqgiFmaRALrBtqGoJaK4CQ3ep6FfwhUOSO9xSdJ/Fb861nPKMW57tnjNJDQj/1BiOVqoigpEbVFZ5YoKWb28u2ZWmWyxsgjTGCpNaKYJD/aGBws9t7FZ+WWagJhflUq7bjNvaMdeCB4ucKgvlzDDhnUssKVVJhg+JCNXruggmNT8X4gDLSZHEh+XjUz//kBnDhfwmi52RnAC9yCGHVYbc/LkAxcWnVZpPshqLj0A7wkvHJws8nqPvrwDwVy/KNfiOf/td5LQcoPX1SCeKTOiwdMp02QU5Nw7mJIXd7dZCyrBV5h/INKcSkm0fV8CwKQ4wYzASMNtrzIpVwjbUXS+qWPAS19JSJIxxE1Us3IAcUCrfsiism3eTwreQ3hD8IgAq8g+9fe4QHn2vl7mERzuWUnUbk1pgUECqjOLdkV8Z4ZaJTvsB8kNG2lZ20CkKWC0x/ABfHsi7bwYzxii5GZylsXsvtPjzQX6RQ+u8DprKZe1fDo1nfZJpITA00MuuCY9kgRdvc94zbMxrDyUD7/H3JxHV+hVI3K00s="
+    - secure: "j5pSXJrUNExdk1VtlWUeKvpkJrSXss9EXrZH7QejHpr22nhlep+c2cLUw4RPF498pUHJZvzdNxL236uLd2H7zXRIDH7levoTFeF1wDdGiu0hI2d3WIAcU+IIuwnPraUMmuwkQzPyUuc0grwtpGNhxReqf9k76FRwBGmHUVqTRX367+WD99YDYdYuZeLQw08eFtYmXX/14RU005aKRekUf62CzHpJizVcAso4zRSi3HyFkY3Lbb5ug5Yt6eJw0xH2l7ZL3b1ld0RV6H8eKvj2ABdldAvb9VOlsrecHKIGzD4oOhWFpxIXfpN2kEerV+8sV9C5GJWtyTiWlP666LFaNCbn4h3aqSXw9KGiiN/hzhkTJ3qlzpCoUNVlbvaiKe+cWoiVYmhbTPw2JziN12hVblzVRmP3ZK9y7JZhEQ44U3y6RZo8RjvH1GLq3V78Kbz0dCkQAgILwwgl8oAqENUJf3XwCJYNKF+kezL56MbSO9H1QCEl3aCwjVTtiNfWQOTNNVt0EAyIgqyVkNXOur36HHdfBce62nzKpUs4D3xNv22znA70BhUHBwrCHVlFMGP8SVN7DOZk0pI7BD0EHrsoRsIm7HIvuiAdA6jOkRcv6Jn5rGXE1zOPuzfmxe/a0q/CiElFiQ3iaG64TDIVEwhLhy3eBgOlvaKiDJ+JtKJo8EI="
+
+branches:
+  # Releases are generated automatically, stop infinite build loop
+  except:
+    - /[0-9]*\.[0-9]*\.[0-9]*/
+
+before_install:
+  - sudo apt-get install jq
+  - curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/init-db.sh -o init-db.sh; sudo sh ./init-db.sh
+  - curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/init-kafka.sh -o init-kafka.sh; sudo sh ./init-kafka.sh
+  # create kafka topics
+  - kafka/bin/kafka-topics.sh --create --topic signatures --partitions $DS_KAFKA_PARTITIONS --replication-factor 1 --zookeeper localhost:2181 
+jobs:
+  include:
+    - stage: "test and build"
+      # run tests
+      script:
+      - IMAGE=$(docker build -f Dockerfile.test . | tail -1 | awk '{ print $NF }')
+      - HOST_IP=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1`
+      - CONTAINER=$(docker run --add-host=travis:$HOST_IP -d $IMAGE /bin/bash -c 'cd /home/ds; DB_HOST=travis KAFKA_HOST=travis KAFKA_PORT=9092 mix test --exclude pending --trace')
+      - sudo docker attach $CONTAINER || travis_terminate 1
+      - sudo docker wait $CONTAINER || travis_terminate 1
+      - sudo docker rm $CONTAINER
+    - stage: "test and build"
+      # "Decrypting deploy key..."
+      script:
+      - psql -c 'create database ds_test;' -U postgres
+      # - openssl aes-256-cbc -K $encrypted_134bca1e162b_key -iv $encrypted_134bca1e162b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+      # - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1

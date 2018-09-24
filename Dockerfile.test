@@ -1,0 +1,22 @@
+FROM elixir:1.6
+
+ADD . /home/ds
+WORKDIR /home/ds
+
+RUN ln -s /home/ds/apps/digital_signature/priv/libUACryptoQ.so /usr/local/lib/libUACryptoQ.so.1
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+ENV TZ=Europe/Kiev
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+ENV MIX_ENV=test
+ENV REPLACE_OS_VARS=true
+
+RUN ["apt-get", "update"]
+RUN ["apt-get", "install", "-y", "vim"]
+
+RUN mix do \
+     local.hex --force, \
+     local.rebar --force, \
+     deps.get, \
+     deps.compile
