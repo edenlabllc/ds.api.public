@@ -11,7 +11,8 @@ config :digital_signature,
   api_resolvers: [digital_signature: DigitalSignature.DigitalSignatureLib],
   kafka: [
     producer: DigitalSignature.Kafka.Producer,
-    partitions: {:system, :integer, "DS_KAFKA_PARTITIONS", 10}
+    partitions: {:system, :integer, "DS_KAFKA_PARTITIONS", 10},
+    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
   ]
 
 # Configures Elixir's Logger

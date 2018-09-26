@@ -71,7 +71,7 @@ defmodule DigitalSignature.Mixfile do
       {:nex_json_schema, ">= 0.7.2"},
       {:elixir_make, "~> 0.4", runtime: false},
       {:kafka_ex, "~> 0.8.3"},
-      {:synchronizer_crl, in_umbrella: true}
+      {:core, in_umbrella: true}
     ]
   end
 

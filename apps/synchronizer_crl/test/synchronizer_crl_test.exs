@@ -12,7 +12,7 @@ defmodule SynchronizerCrl.Test do
 
   setup do
     assert :ok == Sandbox.checkout(Repo)
-    Sandbox.mode(Repo, {:shared, self()})
+    :ok
   end
 
   test "CRL Service started" do

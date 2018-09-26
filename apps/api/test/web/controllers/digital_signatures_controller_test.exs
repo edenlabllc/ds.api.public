@@ -6,6 +6,7 @@ defmodule API.Web.APIControllerTest do
 
   alias Core.Cert
   alias Core.Repo
+  alias Ecto.Adapters.SQL.Sandbox
   alias SynchronizerCrl.CrlService
 
   setup [:set_mox_global, :verify_on_exit!]
@@ -21,6 +22,8 @@ defmodule API.Web.APIControllerTest do
         DigitalSignature.Supervisor,
         DigitalSignature.NifService
       )
+
+      Sandbox.mode(Repo, {:shared, self()})
 
       assert {:ok, _} =
                Supervisor.restart_child(

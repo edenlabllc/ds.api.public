@@ -3,7 +3,6 @@ defmodule DigitalSignature.Kafka.Producer do
 
   require Logger
 
-  @digital_signature_topic "digital_signature"
   @behaviour DigitalSignature.Behaviours.KafkaProducerBehaviour
 
   def publish_sigantures(%{signatures: _signaures, content: _content} = certificates_info) do
@@ -13,7 +12,7 @@ defmodule DigitalSignature.Kafka.Producer do
 
     :ok =
       KafkaEx.produce(
-        @digital_signature_topic,
+        Confex.fetch_env!(:digital_signature, :kafka)[:topic],
         Enum.random(0..(partitions - 1)),
         data
       )
