@@ -9,7 +9,7 @@ defmodule OCSPService.Application do
   def start(_type, _args) do
     gen_consumer_impl = OCSPService.Kafka.GenConsumer
     consumer_group_name = "digital_signature"
-    topic_names = ["signatures"]
+    topic_names = [Confex.fetch_env!(:ocsp_service, :kafka)[:topic]]
 
     consumer_group_opts = [
       heartbeat_interval: 1_000,

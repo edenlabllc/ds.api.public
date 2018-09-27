@@ -3,7 +3,9 @@ use Mix.Config
 config :ocsp_service,
   namespace: OCSPService,
   kafka: [
-    consumer: OCSPService.Kafka.Consumer
+    consumer: OCSPService.Kafka.Consumer,
+    partitions: {:system, :integer, "DS_KAFKA_PARTITIONS", 10},
+    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
   ]
 
 config :ocsp_service, ecto_repos: [OCSPService.Repo]

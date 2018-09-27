@@ -10,7 +10,7 @@ echo "Run Kafka container"
  docker run -d \
      -e CONSUMER_THREADS=1 \
      --env GROUP_ID="digital_signature" \
-     --env TOPICS=signatures \
+     --env TOPICS=digital_signature \
      --env NUM_PARTITIONS=20 \
      --net=ds_test_db \
      --name=ds_test_kafka \
