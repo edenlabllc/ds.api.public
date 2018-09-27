@@ -53,7 +53,7 @@ defmodule OCSPService.InvalidContents do
     |> Repo.delete()
   end
 
-  def random_invalid_content() do
+  def random_invalid_content do
     InvalidContent
     |> Repo.one()
     |> invalid_content()

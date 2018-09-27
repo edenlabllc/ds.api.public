@@ -71,18 +71,16 @@ defmodule DigitalSignature.NifService do
   Catch error in case message expired or gen server internal error
   """
   def nif_service_call(requets, timeout) do
-    try do
-      nif_responce = GenServer.call(__MODULE__, requets, timeout)
-      {:ok, nif_responce}
-    catch
-      :exit, {:timeout, error} ->
-        {:error, {:nif_service_timeout, error}}
+    nif_responce = GenServer.call(__MODULE__, requets, timeout)
+    {:ok, nif_responce}
+  catch
+    :exit, {:timeout, error} ->
+      {:error, {:nif_service_timeout, error}}
 
-      what, why ->
-        Logger.error("Could not get gen_server #{__MODULE__} call: #{inspect(what)} :: #{inspect(why)}")
+    what, why ->
+      Logger.error("Could not get gen_server #{__MODULE__} call: #{inspect(what)} :: #{inspect(why)}")
 
-        {:error, :unavailable}
-    end
+      {:error, :unavailable}
   end
 
   #  internal Nif service

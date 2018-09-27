@@ -6,9 +6,9 @@ defmodule OCSPService.Notifier do
   but signature is not valid
   """
 
+  alias DigitalSignature.NifServiceAPI
   alias OCSPService.InvalidContent
   alias OCSPService.InvalidContents
-  alias DigitalSignature.NifServiceAPI
 
   @email_sender Application.get_env(:ocsp_service, :api_resolvers)[
                   :email_sender
@@ -16,7 +16,7 @@ defmodule OCSPService.Notifier do
 
   @timeout 5000
 
-  def start_link() do
+  def start_link do
     GenServer.start_link(__MODULE__, [])
   end
 

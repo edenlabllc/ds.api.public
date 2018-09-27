@@ -2,9 +2,9 @@ defmodule OCSPService.Kafka.GenConsumer do
   @moduledoc false
   use KafkaEx.GenConsumer
 
+  alias KafkaEx.Protocol.Fetch.Message
   alias OCSPService.InvalidContents
   alias OCSPService.Notifier
-  alias KafkaEx.Protocol.Fetch.Message
 
   require Logger
 

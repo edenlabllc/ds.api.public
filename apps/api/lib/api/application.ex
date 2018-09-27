@@ -3,8 +3,9 @@ defmodule API do
   This is an entry point of API application.
   """
   use Application
-  alias Confex.Resolver
+
   alias API.Web.Endpoint
+  alias Confex.Resolver
 
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
