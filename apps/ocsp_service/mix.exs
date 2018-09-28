@@ -30,6 +30,7 @@ defmodule OCSPService.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:distillery, "~> 1.5", runtime: false},
       {:kafka_ex, "~> 0.8.3"},
       {:mox, "~> 0.4.0", only: :test},
       {:confex, "~> 3.2"},

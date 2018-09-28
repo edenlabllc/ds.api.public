@@ -29,6 +29,18 @@ use Mix.Config
 #
 
 # Configures the endpoint
+
+config :core, Core.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "${DB_NAME}",
+  username: "${DB_USER}",
+  password: "${DB_PASSWORD}",
+  hostname: "${DB_HOST}",
+  port: "${DB_PORT}",
+  pool_size: "${DB_POOL_SIZE}",
+  timeout: 15_000,
+  pool_timeout: 15_000
+
 config :api, API.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "kM4g3grYc77xl0Zglf381h8g6EgOBSH18TbWwMB1UCdWHxFFkIZcF8Ci3w9ZtLCF",

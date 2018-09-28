@@ -16,6 +16,7 @@ RUN mix do \
   local.rebar --force, \
   deps.get, \
   deps.compile, \
+  release.init, \
   release
 
 FROM elixir:1.6-slim
