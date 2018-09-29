@@ -16,9 +16,9 @@ RUN mix do \
   local.rebar --force, \
   deps.get, \
   deps.compile, \
-#  release.init, \
-  release --name=${APP_NAME}
-RUN ls /home/ds/_build/prod/rel/
+  release.init, \
+  release
+RUN ls /home/ds/_build/prod/rel/ds/
 
 FROM elixir:1.6-slim
 
@@ -33,7 +33,7 @@ COPY --from=builder /home/ds/apps/digital_signature/priv/libUACryptoQ.so /usr/lo
 #ADD ./ds/apps/digital_signature/priv/libUACryptoQ.so /usr/local/lib/libUACryptoQ.so.1
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
-COPY --from=builder /home/ds/_build/prod/rel/${APP_NAME}/releases/0.1.0/${APP_NAME}.tar.gz .
+COPY --from=builder /home/ds/_build/prod/rel/ds/releases/0.1.0/${APP_NAME}.tar.gz .
 
 RUN tar -xzf ${APP_NAME}.tar.gz; rm ${APP_NAME}.tar.gz
 
