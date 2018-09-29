@@ -17,7 +17,7 @@ RUN mix do \
   deps.get, \
   deps.compile, \
   release.init, \
-  release
+  release --name=${APP_NAME}
 RUN ls /home/ds/_build/prod/rel/
 
 FROM elixir:1.6-slim
