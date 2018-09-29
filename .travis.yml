@@ -20,7 +20,7 @@ notifications:
 
 env:
   global:
-    - APPS='[{"app":"ds.api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"},{"app":"ds.crl","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"},{"app":"ds.ocsp","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
+    - APPS='[{"app":"digital_signature","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"},{"app":"synchronizer_crl","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"},{"app":"ocsp_service","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
     - DOCKER_NAMESPACE=edenlabllc
     - MIX_ENV=prod
     - NO_ECTO_SETUP=true
