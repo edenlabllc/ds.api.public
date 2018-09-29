@@ -18,9 +18,9 @@ RUN mix do \
   deps.compile, \
   release.init, \
   release
-RUN ls /home/ds/_build/prod/rel/ds/releases/0.1.0/ \
+RUN ls -la /home/ds/_build/prod/rel/ds/releases/0.1.0/ \
 && tar -xzf /home/ds/_build/prod/rel/ds/releases/0.1.0/ds.tar.gz \
-&& ls /home/ds/_build/prod/rel/ds/releases/0.1.0/ \
+&& ls -la /home/ds/_build/prod/rel/ds/releases/0.1.0/ \
 && cp -r /home/ds/_build/prod/rel/ds /home/ds/_build/prod/rel/${APP_NAME} \
 && cp /home/ds/_build/prod/rel/ds/releases/0.1.0/ds.tar.gz /home/ds/_build/prod/rel/${APP_NAME}/releases/0.1.0/${APP_NAME}.tar.gz
 FROM elixir:1.6-slim
