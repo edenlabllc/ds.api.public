@@ -19,7 +19,7 @@ defmodule SynchronizerCrl.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :core],
+      extra_applications: [:logger, :ex_machina, :core],
       mod: {SynchronizerCrl.Application, []}
     ]
   end
