@@ -18,8 +18,9 @@ RUN mix do \
   deps.compile, \
   release.init, \
   release
-RUN ls /home/ds/_build/prod/rel/ds/releases/0.1.0/
-
+RUN ls /home/ds/_build/prod/rel/ds/releases/0.1.0/ \
+&& tar -xzf /home/ds/_build/prod/rel/ds/releases/0.1.0/ds.tar.gz \
+&& ls /home/ds/_build/prod/rel/ds/releases/0.1.0/
 FROM elixir:1.6-slim
 
 ARG APP_NAME
