@@ -16,9 +16,9 @@ RUN mix do \
   local.rebar --force, \
   deps.get, \
   deps.compile, \
-  release.init, \
+  release.init --name=${APP_NAME} , \
   release
-RUN ls /home/ds/_build/prod/rel/ds/
+RUN ls /home/ds/_build/prod/rel/ds/releases/0.1.0/
 
 FROM elixir:1.6-slim
 
