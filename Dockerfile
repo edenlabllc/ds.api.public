@@ -16,7 +16,7 @@ RUN mix do \
   local.rebar --force, \
   deps.get, \
   deps.compile, \
-  release.init, \
+#  release.init, \
   release --name=${APP_NAME}
 RUN ls /home/ds/_build/prod/rel/
 
