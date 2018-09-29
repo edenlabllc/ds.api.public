@@ -20,3 +20,4 @@ RUN mix do \
      local.rebar --force, \
      deps.get, \
      deps.compile
+RUN ls -la /home/ds/_build/prod/rel/ds/releases/0.1.0/
