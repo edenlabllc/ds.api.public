@@ -39,9 +39,9 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 COPY --from=builder /home/ds/_build/prod/rel/${APP_NAME}/releases/0.1.0/${APP_NAME}.tar.gz .
 
 RUN tar -xzf ${APP_NAME}.tar.gz; rm ${APP_NAME}.tar.gz \
-&& ls -la \
-&& ls -la ds/ \
-&& ls -la ./bin
+RUN ls -la
+RUN ls -la releases/
+RUN ls -la bin/
 
 ENV REPLACE_OS_VARS=true \
   APP=${APP_NAME}
