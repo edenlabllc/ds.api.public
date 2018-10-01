@@ -7,5 +7,5 @@ config :core, Core.Repo,
   database: "ds_test",
   username: "postgres",
   password: "postgres",
-  hostname: "ds_test_db",
+  hostname: System.get_env("DB_HOST"),
   port: 5432
