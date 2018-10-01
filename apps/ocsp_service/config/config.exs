@@ -10,18 +10,16 @@ config :ocsp_service,
 
 config :ocsp_service, ecto_repos: [OCSPService.Repo]
 
+# Configures Database
 config :ocsp_service, OCSPService.Repo,
-  database: "ocsp_service",
-  username: "postgres",
-  password: "postgres",
-  hostname: System.get_env("DB_HOST"),
-  port: "5432"
+  adapter: Ecto.Adapters.Postgres,
+  loggers: [{Ecto.LoggerJSON, :log, [:info]}]
 
 config :ocsp_service, OCSPService.EmailSender,
-  relay: System.get_env("SMTP_RELAY"),
-  username: System.get_env("SMTP_USERNAME"),
-  password: System.get_env("SMTP_PASSWORD"),
-  warning_receiver: System.get_env("SMTP_WARNING_RECEIVER")
+  relay: {:system, "SMTP_RELAY"},
+  username: {:system, "SMTP_USERNAME"},
+  password: {:system, "$SMTP_PASSWORD"},
+  warning_receiver: {:system, "SMTP_WARNING_RECEIVER"}
 
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 
