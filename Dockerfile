@@ -25,6 +25,7 @@ RUN mix do \
   release.init, \
   release
 RUN ls -la /home/ds/_build/prod/rel/
+RUN ls -la /home/ds/_build/prod/rel/ds
 FROM elixir:1.6-slim
 
 ARG APP_NAME
