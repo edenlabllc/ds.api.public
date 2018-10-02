@@ -20,7 +20,7 @@ notifications:
 
 env:
   global:
-    - APPS='{"synchronizer_crl":"synchronizer_crl", "api":"ds.api", "ocsp_service":"ocsp_service"}'
+    - APPS='{"synchronizer_crl":"synchronizer_crl", "api":"api", "ocsp_service":"ocsp_service"}'
     - DOCKER_NAMESPACE=edenlabllc
     - MIX_ENV=prod
     - NO_ECTO_SETUP=true
