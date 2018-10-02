@@ -3,7 +3,7 @@ FROM elixir:1.6 as builder
 ARG APP_NAME
 
 ADD . /home
-WORKDIR /home/ds.api/apps/${APP_NAME}
+WORKDIR /home/ds.api/
 
 RUN ln -s /home/apps/digital_signature/priv/libUACryptoQ.so /usr/local/lib/libUACryptoQ.so.1
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
