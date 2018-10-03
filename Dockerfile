@@ -66,5 +66,5 @@ RUN echo $DB_PORT
 RUN echo $DB_HOST
 RUN echo $KAFKA_HOST
 
-RUN ping DB_HOST
+RUN ping $DB_HOST
 #CMD ./bin/${APP} foreground
