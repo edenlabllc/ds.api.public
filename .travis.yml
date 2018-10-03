@@ -54,12 +54,6 @@ jobs:
       - sudo docker attach $CONTAINER || travis_terminate 1
       - sudo docker wait $CONTAINER || travis_terminate 1
       - sudo docker rm $CONTAINER
-    # - stage: "test and build"
-    #   # "Decrypting deploy key..."
-    #   script:
-    #   - psql -c 'create database ds_test;' -U postgres
-    #   # - openssl aes-256-cbc -K $encrypted_134bca1e162b_key -iv $encrypted_134bca1e162b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
-    #   - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
     - stage: "test and build"
       name: "Build Docker containers. API with Core"
       env:

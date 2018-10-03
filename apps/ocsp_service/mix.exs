@@ -12,6 +12,7 @@ defmodule OCSPService.MixProject do
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -40,6 +41,14 @@ defmodule OCSPService.MixProject do
       {:digital_signature, in_umbrella: true},
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
       {:gen_smtp, git: "https://github.com/Vagabond/gen_smtp.git"}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

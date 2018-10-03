@@ -24,6 +24,7 @@ RUN mix do \
   local.rebar --force, \
   deps.get, \
   deps.compile, \
+  ecto.setup, \
   release --name=${APP_NAME}
 
 RUN ls -la /home/ds/_build/prod/rel/
@@ -57,11 +58,6 @@ RUN echo $DB_PORT
 RUN echo $DB_HOST
 RUN echo $KAFKA_HOST
 RUN tar -xzf ${APP_NAME}.tar.gz; rm ${APP_NAME}.tar.gz
-RUN ls -la
-# RUN ls -la releases/
-RUN ls -la ./bin/
-# RUN ls -la /home/ds/
-# RUN ls -la /home/ds/releases/
 
 ENV REPLACE_OS_VARS=true \
   APP=${APP_NAME}
