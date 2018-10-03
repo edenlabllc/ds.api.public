@@ -34,10 +34,6 @@ ENV DB_HOST=travis
 
 RUN mix release --name=${APP_NAME}
 
-ENV MIX_ENV=dev
-RUN mix ecto.create
-RUN mix ecto.migrate
-
 FROM elixir:1.6-slim
 
 ARG APP_NAME
@@ -68,7 +64,6 @@ RUN echo $DB_HOST
 RUN echo $KAFKA_HOST
 RUN tar -xzf ${APP_NAME}.tar.gz; rm ${APP_NAME}.tar.gz
 
-ENV MIX_ENV=dev
 ENV REPLACE_OS_VARS=true \
   APP=${APP_NAME}
 
