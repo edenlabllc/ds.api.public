@@ -24,7 +24,8 @@ RUN mix do \
   local.rebar --force, \
   deps.get, \
   deps.compile, \
-  ecto.setup, \
+  ecto.create, \
+  ecto.migrate, \
   release --name=${APP_NAME}
 
 RUN ls -la /home/ds/_build/prod/rel/
