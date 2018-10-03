@@ -66,6 +66,7 @@ RUN echo $DB_HOST
 RUN echo $KAFKA_HOST
 RUN tar -xzf ${APP_NAME}.tar.gz; rm ${APP_NAME}.tar.gz
 
+ENV MIX_ENV=prod
 ENV REPLACE_OS_VARS=true \
   APP=${APP_NAME}
 
