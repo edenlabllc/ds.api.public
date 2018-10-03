@@ -16,14 +16,14 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV MIX_ENV=prod
 ENV REPLACE_OS_VARS=true
 
-#RUN mix do \
-#  local.hex --force, \
-#  local.rebar --force, \
-#  deps.get, \
-#  deps.compile
+RUN mix do \
+  local.hex --force, \
+  local.rebar --force, \
+  deps.get, \
+  deps.compile
 
 
-#RUN mix release --name=${APP_NAME}
+RUN mix release --name=${APP_NAME}
 
 FROM elixir:1.6-slim
 
