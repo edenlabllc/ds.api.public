@@ -10,7 +10,7 @@ defmodule DigitalSignatureLib do
   end
 
   def priv_dir do
-    case :code.priv_dir(:digital_signature_lib) do
+    case :code.priv_dir(:digital_signature) do
       {:error, _} ->
         :code.which(:digital_signature_lib)
         |> :filename.dirname()
