@@ -35,7 +35,7 @@ ENV DB_HOST=travis
 RUN mix release --name=${APP_NAME}
 
 ENV MIX_ENV=dev
-RUN mix ecto.setup
+RUN mix ecto.create
 RUN mix ecto.migrate
 
 FROM elixir:1.6-slim
