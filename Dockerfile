@@ -43,11 +43,13 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 COPY --from=builder /home/ds/_build/prod/rel/${APP_NAME}/releases/0.1.0/${APP_NAME}.tar.gz .
 
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN apt-get update
-RUN apt-get install postgresql-client-9.6
-
+RUN echo $DB_HOST
+RUN echo $DB_NAME
+RUN echo $DB_USER
+RUN echo $DB_PASSWORD
+RUN echo $DB_PORT
+RUN echo $DB_HOST
+RUN echo $KAFKA_HOST
 RUN tar -xzf ${APP_NAME}.tar.gz; rm ${APP_NAME}.tar.gz
 RUN ls -la
 # RUN ls -la releases/
