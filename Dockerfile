@@ -58,7 +58,7 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 ENV REPLACE_OS_VARS=true \
   APP=${APP_NAME}
 
-RUN add-host=travis:$HOST_IP
+RUN echo "$HOST_IP travis" >> /etc/hosts
 
 RUN echo $DB_HOST
 RUN echo $DB_NAME
