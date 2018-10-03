@@ -48,7 +48,7 @@ ENV TZ=Europe/Kiev
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /home
-#COPY --from=builder /home/ds/apps/digital_signature/priv/libUACryptoQ.so /usr/local/lib/libUACryptoQ.so.1
+COPY --from=builder /home/ds/apps/digital_signature/priv/libUACryptoQ.so /usr/local/lib/libUACryptoQ.so.1
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 #COPY --from=builder /home/ds/_build/prod/rel/${APP_NAME}/releases/0.1.0/${APP_NAME}.tar.gz .
@@ -60,13 +60,12 @@ ENV REPLACE_OS_VARS=true \
 
 RUN echo "$HOST_IP travis" >> /etc/hosts
 
+RUN cat /etc/hosts
 RUN echo $DB_HOST
 RUN echo $DB_NAME
-RUN echo $DB_USER
-RUN echo $DB_PASSWORD
-RUN echo $DB_PORT
 RUN echo $DB_HOST
 RUN echo $KAFKA_HOST
+RUN echo $HOST_IP
 
 
 RUN ping $DB_HOST
