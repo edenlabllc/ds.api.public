@@ -58,6 +58,8 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 ENV REPLACE_OS_VARS=true \
   APP=${APP_NAME}
 
+RUN --add-host=travis:$HOST_IP
+
 RUN echo $DB_HOST
 RUN echo $DB_NAME
 RUN echo $DB_USER
@@ -65,6 +67,7 @@ RUN echo $DB_PASSWORD
 RUN echo $DB_PORT
 RUN echo $DB_HOST
 RUN echo $KAFKA_HOST
+
 
 RUN ping $DB_HOST
 #CMD ./bin/${APP} foreground
