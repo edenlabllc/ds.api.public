@@ -23,13 +23,19 @@ RUN mix do \
   local.hex --force, \
   local.rebar --force, \
   deps.get, \
-  deps.compile, \
-  ecto.create, \
-  ecto.migrate, \
-  release --name=${APP_NAME}
+  deps.compile
 
-RUN ls -la /home/ds/_build/prod/rel/
-RUN ls -la /home/ds/_build/prod/rel/${APP_NAME}
+ENV DB_HOST=travis
+ENV DB_NAME=ds
+ENV DB_USER=postgres
+ENV DB_PASSWORD=postgres
+ENV DB_PORT=5432
+ENV DB_HOST=travis
+
+RUN mix ecto.create
+RUN mix ecto.migrate
+RUN mix release --name=${APP_NAME}
+
 FROM elixir:1.6-slim
 
 ARG APP_NAME
