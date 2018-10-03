@@ -32,8 +32,6 @@ ENV DB_PASSWORD=postgres
 ENV DB_PORT=5432
 ENV DB_HOST=travis
 
-RUN mix ecto.create
-RUN mix ecto.migrate
 RUN mix release --name=${APP_NAME}
 
 FROM elixir:1.6-slim
