@@ -27,7 +27,7 @@ defmodule SynchronizerCrl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:distillery, "~> 1.5", runtime: false},
+      {:distillery, "~> 2.0", runtime: false},
       {:confex, "~> 3.2"},
       {:httpoison, "~> 1.1.0"},
       {:core, in_umbrella: true}

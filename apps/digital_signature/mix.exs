@@ -52,7 +52,7 @@ defmodule DigitalSignature.Mixfile do
 
   defp deps do
     [
-      {:distillery, "~> 1.5", runtime: false},
+      {:distillery, "~> 2.0", runtime: false},
       {:confex, "~> 3.3"},
       {:ecto, "~> 2.2"},
       {:cowboy, "~> 1.1"},
