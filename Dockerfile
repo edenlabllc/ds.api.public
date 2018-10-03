@@ -31,7 +31,13 @@ RUN ls -la /home/ds/_build/prod/rel/${APP_NAME}
 FROM elixir:1.6-slim
 
 ARG APP_NAME
-
+ENV KAFKA_HOST=travis
+ENV DB_HOST=travis
+ENV DB_NAME=ds
+ENV DB_USER=postgres
+ENV DB_PASSWORD=postgres
+ENV DB_PORT=5432
+ENV DB_HOST=travis
 ENV TZ=Europe/Kiev
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 

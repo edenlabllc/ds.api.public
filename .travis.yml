@@ -22,7 +22,7 @@ env:
   global:
     - APPS='[{"app":"api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"},{"app":"synchronizer_crl","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"},{"app":"ocsp_service","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
     - DOCKER_NAMESPACE=edenlabllc
-    - MIX_ENV=prod
+    - MIX_ENV=test
     - NO_ECTO_SETUP=true
     - POSTGRES_VERSION=9.6
     - DS_KAFKA_PARTITIONS=10
@@ -63,11 +63,6 @@ jobs:
     - stage: "test and build"
       name: "Build Docker containers. API with Core"
       env:
-      - DB_NAME=ds
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_PORT=5432
-      - DB_HOST=travis
       - APPS='[{"app":"api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
       # "Decrypting deploy key..."
       script:
