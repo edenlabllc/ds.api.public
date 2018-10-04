@@ -5,4 +5,5 @@ config :synchronizer_crl, SynchronizerCrl.CrlService, preload_crl: ~w()
 
 config :core, Core.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
-  ownership_timeout: 120_000
+  ownership_timeout: 120_000,
+  database: "ds_test"
