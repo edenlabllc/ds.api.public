@@ -1,3 +1,3 @@
 use Mix.Config
 
-config :phoenix, :stacktrace_depth, 20
+config :digital_signature, ecto_repos: [Core.Repo]

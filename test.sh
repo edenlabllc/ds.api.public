@@ -30,9 +30,11 @@ echo "Run App test image"
 docker run \
   -e DB_HOST=ds_test_db \
   -e DB_USER=postgres \
+  -e DB_NAME=ds \
   -e DB_PASSWORD=postgres \
   -e KAFKA_HOST=ds_test_kafka \
   -e KAFKA_PORT=9092 \
+  -e CONSUMER_GROUP=digital_signature \
   -v `pwd`:/home/ds \
   --rm -it --net ds_test_db $IMAGE /bin/bash -c 'cd /home/ds; /bin/bash;'
 

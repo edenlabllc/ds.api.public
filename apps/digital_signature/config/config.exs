@@ -25,7 +25,7 @@ config :phoenix, :format_encoders, json: Jason
 
 config :kafka_ex,
   brokers: "#{System.get_env("KAFKA_HOST")}:#{System.get_env("KAFKA_PORT")}",
-  consumer_group: "digital_signature",
+  consumer_group: System.get_env("CONSUMER_GROUP"),
   disable_default_worker: false,
   sync_timeout: 3000,
   max_restarts: 10,
