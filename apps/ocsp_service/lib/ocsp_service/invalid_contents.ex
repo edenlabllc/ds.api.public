@@ -4,8 +4,8 @@ defmodule OCSPService.InvalidContents do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  alias OCSPService.InvalidContent
-  alias OCSPService.Repo
+  alias Core.InvalidContent
+  alias Core.Repo
 
   def store_invalid_content(signatures, content) do
     encoded_signatures =

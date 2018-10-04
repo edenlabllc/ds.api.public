@@ -1,4 +1,4 @@
-defmodule OCSPService.Repo.Migrations.CreateInvalidContent do
+defmodule Core.Repo.Migrations.CreateInvalidContent do
   use Ecto.Migration
 
   def change do

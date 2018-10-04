@@ -6,7 +6,7 @@ defmodule OCSPServiceNotifierTest do
 
   alias OCSPService.InvalidContents
   alias OCSPService.Notifier
-  alias OCSPService.Repo
+  alias Core.Repo
   alias Ecto.Adapters.SQL.Sandbox
 
   setup do

@@ -3,9 +3,9 @@ defmodule OCSPServiceTest do
 
   import DigitalSignatureTestHelper
 
-  alias OCSPService.InvalidContent
+  alias Core.InvalidContent
   alias OCSPService.InvalidContents
-  alias OCSPService.Repo
+  alias Core.Repo
   alias Ecto.Adapters.SQL.Sandbox
 
   setup do

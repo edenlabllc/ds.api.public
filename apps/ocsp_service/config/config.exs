@@ -8,21 +8,6 @@ config :ocsp_service,
     topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
   ]
 
-config :ocsp_service, ecto_repos: [OCSPService.Repo]
-
-# Configures Database
-config :ocsp_service, OCSPService.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  loggers: [{Ecto.LoggerJSON, :log, [:info]}],
-  database: System.get_env("DB_NAME"),
-  username: System.get_env("DB_USER"),
-  password: System.get_env("DB_PASSWORD"),
-  hostname: System.get_env("DB_HOST"),
-  port: System.get_env("DB_PORT"),
-  pool_size: System.get_env("DB_POOL_SIZE"),
-  timeout: 15_000,
-  pool_timeout: 15_000
-
 config :ocsp_service, OCSPService.EmailSender,
   relay: System.get_env("SMTP_RELAY"),
   username: System.get_env("SMTP_USERNAME"),

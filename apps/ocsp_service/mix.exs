@@ -35,8 +35,6 @@ defmodule OCSPService.MixProject do
       {:kafka_ex, "~> 0.8.3"},
       {:mox, "~> 0.4.0", only: :test},
       {:confex, "~> 3.2"},
-      {:ecto, "~> 2.0"},
-      {:postgrex, "~> 0.11"},
       {:httpoison, "~> 1.1.0"},
       {:digital_signature, in_umbrella: true},
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
@@ -46,7 +44,7 @@ defmodule OCSPService.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate"] ++ [&umbrella_ecto_setup/1],
+      "ecto.setup": &umbrella_ecto_setup/1,
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]

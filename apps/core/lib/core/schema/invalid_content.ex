@@ -1,4 +1,4 @@
-defmodule OCSPService.InvalidContent do
+defmodule Core.InvalidContent do
   @moduledoc """
   table with invalid content and signatures for content
   Content can be either json or base64 data
