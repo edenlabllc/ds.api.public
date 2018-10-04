@@ -25,16 +25,12 @@ echo "Run App test image"
 #   -e DB_HOST=ds_test_db \
 #   -e KAFKA_HOST=ds_test_kafka \
 #   -e KAFKA_PORT=9092 \
-#   --rm -it --net ds_test_db $IMAGE /bin/bash -c 'cd /home/ds; /bin/bash;'
-
-# docker run \
-#   -e DB_HOST=ds_test_db \
-#   -e KAFKA_HOST=ds_test_kafka \
-#   -e KAFKA_PORT=9092 \
 #   --rm -it --net ds_test_db $IMAGE /bin/bash -c 'cd /home/ds; for i in {1..20}; do mix test; done;'
 
 docker run \
   -e DB_HOST=ds_test_db \
+  -e DB_USER=postgres \
+  -e DB_PASSWORD=postgres \
   -e KAFKA_HOST=ds_test_kafka \
   -e KAFKA_PORT=9092 \
   -v `pwd`:/home/ds \
