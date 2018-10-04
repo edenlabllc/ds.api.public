@@ -4,7 +4,7 @@ defmodule OCSPServiceNotifierTest do
   import DigitalSignatureTestHelper
   import Mox
 
-  alias OCSPService.InvalidContents
+  alias Core.InvalidContents
   alias OCSPService.Notifier
   alias Core.Repo
   alias Ecto.Adapters.SQL.Sandbox

@@ -25,8 +25,15 @@ env:
     - MIX_ENV=test
     # - NO_ECTO_SETUP=true
     - POSTGRES_VERSION=9.6
+    - DB_PORT=5432
+    - DB_NAME=ds
+    - DB_PASSWORD=postgres
+    - DB_USER=postgres
+    - KAFKA_PORT=9092
+    - DS_KAFKA_TOPIC=digital_signature
     - DS_KAFKA_PARTITIONS=10
     - KAFKA_HOST=travis
+    - CONSUMER_GROUP=digital_signature
     - DB_HOST=travis
     # Docker and GitHub credentials
     - secure: "MFfU4+uwBQQvq0n/thF95J5+JKtgkPeJPxB1Ac7/oqa8nWnD8qg/MbO3olN7Fz15YiJ8uZ3GaLYKub8ln2XALWhFdd9VAJYPiAlYkyPeWdQHqqxtHcMeoUCME+PDxjlkzDUXH9y5QVqgiFmaRALrBtqGoJaK4CQ3ep6FfwhUOSO9xSdJ/Fb861nPKMW57tnjNJDQj/1BiOVqoigpEbVFZ5YoKWb28u2ZWmWyxsgjTGCpNaKYJD/aGBws9t7FZ+WWagJhflUq7bjNvaMdeCB4ucKgvlzDDhnUssKVVJhg+JCNXruggmNT8X4gDLSZHEh+XjUz//kBnDhfwmi52RnAC9yCGHVYbc/LkAxcWnVZpPshqLj0A7wkvHJws8nqPvrwDwVy/KNfiOf/td5LQcoPX1SCeKTOiwdMp02QU5Nw7mJIXd7dZCyrBV5h/INKcSkm0fV8CwKQ4wYzASMNtrzIpVwjbUXS+qWPAS19JSJIxxE1Us3IAcUCrfsiism3eTwreQ3hD8IgAq8g+9fe4QHn2vl7mERzuWUnUbk1pgUECqjOLdkV8Z4ZaJTvsB8kNG2lZ20CkKWC0x/ABfHsi7bwYzxii5GZylsXsvtPjzQX6RQ+u8DprKZe1fDo1nfZJpITA00MuuCY9kgRdvc94zbMxrDyUD7/H3JxHV+hVI3K00s="

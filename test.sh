@@ -29,6 +29,7 @@ echo "Run App test image"
 
 docker run \
   -e DB_HOST=ds_test_db \
+  -e DB_PORT=5432 \
   -e DB_USER=postgres \
   -e DB_NAME=ds \
   -e DB_PASSWORD=postgres \

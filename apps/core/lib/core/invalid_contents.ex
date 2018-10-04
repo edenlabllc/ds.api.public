@@ -1,4 +1,4 @@
-defmodule OCSPService.InvalidContents do
+defmodule Core.InvalidContents do
   @moduledoc """
   Encodes data of certificates to base64 to be able Jason.encode
   """

@@ -3,7 +3,7 @@ defmodule OCSPService.Kafka.GenConsumer do
   use KafkaEx.GenConsumer
 
   alias KafkaEx.Protocol.Fetch.Message
-  alias OCSPService.InvalidContents
+  alias Core.InvalidContents
   alias OCSPService.Notifier
 
   require Logger

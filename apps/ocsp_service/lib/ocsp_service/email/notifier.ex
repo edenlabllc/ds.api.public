@@ -8,7 +8,7 @@ defmodule OCSPService.Notifier do
 
   alias DigitalSignature.NifServiceAPI
   alias Core.InvalidContent
-  alias OCSPService.InvalidContents
+  alias Core.InvalidContents
 
   @email_sender Application.get_env(:ocsp_service, :api_resolvers)[
                   :email_sender
