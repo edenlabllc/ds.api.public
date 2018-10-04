@@ -46,9 +46,13 @@ defmodule OCSPService.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"] ++ [&umbrella_ecto_setup/1],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
+  end
+
+  defp umbrella_ecto_setup(_) do
+    Mix.shell().cmd("cd ../core && mix ecto.setup")
   end
 end

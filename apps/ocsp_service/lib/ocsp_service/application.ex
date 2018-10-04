@@ -8,7 +8,9 @@ defmodule OCSPService.Application do
 
   def start(_type, _args) do
     gen_consumer_impl = OCSPService.Kafka.GenConsumer
+
     consumer_group_name = Confex.fetch_env!(:kafka_ex, :consumer_group)
+
     topic_names = [Confex.fetch_env!(:ocsp_service, :kafka)[:topic]]
 
     consumer_group_opts = [
@@ -17,7 +19,6 @@ defmodule OCSPService.Application do
     ]
 
     children = [
-      OCSPService.Repo,
       supervisor(KafkaEx.ConsumerGroup, [
         gen_consumer_impl,
         consumer_group_name,

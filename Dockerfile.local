@@ -13,7 +13,5 @@ ENV MIX_ENV=test
 ENV REPLACE_OS_VARS=true
 
 RUN mix do \
-     local.hex --force, \
-     local.rebar --force
-     #deps.get
-     #deps.compile
+  local.hex --force, \
+  local.rebar --force

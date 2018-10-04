@@ -36,7 +36,7 @@ defmodule Api.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.setup": &umbrella_ecto_setup/1,
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
@@ -78,5 +78,9 @@ defmodule Api.MixProject do
       {:mox, "~> 0.3", only: :test},
       {:digital_signature, in_umbrella: true}
     ]
+  end
+
+  defp umbrella_ecto_setup(_) do
+    Mix.shell().cmd("cd ../core && mix ecto.setup")
   end
 end
