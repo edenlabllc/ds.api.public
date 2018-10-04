@@ -1,2 +1,3 @@
 ExUnit.start()
-Ecto.Adapters.SQL.Sandbox.mode(OCSPService.Repo, :manual)
+
+Ecto.Adapters.SQL.Sandbox.checkout(OCSPService.Repo)

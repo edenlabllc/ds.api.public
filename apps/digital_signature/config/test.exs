@@ -12,10 +12,6 @@ config :logger, level: :warn
 # Run acceptance test in concurrent mode
 config :digital_signature, sql_sandbox: true
 
-config :core, Core.Repo,
-  pool: Ecto.Adapters.SQL.Sandbox,
-  ownership_timeout: 120_000
-
 config :digital_signature,
   kafka: [
     producer: KafkaMock

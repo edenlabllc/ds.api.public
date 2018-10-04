@@ -19,6 +19,7 @@ defmodule OCSPService.Application do
     ]
 
     children = [
+      OCSPService.Repo,
       supervisor(KafkaEx.ConsumerGroup, [
         gen_consumer_impl,
         consumer_group_name,

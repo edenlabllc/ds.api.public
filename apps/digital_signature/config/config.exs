@@ -1,5 +1,8 @@
 use Mix.Config
 
+# Database Repo
+config :digital_signature, ecto_repos: [Core.Repo]
+
 # General application configuration
 config :digital_signature,
   ecto_repos: [Core.Repo],
