@@ -13,13 +13,21 @@ config :ocsp_service, ecto_repos: [OCSPService.Repo]
 # Configures Database
 config :ocsp_service, OCSPService.Repo,
   adapter: Ecto.Adapters.Postgres,
-  loggers: [{Ecto.LoggerJSON, :log, [:info]}]
+  loggers: [{Ecto.LoggerJSON, :log, [:info]}],
+  database: System.get_env("DB_NAME"),
+  username: System.get_env("DB_USER"),
+  password: System.get_env("DB_PASSWORD"),
+  hostname: System.get_env("DB_HOST"),
+  port: System.get_env("DB_PORT"),
+  pool_size: System.get_env("DB_POOL_SIZE"),
+  timeout: 15_000,
+  pool_timeout: 15_000
 
 config :ocsp_service, OCSPService.EmailSender,
-  relay: {:system, "SMTP_RELAY"},
-  username: {:system, "SMTP_USERNAME"},
-  password: {:system, "$SMTP_PASSWORD"},
-  warning_receiver: {:system, "SMTP_WARNING_RECEIVER"}
+  relay: System.get_env("SMTP_RELAY"),
+  username: System.get_env("SMTP_USERNAME"),
+  password: System.get_env("SMTP_PASSWORD"),
+  warning_receiver: System.get_env("SMTP_WARNING_RECEIVER")
 
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 
