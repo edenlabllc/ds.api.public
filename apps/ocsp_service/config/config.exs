@@ -5,7 +5,8 @@ config :ocsp_service,
   kafka: [
     consumer: OCSPService.Kafka.Consumer,
     partitions: {:system, :integer, "DS_KAFKA_PARTITIONS", 10},
-    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
+    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"},
+    consumer_group: {:system, "CONSUMER_GROUP", "digital_signature"}
   ]
 
 config :ocsp_service, OCSPService.EmailSender,
