@@ -66,7 +66,7 @@ jobs:
     #   - APPS='[{"app":"api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
     #   # "Decrypting deploy key..."
     #   script:
-    #   # - openssl aes-256-cbc -K $encrypted_727565a690f3_key -iv $encrypted_727565a690f3_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+    #   # - openssl aes-256-cbc -K $encrypted_fd4f2a47b55b_key -iv $encrypted_fd4f2a47b55b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
     #   - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
 
     - stage: "test and build"
@@ -75,7 +75,7 @@ jobs:
         - APPS='[{"app":"synchronizer_crl","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"}]'
       # "Decrypting deploy key..."
       script:
-      # - openssl aes-256-cbc -K $encrypted_727565a690f3_key -iv $encrypted_727565a690f3_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+      # - openssl aes-256-cbc -K $encrypted_fd4f2a47b55b_key -iv $encrypted_fd4f2a47b55b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
       - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
 
     # - stage: "test and build"
@@ -84,5 +84,5 @@ jobs:
     #     - APPS='[{"app":"ocsp_service","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
     #   # "Decrypting deploy key..."
     #   script:
-    #   # - openssl aes-256-cbc -K $encrypted_727565a690f3_key -iv $encrypted_727565a690f3_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+    #   # - openssl aes-256-cbc -K $encrypted_fd4f2a47b55b_key -iv $encrypted_fd4f2a47b55b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
     #   - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
