@@ -36,6 +36,7 @@ docker run \
   -e KAFKA_HOST=ds_test_kafka \
   -e KAFKA_PORT=9092 \
   -e CONSUMER_GROUP=digital_signature \
+  -e KAFKA_BROKERS=ds_test_kafka:9092 \
   -v `pwd`:/home/ds \
   --rm -it --net ds_test_db $IMAGE /bin/bash -c 'cd /home/ds; /bin/bash;'
 
