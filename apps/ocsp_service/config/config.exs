@@ -17,7 +17,7 @@ config :ocsp_service, OCSPService.EmailSender,
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 
 config :kafka_ex,
-  brokers: "#{System.get_env("KAFKA_HOST")}:#{System.get_env("KAFKA_PORT")}",
+  brokers: System.get_env("KAFKA_BROKERS"),
   consumer_group: System.get_env("CONSUMER_GROUP"),
   disable_default_worker: false,
   sync_timeout: 3000,
