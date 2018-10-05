@@ -1,11 +1,7 @@
 use Mix.Config
 
-# Database Repo
-config :digital_signature, ecto_repos: [Core.Repo]
-
 # General application configuration
 config :digital_signature,
-  ecto_repos: [Core.Repo],
   namespace: DigitalSignature,
   call_response_threshold: {:system, :integer, "CALL_RESPONSE_THRESHOLD", 100},
   certs_cache_ttl: {:system, :integer, "CERTS_CACHE_TTL", 30 * 60 * 1000},

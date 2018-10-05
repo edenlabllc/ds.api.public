@@ -28,9 +28,6 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 
-# Repo
-config :synchronizer_crl, ecto_repos: [Core.Repo], namespace: Core
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$message\n",
