@@ -21,7 +21,7 @@ notifications:
 env:
   global:
     - APPS='[{"app":"api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"},{"app":"synchronizer_crl","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"},{"app":"ocsp_service","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
-    - DOCKER_NAMESPACE=edenlabllc
+    - DOCKER_NAMESPACE=lakone
     - MIX_ENV=test
     # - NO_ECTO_SETUP=true
     - POSTGRES_VERSION=9.6
@@ -61,14 +61,14 @@ jobs:
     #   - sudo docker attach $CONTAINER || travis_terminate 1
     #   - sudo docker wait $CONTAINER || travis_terminate 1
     #   - sudo docker rm $CONTAINER
-    - stage: "test and build"
-      name: "api"
-      env:
-      - APPS='[{"app":"api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
-      # "Decrypting deploy key..."
-      script:
-      # - openssl aes-256-cbc -K $encrypted_727565a690f3_key -iv $encrypted_727565a690f3_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
-      - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
+    # - stage: "test and build"
+    #   name: "api"
+    #   env:
+    #   - APPS='[{"app":"api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
+    #   # "Decrypting deploy key..."
+    #   script:
+    #   # - openssl aes-256-cbc -K $encrypted_727565a690f3_key -iv $encrypted_727565a690f3_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+    #   - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
 
     # - stage: "test and build"
     #   name: "clr"
@@ -87,3 +87,12 @@ jobs:
     #   script:
     #   # - openssl aes-256-cbc -K $encrypted_727565a690f3_key -iv $encrypted_727565a690f3_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
     #   - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
+    - stage: "build and push"
+      name: "build ocsp container"
+      env:
+      - APPS='[{"app":"ocsp_service","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
+      script:
+      - curl -s https://raw.githubusercontent.com/dhlebnikov1/ci-scripts/master/build-container.sh -o build-container.sh; chmod 700 ./build-container.sh
+      - bash ./build-container.sh || travis_terminate 1
+      - curl -s https://raw.githubusercontent.com/dhlebnikov1/ci-scripts/master/push-container.sh -o push-container.sh; chmod 700 ./push-container.sh
+      - bash ./push-container.sh || travis_terminate 1
