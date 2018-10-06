@@ -5,15 +5,14 @@ config :ocsp_service,
   kafka: [
     consumer: OCSPService.Kafka.Consumer,
     partitions: {:system, :integer, "DS_KAFKA_PARTITIONS", 10},
-    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"},
-    consumer_group: {:system, "CONSUMER_GROUP", "digital_signature"}
+    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
   ]
 
 config :ocsp_service, OCSPService.EmailSender,
-  relay: System.get_env("SMTP_RELAY"),
-  username: System.get_env("SMTP_USERNAME"),
-  password: System.get_env("SMTP_PASSWORD"),
-  warning_receiver: System.get_env("SMTP_WARNING_RECEIVER")
+  relay: {:system, "SMTP_RELAY"},
+  username: {:system, "SMTP_USERNAME"},
+  password: {:system, "SMTP_PASSWORD"},
+  warning_receiver: {:system, "SMTP_WARNING_RECEIVER"}
 
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 
