@@ -19,7 +19,4 @@ RUN mix do \
      local.hex --force, \
      local.rebar --force, \
      deps.get, \
-     deps.compile \
-     release
-
-RUN ls -la /home/ds/_build/prod/rel/ds/releases/0.1.0/
+     deps.compile 
