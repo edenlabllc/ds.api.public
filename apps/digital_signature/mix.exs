@@ -30,17 +30,10 @@ defmodule DigitalSignature.Mixfile do
   def application do
     [
       extra_applications: [
+        :kafka_ex,
         :logger,
         :confex,
-        :runtime_tools,
         :jason,
-        :cowboy,
-        :httpoison,
-        :ecto,
-        :postgrex,
-        :phoenix,
-        :phoenix_pubsub,
-        :eview,
         :runtime_tools
       ],
       mod: {DigitalSignature, []}
