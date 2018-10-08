@@ -10,16 +10,30 @@ ENV TZ=Europe/Kiev
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ENV MIX_ENV=test
-ENV REPLACE_OS_VARS=true
-
-RUN ["apt-get", "update"]
-RUN ["apt-get", "install", "-y", "vim"]
 
 RUN mix do \
      local.hex --force, \
      local.rebar --force, \
      deps.get, \
-     deps.compile \
-     release
+     deps.compile
 
-RUN ls -la /home/ds/_build/prod/rel/ds/releases/0.1.0/
+
+# RUN TESTS #
+
+# Database settings
+ENV DB_HOST=travis
+ENV DB_NAME=ds
+ENV DB_USER=postgres
+ENV DB_PASSWORD=postgres
+ENV DB_PORT=5432
+ENV DB_POOL_SIZE=5
+
+#kafka
+ENV KAFKA_BROKERS=travis:9092
+ENV DS_KAFKA_PARTITIONS=10
+ENV DS_KAFKA_TOPIC=digital_signature
+ENV CONSUMER_GROUP=digital_signature
+
+ENV REPLACE_OS_VARS=true
+
+RUN mix test --exclude pending --trace

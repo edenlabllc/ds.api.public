@@ -5,4 +5,4 @@ config :core, Core.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   database: "ds_test",
   port: 5432,
-  ownership_timeout: 120_000_000
+  ownership_timeout: 15000

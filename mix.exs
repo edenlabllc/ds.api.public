@@ -19,7 +19,11 @@ defmodule DigitalSignatureUmbrella.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
+      {:distillery, "~> 2.0", runtime: false, override: true},
+      {:credo, "~> 0.9.3", only: [:dev, :test]},
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:jvalid, "~> 0.6.0"},
+      {:jason, "~> 1.0"}
     ]
   end
 
