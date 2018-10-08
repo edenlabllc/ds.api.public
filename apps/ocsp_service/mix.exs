@@ -23,7 +23,7 @@ defmodule OCSPService.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :runtime_tools],
       mod: {OCSPService.Application, []}
     ]
   end
@@ -31,14 +31,11 @@ defmodule OCSPService.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:distillery, "~> 2.0", runtime: false},
       {:kafka_ex, "~> 0.8.3"},
-      {:mox, "~> 0.4.0", only: :test},
-      {:confex, "~> 3.2"},
-      {:httpoison, "~> 1.1.0"},
+      {:gen_smtp, git: "https://github.com/Vagabond/gen_smtp.git"},
+      {:cowboy, "~> 1.1"},
       {:digital_signature, in_umbrella: true},
-      {:ex_machina, "~> 2.0", only: [:dev, :test]},
-      {:gen_smtp, git: "https://github.com/Vagabond/gen_smtp.git"}
+      {:mox, "~> 0.3", only: :test}
     ]
   end
 

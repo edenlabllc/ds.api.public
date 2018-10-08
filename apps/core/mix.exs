@@ -20,7 +20,7 @@ defmodule Core.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :runtime_tools],
       mod: {Core.Application, []}
     ]
   end
@@ -28,7 +28,6 @@ defmodule Core.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:confex, "~> 3.2"},
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
       {:phoenix_ecto, "~> 3.0"},
       {:postgrex, "~> 0.11"}

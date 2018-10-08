@@ -37,8 +37,7 @@ defmodule Api.MixProject do
   defp aliases do
     [
       "ecto.setup": &umbrella_ecto_setup/1,
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.setup", "test"]
     ]
   end
 
@@ -57,11 +56,10 @@ defmodule Api.MixProject do
   defp deps do
     [
       {:kafka_ex, "~> 0.8.3"},
-      {:confex, "~> 3.3"},
       {:eview, "~> 0.12.0"},
-      {:plug_logger_json, "~> 0.5"},
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
-      {:credo, "~> 0.9.3", only: [:dev, :test]},
+      {:cowboy, "~> 1.1"},
+      {:httpoison, "~> 1.1.0"},
+      {:phoenix, "~> 1.3"},
       {:mox, "~> 0.3", only: :test},
       {:digital_signature, in_umbrella: true}
     ]

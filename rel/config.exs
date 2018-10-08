@@ -21,12 +21,6 @@ use Mix.Releases.Config,
 # and environment configuration is called a profile
 
 environment :dev do
-  # If you are running Phoenix, you should make sure that
-  # server: true is set and the code reloader is disabled,
-  # even in dev mode.
-  # It is recommended that you build with MIX_ENV=prod and pass
-  # the --env flag to Distillery explicitly if you want to use
-  # dev mode.
   set(dev_mode: true)
   set(include_erts: false)
   set(cookie: :"J]gllLo9!*{HGqjQ3s=M0t9GxO%2YT>]S1&*,EIVGUuni?dNZG0RRVzIEm%e>*tU")
@@ -37,6 +31,19 @@ environment :prod do
   set(include_src: false)
   set(cookie: :"0*xsbIl3AS91,?[R9RMhLPs47@P3q?@cC%f0]RH})s`A4v]aU(^=b@^1sLm4RlN6")
 end
+
+# environment :default do
+#   # set(pre_start_hooks: "bin/hooks/")
+#   set(dev_mode: false)
+#   set(include_erts: true)
+#   set(include_src: false)
+#
+#   set(
+#     overlays: [
+#       {:template, "rel/templates/vm.args.eex", "releases/<%= release_version %>/vm.args"}
+#     ]
+#   )
+# end
 
 # You may define one or more releases in this file.
 # If you have not set a default release, or selected one
@@ -53,6 +60,12 @@ release :api do
       core: :permanent
     ]
   )
+
+  # set(
+  #   config_providers: [
+  #     {Toml.Provider, [path: "/app/config.toml"]}
+  #   ]
+  # )
 end
 
 release :core do
@@ -86,6 +99,12 @@ release :ocsp_service do
       core: :permanent
     ]
   )
+
+  # set(
+  #   config_providers: [
+  #     {Toml.Provider, [path: "/app/config.toml"]}
+  #   ]
+  # )
 end
 
 release :synchronizer_crl do

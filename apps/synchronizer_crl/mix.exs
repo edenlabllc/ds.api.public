@@ -19,7 +19,7 @@ defmodule SynchronizerCrl.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :core],
+      extra_applications: [:logger, :runtime_tools],
       mod: {SynchronizerCrl.Application, []}
     ]
   end
@@ -27,8 +27,6 @@ defmodule SynchronizerCrl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:distillery, "~> 2.0", runtime: false},
-      {:confex, "~> 3.2"},
       {:httpoison, "~> 1.1.0"},
       {:core, in_umbrella: true}
     ]
@@ -36,9 +34,8 @@ defmodule SynchronizerCrl.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate"] ++ [&umbrella_ecto_setup/1],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      "ecto.setup": &umbrella_ecto_setup/1,
+      test: ["ecto.setup", "test"]
     ]
   end
 
