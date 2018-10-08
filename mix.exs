@@ -23,8 +23,7 @@ defmodule DigitalSignatureUmbrella.MixProject do
       {:credo, "~> 0.9.3", only: [:dev, :test]},
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
       {:jvalid, "~> 0.6.0"},
-      {:jason, "~> 1.0"},
-      {:toml, "~> 0.3.0"}
+      {:jason, "~> 1.0"}
     ]
   end
 

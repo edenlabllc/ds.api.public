@@ -61,11 +61,11 @@ release :api do
     ]
   )
 
-  # set(
-  #   config_providers: [
-  #     {Toml.Provider, [path: "/app/config.toml"]}
-  #   ]
-  # )
+  set(
+    config_providers: [
+      {Toml.Provider, [path: "/home/ds/config.toml"]}
+    ]
+  )
 end
 
 release :core do
@@ -100,11 +100,11 @@ release :ocsp_service do
     ]
   )
 
-  # set(
-  #   config_providers: [
-  #     {Toml.Provider, [path: "/app/config.toml"]}
-  #   ]
-  # )
+  set(
+    config_providers: [
+      {Toml.Provider, [path: "/home/ds/config.toml"]}
+    ]
+  )
 end
 
 release :synchronizer_crl do
