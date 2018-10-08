@@ -5,8 +5,6 @@ ARG APP_NAME
 ADD . /home/ds
 WORKDIR /home/ds
 
-RUN ls -la
-
 RUN ln -s /home/ds/apps/digital_signature/priv/libUACryptoQ.so /usr/local/lib/libUACryptoQ.so.1
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
