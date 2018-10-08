@@ -39,6 +39,7 @@ defmodule DigitalSignature.Mixfile do
 
   defp deps do
     [
+      {:confex, "~> 3.3"},
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
       {:elixir_make, "~> 0.4", runtime: false},
       {:core, in_umbrella: true}
