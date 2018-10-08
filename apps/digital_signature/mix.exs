@@ -30,7 +30,6 @@ defmodule DigitalSignature.Mixfile do
   def application do
     [
       extra_applications: [
-        :kafka_ex,
         :logger,
         :confex,
         :jason,
@@ -63,7 +62,6 @@ defmodule DigitalSignature.Mixfile do
       {:mox, "~> 0.3", only: :test},
       {:nex_json_schema, ">= 0.7.2"},
       {:elixir_make, "~> 0.4", runtime: false},
-      {:kafka_ex, "~> 0.8.3"},
       {:core, in_umbrella: true}
     ]
   end

@@ -46,6 +46,7 @@ defmodule Api.MixProject do
   def application do
     [
       extra_applications: [
+        :kafka_ex,
         :logger,
         :confex,
         :runtime_tools,
@@ -69,6 +70,7 @@ defmodule Api.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:kafka_ex, "~> 0.8.3"},
       {:distillery, "~> 2.0", runtime: false},
       {:confex, "~> 3.3"},
       {:eview, "~> 0.12.0"},
