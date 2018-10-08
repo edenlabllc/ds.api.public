@@ -60,7 +60,7 @@ jobs:
     - stage: "test and build"
       name: "api"
       env:
-      - APPS='[{"app":"ds-api","chart":"ds.api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
+        - APPS='[{"app":"api","chart":"ds.api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
       # "Decrypting deploy key..."
       script:
       - openssl aes-256-cbc -K $encrypted_fd4f2a47b55b_key -iv $encrypted_fd4f2a47b55b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
@@ -69,7 +69,7 @@ jobs:
     - stage: "test and build"
       name: "clr"
       env:
-        - APPS='[{"app":"ds-synchronizer-crl","chart":"ds.api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"}]'
+        - APPS='[{"app":"synchronizer_crl","chart":"ds.api","namespace":"digital-signature","deployment":"synchronizer-crl","label":"synchronizer-crl"}]'
       # "Decrypting deploy key..."
       script:
       - openssl aes-256-cbc -K $encrypted_fd4f2a47b55b_key -iv $encrypted_fd4f2a47b55b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
@@ -78,7 +78,7 @@ jobs:
     - stage: "test and build"
       name: "ocsp"
       env:
-        - APPS='[{"app":"ds-ocsp-service","chart":"ds.api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
+        - APPS='[{"app":"ocsp_service","chart":"ds.api","namespace":"digital-signature","deployment":"ocsp-service","label":"ocsp-service"}]'
       # "Decrypting deploy key..."
       script:
       - openssl aes-256-cbc -K $encrypted_fd4f2a47b55b_key -iv $encrypted_fd4f2a47b55b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
