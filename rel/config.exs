@@ -57,6 +57,7 @@ release :api do
   set(
     applications: [
       :runtime_tools,
+      api: :permanent,
       digital_signature: :permanent,
       core: :permanent
     ]
@@ -96,6 +97,7 @@ release :ocsp_service do
   set(
     applications: [
       :runtime_tools,
+      ocsp_service: :permanent,
       digital_signature: :permanent,
       core: :permanent
     ]
@@ -114,6 +116,7 @@ release :synchronizer_crl do
   set(
     applications: [
       :runtime_tools,
+      synchronizer_crl: :permanent,
       core: :permanent
     ]
   )
