@@ -27,6 +27,7 @@ environment :dev do
 end
 
 environment :prod do
+  set(pre_start_hooks: "bin/hooks/")
   set(include_erts: true)
   set(include_src: false)
   set(cookie: :"0*xsbIl3AS91,?[R9RMhLPs47@P3q?@cC%f0]RH})s`A4v]aU(^=b@^1sLm4RlN6")
