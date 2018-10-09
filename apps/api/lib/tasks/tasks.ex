@@ -4,7 +4,7 @@ defmodule API.ReleaseTasks do
 
   Example:
 
-      report/bin/report command Elixir.Core.ReleaseTasks migrate
+      report/bin/api command Elixir.Core.ReleaseTasks migrate
   """
 
   alias Core.Repo
