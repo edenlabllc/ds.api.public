@@ -60,6 +60,7 @@ jobs:
     - stage: "test and build"
       name: "api"
       env:
+        - DB_MIGRATE=true
         - APPS='[{"app":"api","chart":"ds.api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
       # "Decrypting deploy key..."
       script:
@@ -69,6 +70,7 @@ jobs:
     - stage: "test and build"
       name: "clr"
       env:
+        - DB_MIGRATE=false
         - APPS='[{"app":"synchronizer_crl","chart":"ds.api","namespace":"digital-signature","deployment":"synchronizer-crl","label":"synchronizer-crl"}]'
       # "Decrypting deploy key..."
       script:
@@ -78,6 +80,7 @@ jobs:
     - stage: "test and build"
       name: "ocsp"
       env:
+        - DB_MIGRATE=false
         - APPS='[{"app":"ocsp_service","chart":"ds.api","namespace":"digital-signature","deployment":"ocsp-service","label":"ocsp-service"}]'
       # "Decrypting deploy key..."
       script:
