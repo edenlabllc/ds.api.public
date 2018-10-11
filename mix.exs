@@ -21,9 +21,7 @@ defmodule DigitalSignatureUmbrella.MixProject do
     [
       {:distillery, "~> 2.0", runtime: false, override: true},
       {:credo, "~> 0.9.3", only: [:dev, :test]},
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
-      {:jvalid, "~> 0.6.0"},
-      {:jason, "~> 1.0"}
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
     ]
   end
 

@@ -34,7 +34,9 @@ defmodule Core.MixProject do
       {:ecto_logger_json, "~> 0.1"},
       {:postgrex, "~> 0.11"},
       {:poison, "~> 3.1"},
-      {:toml, "~> 0.3.0"}
+      {:toml, "~> 0.3.0"},
+      {:jason, "~> 1.0"},
+      {:jvalid, "~> 0.6.0"}
     ]
   end
 
