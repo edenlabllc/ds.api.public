@@ -10,3 +10,5 @@ config :api, API.Web.Endpoint,
   secret_key_base: {:system, "SECRET_KEY"},
   debug_errors: false,
   code_reloader: false
+
+config :phoenix, :serve_endpoints, true
