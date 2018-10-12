@@ -16,6 +16,7 @@ defmodule SynchronizerCrl.CrlService do
   @impl true
   def handle_info({:update, url}, state) do
     new_state = update_url_state(url, state)
+    :erlang.garbage_collect()
 
     {:noreply, new_state}
   end

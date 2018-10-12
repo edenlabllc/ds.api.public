@@ -145,8 +145,8 @@ defmodule API.Web.APIControllerTest do
       assert "OCSP certificate verificaton failed" == signature["validation_error_message"]
     end
 
-    test "processing signed valid data works (uakey)", %{conn: conn} do
-      data = get_data("test/fixtures/uakey.json")
+    test "processing signed valid data works (privatbank)", %{conn: conn} do
+      data = get_data("test/fixtures/privatbank.json")
       request = create_request(data)
 
       resp =
@@ -159,14 +159,11 @@ defmodule API.Web.APIControllerTest do
       assert signature["is_valid"]
       assert "" == signature["validation_error_message"]
 
-      assert resp["data"]["content"] == %{
-               "name" => "patient",
-               "route" => %{"first" => "Kiev", "second" => "Odessa"},
-               "sex" => "male",
-               "url" => %{
-                 "/api" => %{"target" => "http://api-dev.example.org/"}
-               }
-             }
+      assert %{
+               "declaration_number" => "0001-3X4M-M000",
+               "person" => %{"first_name" => "ТестНКР"},
+               "scope" => "family_doctor"
+             } = resp["data"]["content"]
     end
 
     test "processing double signed valid data works", %{conn: conn} do
