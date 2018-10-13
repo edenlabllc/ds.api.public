@@ -55,6 +55,7 @@ defmodule Core.InvalidContents do
 
   def random_invalid_content do
     InvalidContent
+    |> limit(1)
     |> Repo.one()
     |> invalid_content()
   end
