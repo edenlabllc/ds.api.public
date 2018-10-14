@@ -50,8 +50,10 @@ defmodule OCSPService.Kafka.GenConsumer do
              @timeout
            )
        end) do
-      {:ok, id} = InvalidContents.store_invalid_content(signatures, content)
-      @email_sender.send(id)
+      :ok
+      # TODO:  find why it is in loop
+      # {:ok, id} = InvalidContents.store_invalid_content(signatures, content)
+      #  @email_sender.send(id)
     end
   end
 end
