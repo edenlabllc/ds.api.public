@@ -1,13 +1,13 @@
-defmodule OCSPServiceNotifierTest do
+defmodule OCSPServiceConsumerTest do
   use ExUnit.Case
 
   import DigitalSignatureTestHelper
   import Mox
 
   alias Core.InvalidContents
-  alias OCSPService.Notifier
   alias Core.Repo
   alias Ecto.Adapters.SQL.Sandbox
+  alias OCSPService.Kafka.GenConsumer
 
   setup do
     :ok = Sandbox.checkout(Repo)
@@ -21,12 +21,9 @@ defmodule OCSPServiceNotifierTest do
       {:ok, content, [signature]} =
         DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
-      assert {:ok, id} =
-               InvalidContents.store_invalid_content([signature], content)
+      GenConsumer.online_check_signed_content([signature], content)
 
-      Notifier.process_invalid_sign()
-
-      assert nil == InvalidContents.get_by_id(id)
+      assert nil == InvalidContents.random_invalid_content()
     end
   end
 
@@ -41,11 +38,8 @@ defmodule OCSPServiceNotifierTest do
     {:ok, content, [signature]} =
       DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
-    assert {:ok, id} =
-             InvalidContents.store_invalid_content([signature], content)
+    GenConsumer.online_check_signed_content([signature], content)
 
-    Notifier.process_invalid_sign()
-
-    assert InvalidContents.get_by_id(id)
+    assert InvalidContents.random_invalid_content()
   end
 end
