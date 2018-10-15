@@ -9,6 +9,8 @@ defmodule CoreTest do
 
   setup do
     :ok = Sandbox.checkout(Repo)
+
+    Sandbox.mode(Repo, {:shared, self()})
   end
 
   test "check_revoked? true" do
