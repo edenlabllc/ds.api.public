@@ -13,6 +13,7 @@ defmodule OCSPServiceConsumerTest do
     :ok = Sandbox.checkout(Repo)
 
     Sandbox.mode(Repo, {:shared, self()})
+    :ok
   end
 
   describe "process_invalid_sign/0 test" do

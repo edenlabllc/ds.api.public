@@ -12,6 +12,7 @@ defmodule CoreApiTest do
     :ok = Sandbox.checkout(Repo)
 
     Sandbox.mode(Repo, {:shared, self()})
+    :ok
   end
 
   test "list urls works" do

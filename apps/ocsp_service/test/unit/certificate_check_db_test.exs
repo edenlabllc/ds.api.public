@@ -12,6 +12,7 @@ defmodule OCSPServiceTest do
     :ok = Sandbox.checkout(Repo)
 
     Sandbox.mode(Repo, {:shared, self()})
+    :ok
   end
 
   describe "store content to db" do
