@@ -4,12 +4,68 @@ defmodule API.Web.APIControllerTest do
   use API.Web.ConnCase, async: false
   import Mox
 
+  alias Core.Api
   alias Core.Cert
   alias Core.Repo
   alias Ecto.Adapters.SQL.Sandbox
   alias SynchronizerCrl.CrlService
 
   setup [:set_mox_global, :verify_on_exit!]
+
+  describe "push fake valid sign into kafka" do
+    setup %{conn: conn} do
+      insert_dfs_certs()
+      insert_justice_certs()
+      insert_ucsku_certs()
+      insert_privat_certs()
+
+      Supervisor.terminate_child(
+        DigitalSignature.Supervisor,
+        DigitalSignature.NifService
+      )
+
+      Sandbox.mode(Repo, {:shared, self()})
+
+      assert {:ok, _} =
+               Supervisor.restart_child(
+                 DigitalSignature.Supervisor,
+                 DigitalSignature.NifService
+               )
+
+      {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    end
+
+    test "revoked invalid sign  push content to kafka and return true", %{conn: conn} do
+      expect(KafkaMock, :publish_sigantures, fn _ -> :ok end)
+
+      urls = ~w(
+    http://acsk.privatbank.ua/crldelta/PB-Delta-S11.crl
+    http://acsk.privatbank.ua/crl/PB-S11.crl
+    )
+
+      Enum.each(urls, fn url ->
+        Api.write_url(url, DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) + 60 * 60))
+      end)
+
+      data = get_data("test/fixtures/privatbank.json")
+      request = create_request(data)
+
+      resp =
+        conn
+        |> post(api_path(conn, :index), request)
+        |> json_response(200)
+
+      [signature] = resp["data"]["signatures"]
+
+      assert signature["is_valid"]
+
+      assert %{
+               "declaration_number" => "0001-3X4M-M000",
+               "person" => %{"first_name" => "ТестНКР"},
+               "scope" => "family_doctor"
+             } = resp["data"]["content"]
+    end
+  end
 
   describe "With correct certs in db" do
     setup %{conn: conn} do
@@ -145,7 +201,7 @@ defmodule API.Web.APIControllerTest do
       assert "OCSP certificate verificaton failed" == signature["validation_error_message"]
     end
 
-    test "processing revoked signed data works (privatbank)", %{conn: conn} do
+    test "processing revoked signed data works online (privatbank)", %{conn: conn} do
       data = get_data("test/fixtures/privatbank.json")
       request = create_request(data)
 

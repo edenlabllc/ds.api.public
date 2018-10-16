@@ -41,7 +41,11 @@ defmodule Core.Certificates do
 
         {:error, reason} ->
           # fil this url for feature requests, with outdated next_update
-          CoreApi.write_url(url, Date.add(Date.utc_today(), -1))
+          CoreApi.write_url(
+            url,
+            DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) - 60 * 60)
+          )
+
           {:error, reason}
       end
     else

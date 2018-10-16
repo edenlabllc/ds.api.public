@@ -45,6 +45,8 @@ config :synchronizer_crl, SynchronizerCrl.CrlService,
 
     http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
     http://acsk.privatbank.ua/crl/PB-S9.crl
+    http://acsk.privatbank.ua/crldelta/PB-Delta-S11.crl
+    http://acsk.privatbank.ua/crl/PB-S11.crl
 
     http://acskidd.gov.ua/download/crls/CA-20B4E4ED-Full.crl
     http://acskidd.gov.ua/download/crls/CA-20B4E4ED-Delta.crl

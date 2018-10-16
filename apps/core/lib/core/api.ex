@@ -39,10 +39,6 @@ defmodule Core.Api do
     |> :ordsets.from_list()
   end
 
-  def list_urls do
-    Repo.all(Crl)
-  end
-
   def revoked?(url, serialNumber) do
     case get_serial(url, serialNumber) do
       nil -> {:ok, false}

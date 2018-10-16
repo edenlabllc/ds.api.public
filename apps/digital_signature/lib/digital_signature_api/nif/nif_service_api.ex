@@ -28,7 +28,8 @@ defmodule DigitalSignature.NifServiceAPI do
   def provider_cert?(
         certificates_info,
         timeout,
-        expires_at
+        expires_at,
+        content
       ) do
     Enum.all?(certificates_info, fn cert_info ->
       %{
@@ -43,7 +44,7 @@ defmodule DigitalSignature.NifServiceAPI do
 
       with {:ok, false} <- check_offline(crl, serial_number),
            {:ok, false} <- check_offline(delta_crl, serial_number) do
-        :ok = push_signed_content(%{signatures: certificates_info, content: data[:content]})
+        :ok = push_signed_content(%{signatures: certificates_info, content: content})
 
         true
       else

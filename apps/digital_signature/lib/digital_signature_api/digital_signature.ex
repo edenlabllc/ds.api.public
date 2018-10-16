@@ -60,7 +60,8 @@ defmodule DigitalSignature.NifAPI do
       NifServiceAPI.provider_cert?(
         certificates_info,
         timeout,
-        expires_at
+        expires_at,
+        data[:content]
       )
 
     if valid? do
