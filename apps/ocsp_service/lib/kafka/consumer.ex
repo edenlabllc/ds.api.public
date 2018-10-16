@@ -58,7 +58,10 @@ defmodule OCSPService.Kafka.GenConsumer do
       {:ok, id} = InvalidContents.store_invalid_content(signatures, content)
 
       Task.async(fn ->
-        @email_sender.send(id)
+        Task.Supervisor.async_nolink(:email_supervisor, @email_sender, :send, [
+          id
+        ])
+
         InvalidContents.update_invalid_content(id, %{notified: true})
       end)
     end

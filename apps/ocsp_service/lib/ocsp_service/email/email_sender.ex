@@ -10,11 +10,11 @@ defmodule OCSPService.EmailSender do
     username = Confex.fetch_env!(:ocsp_service, __MODULE__)[:username]
     password = Confex.fetch_env!(:ocsp_service, __MODULE__)[:password]
 
-    warning_receiver =
-      Confex.fetch_env!(:ocsp_service, __MODULE__)[:warning_receiver]
+    warning_receivers =
+      Confex.fetch_env!(:ocsp_service, __MODULE__)[:warning_receivers]
 
     :gen_smtp_client.send(
-      {username, [warning_receiver],
+      {username, warning_receivers,
        "Subject: Invalid Digital Signature\r\nFrom: ds.api \r\nTo: Ehealth support team \r\n\r\nInvalid signatured content was accepted, id: #{
          id
        }"},

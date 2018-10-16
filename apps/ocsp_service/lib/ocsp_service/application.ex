@@ -27,6 +27,8 @@ defmodule OCSPService.Application do
       ])
     ]
 
+    Task.Supervisor.start_link(name: :email_supervisor)
+
     opts = [strategy: :one_for_one, name: OCSPService.Supervisor]
     Supervisor.start_link(children, opts)
   end

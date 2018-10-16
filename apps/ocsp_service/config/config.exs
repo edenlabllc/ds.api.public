@@ -12,7 +12,7 @@ config :ocsp_service, OCSPService.EmailSender,
   relay: {:system, "SMTP_RELAY"},
   username: {:system, "SMTP_USERNAME"},
   password: {:system, "SMTP_PASSWORD"},
-  warning_receiver: {:system, "SMTP_WARNING_RECEIVER"}
+  warning_receivers: {:system, :list, "SMTP_WARNING_RECEIVERS"}
 
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 
