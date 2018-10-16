@@ -6,7 +6,6 @@ defmodule DigitalSignature.NifAPI do
   require Logger
 
   @invalid_content_error_message "Malformed encoded content. Probably, you have encoded corrupted JSON."
-  @kafka_producer Application.get_env(:digital_signature, :kafka)[:producer]
 
   def process_signed_content(signed_content, check) do
     with {:ok, nif_options} <- nif_serice_options(check),
@@ -57,21 +56,19 @@ defmodule DigitalSignature.NifAPI do
          signed_data,
          %{expires_at: expires_at, timeout: timeout} = params
        ) do
-    with :ok <- push_signed_content(%{signatures: certificates_info, content: data[:content]}) do
-      valid? =
-        NifServiceAPI.provider_cert?(
-          certificates_info,
-          timeout,
-          expires_at
-        )
+    valid? =
+      NifServiceAPI.provider_cert?(
+        certificates_info,
+        timeout,
+        expires_at
+      )
 
-      if valid? do
-        retrive_signed_data(data.content, SignedData.update(signed_data, data), params)
-      else
-        data = Map.merge(data, %{is_valid: false, validation_error_message: "OCSP certificate verificaton failed"})
+    if valid? do
+      retrive_signed_data(data.content, SignedData.update(signed_data, data), params)
+    else
+      data = Map.merge(data, %{is_valid: false, validation_error_message: "OCSP certificate verificaton failed"})
 
-        {:ok, signed_data |> SignedData.update(data) |> SignedData.get_map()}
-      end
+      {:ok, signed_data |> SignedData.update(data) |> SignedData.get_map()}
     end
   end
 
@@ -102,17 +99,6 @@ defmodule DigitalSignature.NifAPI do
         Logger.error("Content cannot be decoded from Json, error: #{inspect(reason)}, content: #{content}")
 
         {:error, {:invalid_content, @invalid_content_error_message <> " Error: #{inspect(reason)}", inspect(content)}}
-    end
-  end
-
-  defp push_signed_content(data) do
-    case @kafka_producer.publish_sigantures(data) do
-      :ok ->
-        :ok
-
-      error ->
-        Logger.error("kafka producer fails: #{inspect(error)}")
-        {:error, :kafka_error}
     end
   end
 end
