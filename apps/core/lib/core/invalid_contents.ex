@@ -6,6 +6,15 @@ defmodule Core.InvalidContents do
   import Ecto.{Query, Changeset}, warn: false
   alias Core.InvalidContent
   alias Core.Repo
+  alias Ecto.Changeset
+
+  def update_invalid_content(id, params) do
+    with %InvalidContent{} = invalid_content <- get_by_id(id),
+         %Changeset{valid?: true} = changeset <-
+           changeset(invalid_content, params) do
+      {:ok, _} = Repo.update(changeset)
+    end
+  end
 
   def store_invalid_content(signatures, content) do
     encoded_signatures =
@@ -64,7 +73,11 @@ defmodule Core.InvalidContents do
     with %InvalidContent{
            id: id,
            signatures: encoded_signatures,
-           content: content
+           content: content,
+           inserted_at: inserted_at,
+           updated_at: updated_at,
+           received: received,
+           notified: notified
          } <- invalid_content do
       signatures =
         Enum.reduce(encoded_signatures, [], fn signature, acc ->
@@ -86,12 +99,20 @@ defmodule Core.InvalidContents do
           ]
         end)
 
-      %InvalidContent{id: id, signatures: signatures, content: content}
+      %InvalidContent{
+        id: id,
+        signatures: signatures,
+        content: content,
+        inserted_at: inserted_at,
+        updated_at: updated_at,
+        received: received,
+        notified: notified
+      }
     end
   end
 
   defp changeset(%InvalidContent{} = invalid_content, attrs) do
     invalid_content
-    |> cast(attrs, [:signatures, :content])
+    |> cast(attrs, [:signatures, :content, :notified, :received])
   end
 end

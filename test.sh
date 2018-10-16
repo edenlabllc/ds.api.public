@@ -27,7 +27,7 @@ echo "Run App test image"
 #   --rm -it --net ds_test_db $IMAGE /bin/bash -c 'cd /home/ds; for i in {1..20}; do mix test; done;'
 
 docker run \
-  -e ERLANG_COOKIE=elixir
+  -e ERLANG_COOKIE=elixir \
   -e DB_HOST=ds_test_db \
   -e DB_PORT=5432 \
   -e DB_USER=postgres \

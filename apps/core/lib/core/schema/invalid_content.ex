@@ -10,6 +10,8 @@ defmodule Core.InvalidContent do
   schema "invalid_content" do
     field(:signatures, {:array, :map})
     field(:content, :binary)
+    field(:notified, :boolean)
+    field(:received, :boolean)
 
     timestamps()
   end

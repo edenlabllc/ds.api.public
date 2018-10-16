@@ -16,7 +16,7 @@ defmodule OCSPServiceTest do
   end
 
   describe "store content to db" do
-    test "success" do
+    test "success store content" do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
 
@@ -36,6 +36,16 @@ defmodule OCSPServiceTest do
 
       InvalidContents.delete(id)
       assert nil == InvalidContents.random_invalid_content()
+    end
+
+    test "update content" do
+      assert {:ok, id} = InvalidContents.store_invalid_content([], "")
+
+      assert {:ok, _} =
+               InvalidContents.update_invalid_content(id, %{notified: true})
+
+      assert %InvalidContent{notified: true, id: ^id} =
+               InvalidContents.get_by_id(id)
     end
   end
 end
