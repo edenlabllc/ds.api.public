@@ -170,7 +170,7 @@ static ERL_NIF_TERM CheckCertOnline(ErlNifEnv *env, int argc, const ERL_NIF_TERM
 static ERL_NIF_TERM
 RetrivePKCS7Data(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
-  struct BaseValidationResult baseValidationResult = {true, "", NULL, 0};
+  struct BaseValidationResult baseValidationResult = {false, true, "", NULL, 0};
 
   bool check = GetCheckValue(env, argv[2]);
 
@@ -273,6 +273,9 @@ RetrivePKCS7Data(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
   if (check)
   {
+    char *isStamp = baseValidationResult.isStamp ? "true" : "false";
+    enif_make_map_put(env, result, enif_make_atom(env, "is_stamp"), enif_make_atom(env, isStamp), &result);
+
     char *valRes = baseValidationResult.isValid ? "true" : "false";
     enif_make_map_put(env, result, enif_make_atom(env, "is_valid"), enif_make_atom(env, valRes), &result);
 
@@ -291,7 +294,7 @@ RetrivePKCS7Data(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 static ERL_NIF_TERM
 ProcessPKCS7Data(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
-  struct ValidationResult validationResult = {true, ""};
+  struct ValidationResult validationResult = {false, true, ""};
 
   bool check = GetCheckValue(env, argv[2]);
 
@@ -365,6 +368,9 @@ ProcessPKCS7Data(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
   if (check)
   {
+    char *isStamp = validationResult.isStamp ? "true" : "false";
+    enif_make_map_put(env, result, enif_make_atom(env, "is_stamp"), enif_make_atom(env, isStamp), &result);
+
     char *valRes = validationResult.isValid ? "true" : "false";
     enif_make_map_put(env, result, enif_make_atom(env, "is_valid"), enif_make_atom(env, valRes), &result);
 

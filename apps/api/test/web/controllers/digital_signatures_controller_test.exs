@@ -235,6 +235,28 @@ defmodule API.Web.APIControllerTest do
       assert resp["data"]["content"] == %{"double" => "hello world"}
     end
 
+    test "processing signed valid data with digital stamp works and returns valid isStamp attribute", %{conn: conn} do
+      data = get_data("test/fixtures/sign_with_stamp.json")
+      request = create_request(data)
+
+      resp =
+        conn
+        |> post(api_path(conn, :index), request)
+        |> json_response(200)
+
+      assert Enum.count(resp["data"]["signatures"]) == 2
+
+      signature = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["edrpou"] == "38782323" end)
+      assert signature
+      assert signature["is_valid"]
+      refute signature["is_stamp"]
+
+      stamp = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["edrpou"] == "42032422" end)
+      assert stamp
+      assert stamp["is_valid"]
+      assert stamp["is_stamp"]
+    end
+
     test "processing envelope with more than one signature returns correct error", %{conn: conn} do
       data = get_data("test/fixtures/tripple_hello.json")
       request = create_request(data)

@@ -1,4 +1,4 @@
-FROM elixir:1.6 as builder
+FROM elixir:1.7 as builder
 
 ARG APP_NAME
 
@@ -23,7 +23,7 @@ RUN mix do \
 
 RUN mix release --name=${APP_NAME}
 
-FROM elixir:1.6-slim
+FROM elixir:1.7-slim
 
 ARG APP_NAME
 

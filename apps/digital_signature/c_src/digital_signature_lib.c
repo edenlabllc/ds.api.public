@@ -323,7 +323,7 @@ struct BaseValidationResult BaseCheck(UAC_BLOB signedData, UAC_SIGNED_DATA_INFO 
 {
   struct CertificateCheckInfo *certificatesCheckInfo = enif_alloc(sizeof(struct CertificateCheckInfo) * signedDataInfo.dwSignatureCount);
 
-  struct BaseValidationResult validationResult = {false, "error validating signed data container", NULL, 0};
+  struct BaseValidationResult validationResult = {false, false, "error validating signed data container", NULL, 0};
 
   char tsBuf[4000];
   UAC_BLOB timeStamp = {tsBuf, sizeof(tsBuf)};
@@ -364,6 +364,8 @@ struct BaseValidationResult BaseCheck(UAC_BLOB signedData, UAC_SIGNED_DATA_INFO 
       validationResult.validationErrorMessage = "processing certificate information from signed data failed";
       return validationResult;
     }
+
+    validationResult.isStamp = (certInfo.keyUsage & UAC_KU_EXTENDED) == UAC_KU_STAMP;
 
     memcpy(subjectInfo, &certInfo.subject, sizeof(UAC_SUBJECT_INFO));
     struct GeneralCert matchingCert = FindMatchingRootCertificate(cert, certs.general,
@@ -464,7 +466,7 @@ struct BaseValidationResult BaseCheck(UAC_BLOB signedData, UAC_SIGNED_DATA_INFO 
 struct ValidationResult Check(UAC_BLOB signedData, UAC_SIGNED_DATA_INFO signedDataInfo, PUAC_SUBJECT_INFO subjectInfo,
                               struct Certs certs)
 {
-  struct ValidationResult validationResult = {false, "error validating signed data container"};
+  struct ValidationResult validationResult = {false, false, "error validating signed data container"};
 
   char tsBuf[4000];
   UAC_BLOB timeStamp = {tsBuf, sizeof(tsBuf)};
@@ -505,6 +507,8 @@ struct ValidationResult Check(UAC_BLOB signedData, UAC_SIGNED_DATA_INFO signedDa
       validationResult.validationErrorMessage = "processing certificate information from signed data failed";
       return validationResult;
     }
+
+    validationResult.isStamp = (certInfo.keyUsage & UAC_KU_EXTENDED) == UAC_KU_STAMP;
 
     memcpy(subjectInfo, &certInfo.subject, sizeof(UAC_SUBJECT_INFO));
     struct GeneralCert matchingCert = FindMatchingRootCertificate(cert, certs.general,

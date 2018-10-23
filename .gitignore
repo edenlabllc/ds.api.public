@@ -22,3 +22,21 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 synchronizer_crl-*.tar
+
+# Don't commit editor configs
+.idea
+.vscode/
+.elixir_ls/*
+*.iws
+/out/
+atlassian-ide-plugin.xml
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+sftp-config.json
+GitHub.sublime-settings
+.tags
+.tags_sorted_by_file
+.vagrant
+.DS_Store

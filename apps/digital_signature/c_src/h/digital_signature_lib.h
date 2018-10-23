@@ -22,6 +22,7 @@ struct Certs
 
 struct ValidationResult
 {
+  bool isStamp;
   bool isValid;
   char *validationErrorMessage;
 };
@@ -42,6 +43,7 @@ struct CertificateCheckInfo
 
 struct BaseValidationResult
 {
+  bool isStamp;
   bool isValid;
   char *validationErrorMessage;
   struct CertificateCheckInfo *certsCheckInfo;

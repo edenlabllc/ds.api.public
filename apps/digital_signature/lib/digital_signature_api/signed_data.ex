@@ -7,6 +7,7 @@ defmodule DigitalSignature.SignedData do
 
   def update(%SignedData{signatures: signatures}, %{
         signer: signer,
+        is_stamp: is_stamp,
         is_valid: is_valid,
         validation_error_message: validation_error_message,
         content: content
@@ -14,6 +15,7 @@ defmodule DigitalSignature.SignedData do
       when is_map(signer) and is_boolean(is_valid) and is_bitstring(validation_error_message) and is_binary(content) do
     signature = %{
       signer: signer,
+      is_stamp: is_stamp,
       is_valid: is_valid,
       validation_error_message: validation_error_message
     }
