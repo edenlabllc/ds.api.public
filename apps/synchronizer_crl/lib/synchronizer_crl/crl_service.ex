@@ -15,6 +15,7 @@ defmodule SynchronizerCrl.CrlService do
 
   @impl true
   def handle_info({:update, url}, state) do
+    Logger.info("Update #{url}")
     new_state = update_url_state(url, state)
     :erlang.garbage_collect()
 
@@ -26,6 +27,7 @@ defmodule SynchronizerCrl.CrlService do
 
     with {:ok, next_update} <- update_crl(url),
          {:ok, nt} <- next_update_time(next_update) do
+      Logger.info("Next update for #{url} will be in #{nt} milliseconds")
       tref = Process.send_after(__MODULE__, {:update, url}, nt)
       Map.put(state, url, tref)
     else
