@@ -58,6 +58,7 @@ defmodule Api.MixProject do
       {:kafka_ex, "~> 0.8.3"},
       {:eview, "~> 0.12.0"},
       {:cowboy, "~> 1.1"},
+      {:plug_cowboy, "~> 1.0"},
       {:phoenix, "~> 1.3"},
       {:plug_logger_json, "~> 0.5"},
       {:confex, "~> 3.3"},

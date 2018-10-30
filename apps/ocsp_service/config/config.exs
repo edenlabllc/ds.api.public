@@ -9,10 +9,15 @@ config :ocsp_service,
   ]
 
 config :ocsp_service, OCSPService.EmailSender,
-  relay: {:system, "SMTP_RELAY"},
-  username: {:system, "SMTP_USERNAME"},
-  password: {:system, "SMTP_PASSWORD"},
-  warning_receivers: {:system, :list, "SMTP_WARNING_RECEIVERS"}
+  endpoint: {:system, "EHEALTH_EMAIL_ENDPOINT"},
+  sender: {:system, "SENDER"},
+  template_id: {:system, :integer, "TEMPLATE_ID"},
+  warning_receivers: {:system, "SMTP_WARNING_RECEIVERS"},
+  hackney_options: [
+    connect_timeout: {:system, :integer, "OCSP_SERVICE_REQUEST_TIMEOUT", 5000},
+    recv_timeout: {:system, :integer, "OCSP_SERVICE_REQUEST_TIMEOUT", 5000},
+    timeout: {:system, :integer, "OCSP_SERVICE_REQUEST_TIMEOUT", 5000}
+  ]
 
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 

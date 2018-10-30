@@ -32,8 +32,9 @@ defmodule OCSPService.MixProject do
   defp deps do
     [
       {:kafka_ex, "~> 0.8.3"},
-      {:gen_smtp, git: "https://github.com/Vagabond/gen_smtp.git"},
       {:cowboy, "~> 1.1"},
+      {:plug_cowboy, "~> 1.0"},
+      {:httpoison, "~> 1.1.0"},
       {:confex, "~> 3.3"},
       {:digital_signature, in_umbrella: true},
       {:mox, "~> 0.3", only: :test}

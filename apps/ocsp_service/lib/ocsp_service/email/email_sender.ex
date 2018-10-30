@@ -3,24 +3,25 @@ defmodule OCSPService.EmailSender do
   send email via smtp server
   """
 
+  use OCSPService.API.Helpers.MicroserviceBase
+
   @behaviour OCSPService.EmailSenderBehaviour
 
   def send(id) do
-    relay = Confex.fetch_env!(:ocsp_service, __MODULE__)[:relay]
-    username = Confex.fetch_env!(:ocsp_service, __MODULE__)[:username]
-    password = Confex.fetch_env!(:ocsp_service, __MODULE__)[:password]
+    template_id = Confex.fetch_env!(:ocsp_service, __MODULE__)[:template_id]
+    sender = Confex.fetch_env!(:ocsp_service, __MODULE__)[:sender]
 
     warning_receivers =
       Confex.fetch_env!(:ocsp_service, __MODULE__)[:warning_receivers]
 
-    :gen_smtp_client.send(
-      {username, warning_receivers,
-       "Subject: Invalid Digital Signature\r\nFrom: ds.api \r\nTo: Ehealth support team \r\n\r\nInvalid signatured content was accepted, id: #{
-         id
-       }"},
-      relay: relay,
-      username: username,
-      password: password
-    )
+    params = %{
+      subject: "Invalid Digital Signature",
+      from: sender,
+      to: warning_receivers,
+      invalid_content_id: id
+    }
+
+    headers = []
+    post!("/internal/email/#{template_id}", Jason.encode!(params), headers)
   end
 end
