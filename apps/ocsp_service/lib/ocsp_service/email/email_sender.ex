@@ -18,7 +18,8 @@ defmodule OCSPService.EmailSender do
       subject: "Invalid Digital Signature",
       from: sender,
       to: warning_receivers,
-      invalid_content_id: id
+      invalid_content_id: id,
+      data: %{}
     }
 
     headers = []

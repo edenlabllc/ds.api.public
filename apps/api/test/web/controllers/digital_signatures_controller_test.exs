@@ -198,7 +198,7 @@ defmodule API.Web.APIControllerTest do
       [signature] = resp["data"]["signatures"]
       refute signature["is_valid"]
 
-      assert "OCSP certificate verificaton failed" == signature["validation_error_message"]
+      assert "Certificate verificaton failed" == signature["validation_error_message"]
     end
 
     test "processing revoked signed data works online (privatbank)", %{conn: conn} do
@@ -213,7 +213,7 @@ defmodule API.Web.APIControllerTest do
       [signature] = resp["data"]["signatures"]
 
       refute signature["is_valid"]
-      assert "OCSP certificate verificaton failed" == signature["validation_error_message"]
+      assert "Certificate verificaton failed" == signature["validation_error_message"]
 
       assert %{
                "declaration_number" => "0001-3X4M-M000",

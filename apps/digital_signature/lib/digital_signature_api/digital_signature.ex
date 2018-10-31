@@ -67,7 +67,7 @@ defmodule DigitalSignature.NifAPI do
     if valid? do
       retrive_signed_data(data.content, SignedData.update(signed_data, data), params)
     else
-      data = Map.merge(data, %{is_valid: false, validation_error_message: "OCSP certificate verificaton failed"})
+      data = Map.merge(data, %{is_valid: false, validation_error_message: "Certificate verificaton failed"})
 
       {:ok, signed_data |> SignedData.update(data) |> SignedData.get_map()}
     end
