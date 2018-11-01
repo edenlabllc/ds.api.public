@@ -180,6 +180,24 @@ defmodule API.Web.APIControllerTest do
       assert resp["data"]["content"] == %{"hello" => "world"}
     end
 
+    test "can process sign and stamp in each document", %{conn: conn} do
+      data = get_data("test/fixtures/sign_and_stamp.json")
+      request = create_request(data)
+
+      resp =
+        conn
+        |> post(api_path(conn, :index), request)
+        |> json_response(200)
+
+      stamps? =
+        Enum.reduce(resp["data"]["signatures"], [], fn %{"is_valid" => true, "is_stamp" => is_stamp}, acc ->
+          [is_stamp | acc]
+        end)
+
+      assert true in stamps?
+      assert false in stamps?
+    end
+
     test "processing signed with revoked Privat personal key", %{conn: conn} do
       urls = ~w(
       http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
