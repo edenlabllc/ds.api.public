@@ -1,5 +1,5 @@
 defmodule SynchronizerCrl.DateUtils do
-  @moduledoc false
+  @moduledoc "format datetime chars from crl file to DateTime"
 
   def convert_date(date) do
     case Regex.named_captures(

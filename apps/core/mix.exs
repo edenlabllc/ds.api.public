@@ -29,7 +29,7 @@ defmodule Core.MixProject do
   defp deps do
     [
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
-      {:phoenix_ecto, "~> 3.0"},
+      {:phoenix_ecto, "~> 3.6.0"},
       {:confex, "~> 3.3"},
       {:ecto_logger_json, "~> 0.1"},
       {:postgrex, "~> 0.11"},

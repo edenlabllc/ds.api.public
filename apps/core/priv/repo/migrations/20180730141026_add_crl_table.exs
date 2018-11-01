@@ -9,16 +9,16 @@ defmodule Core.Repo.Migrations.AddCrlTables do
       add(:next_update, :utc_datetime, null: false)
     end
 
-    unique_index(:crl, [:url])
+    create(unique_index(:crl, [:url]))
 
     # revoked serial numbers
     create table(:revoked, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:url, :string, null: false)
       add(:serial_number, :string, null: false)
-
-      index(:revoked, [:url, :serial_number])
     end
+
+    create(index(:revoked, [:url, :serial_number]))
   end
 
   def down do
