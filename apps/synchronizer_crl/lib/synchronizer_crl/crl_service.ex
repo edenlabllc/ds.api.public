@@ -5,6 +5,7 @@ defmodule SynchronizerCrl.CrlService do
 
   alias Core.Api, as: CoreApi
   alias SynchronizerCrl.DateUtils
+  use Confex, otp_app: :synchronizer_crl
 
   # Callbacks
 
@@ -46,13 +47,8 @@ defmodule SynchronizerCrl.CrlService do
   end
 
   def crl_urls do
-    config_urls =
-      :ordsets.from_list(
-        Confex.fetch_env!(:synchronizer_crl, __MODULE__)[:preload_crl] || []
-      )
-
+    config_urls = :ordsets.from_list(config()[:preload_crl] || [])
     active_crls = CoreApi.active_crls()
-
     :ordsets.union([config_urls, active_crls])
   end
 
@@ -90,10 +86,9 @@ defmodule SynchronizerCrl.CrlService do
           {:error, :decode}
       end
 
-    with {:CertificateList,
-          {:TBSCertList, _, _, _, _, {:utcTime, next_update_ts},
-           revoked_certificates, _}, _, _} <- parsed,
-         true <- is_list(revoked_certificates),
+    with {:CertificateList, tbs_certs, _, _} <- parsed,
+         {:revoked, next_update_ts, revoked_certificates} <-
+           tbs_revoked_list(tbs_certs),
          {:ok, next_update} <- DateUtils.convert_date(next_update_ts) do
       revoked_serial_numbers =
         Enum.reduce(
@@ -109,6 +104,19 @@ defmodule SynchronizerCrl.CrlService do
     end
   end
 
+  defp tbs_revoked_list(tbs_certs) do
+    with {:TBSCertList, _version, _signature, _issuer, _this_update,
+          next_update, revoked_certificates, _crl_extention} <- tbs_certs,
+         {:utcTime, next_update_ts} <- next_update,
+         {:revoked_list, true} <- {:revoked_list, is_list(revoked_certificates)} do
+      {:revoked, next_update_ts, revoked_certificates}
+    else
+      err ->
+        Logger.error("Provider errored crl: #{inspect(err)}")
+        {:error, err}
+    end
+  end
+
   def update_crl(url) do
     with {:ok, %HTTPoison.Response{status_code: 200, body: data}} <-
            HTTPoison.get(url),
@@ -118,8 +126,7 @@ defmodule SynchronizerCrl.CrlService do
       {:ok, next_update}
     else
       error ->
-        retry_timeout =
-          Confex.fetch_env!(:synchronizer_crl, __MODULE__)[:retry_crl_timeout]
+        retry_timeout = config()[:retry_crl_timeout]
 
         Logger.info("Error update crl #{url} :: #{inspect(error)}")
         Process.send_after(__MODULE__, {:update, url}, retry_timeout)

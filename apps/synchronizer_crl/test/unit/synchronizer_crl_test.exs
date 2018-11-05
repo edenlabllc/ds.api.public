@@ -24,8 +24,8 @@ defmodule SynchronizerCrl.Test do
 
   test "Get CRL works" do
     urls = ~w(
-    https://ca.informjust.ua/download/crls/CA-9A15A67B-Delta.crl
     http://uakey.com.ua/list-delta.crl
+    https://ca.informjust.ua/download/crls/CA-9A15A67B-Delta.crl
     http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
     )
 

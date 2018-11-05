@@ -10,11 +10,16 @@ defmodule SynchronizerCrl.MixProject do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.6",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix | Mix.compilers()],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases()
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -27,6 +32,10 @@ defmodule SynchronizerCrl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:cowboy, "~> 1.1"},
+      {:plug_cowboy, "~> 1.0"},
+      {:phoenix, "~> 1.3"},
+      {:plug_logger_json, "~> 0.5"},
       {:confex, "~> 3.3"},
       {:httpoison, "~> 1.1.0"},
       {:core, in_umbrella: true}

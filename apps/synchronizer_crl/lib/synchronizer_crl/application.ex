@@ -6,16 +6,26 @@ defmodule SynchronizerCrl.Application do
   use Application
   import Supervisor.Spec, warn: false
 
+  alias Confex.Resolver
+  alias SynchronizerCrl.Web.Endpoint
+
   def start(_type, _args) do
-    # List all child processes to be supervised
     children = [
-      # Start synchronization revoked serail certificate numbers with provider
+      supervisor(SynchronizerCrl.Web.Endpoint, []),
       worker(SynchronizerCrl.CrlService, [])
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: SynchronizerCrl.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  def config_change(changed, _new, removed) do
+    Endpoint.config_change(changed, removed)
+    :ok
+  end
+
+  @doc false
+  def init(_key, config) do
+    Resolver.resolve(config)
   end
 end

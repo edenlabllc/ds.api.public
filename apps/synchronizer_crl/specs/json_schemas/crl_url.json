@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "crl_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "crl_url"
+  ]
+}

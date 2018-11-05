@@ -1,19 +1,18 @@
-defmodule API.Web.Endpoint do
+defmodule SynchronizerCrl.Web.Endpoint do
   @moduledoc """
   Phoenix Endpoint for digital_signature application.
   """
-  use Phoenix.Endpoint, otp_app: :api
+  use Phoenix.Endpoint, otp_app: :synchronizer_crl
+  use SynchronizerCrl.Web, :view
+
   alias Confex.Resolver
 
-  if Application.get_env(:api, :sql_sandbox) do
+  if Application.get_env(:synchronizer_crl, :sql_sandbox) do
     plug(Phoenix.Ecto.SQL.Sandbox)
   end
 
   plug(Plug.RequestId)
-  plug(EView.Plugs.Idempotency)
   plug(Plug.LoggerJSON, level: Logger.level())
-
-  plug(EView)
 
   plug(
     Plug.Parsers,
@@ -25,7 +24,7 @@ defmodule API.Web.Endpoint do
   plug(Plug.MethodOverride)
   plug(Plug.Head)
 
-  plug(API.Web.Router)
+  plug(SynchronizerCrl.Web.Router)
 
   @doc """
   Dynamically loads configuration from the system environment
