@@ -20,7 +20,7 @@ defmodule API.Web.APIController do
              signed_content,
              Map.get(params, "check", true)
            ) do
-      render_response(result, params, conn)
+      render_response(result, conn)
     else
       :error ->
         error = [
@@ -40,7 +40,7 @@ defmodule API.Web.APIController do
     end
   end
 
-  defp render_response(result, params, conn) do
-    render(conn, "show.json", digital_signature_info: Map.merge(result, params))
+  defp render_response(result, conn) do
+    render(conn, "show.json", digital_signature_info: result)
   end
 end
