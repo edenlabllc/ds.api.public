@@ -20,7 +20,7 @@ notifications:
 
 env:
   global:
-    - APPS='[{"app":"api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"},{"app":"synchronizer_crl","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"},{"app":"ocsp_service","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
+    - APPS='[{"app":"ds_api","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"},{"app":"synchronizer_crl","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-crl","label":"ds-crl"},{"app":"ocsp_service","chart":"digital-signature-api","namespace":"digital-signature","deployment":"ds-ocsp","label":"ds-ocsp"}]'
     - DOCKER_NAMESPACE=edenlabllc
     - MIX_ENV=test
     - POSTGRES_VERSION=9.6
@@ -59,10 +59,10 @@ jobs:
       - IMAGE=$(docker build --add-host=travis:$HOST_IP -f Dockerfile.test . | tail -1 | awk '{ print $NF }')
       - sudo docker rmi ${IMAGE}
     - stage: "test and build"
-      name: "api"
+      name: "ds_api"
       env:
         - DB_MIGRATE=true
-        - APPS='[{"app":"api","chart":"ds.api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
+        - APPS='[{"app":"ds_api","chart":"ds.api","namespace":"digital-signature","deployment":"ds-api","label":"ds-api"}]'
       # "Decrypting deploy key..."
       script:
       - openssl aes-256-cbc -K $encrypted_fd4f2a47b55b_key -iv $encrypted_fd4f2a47b55b_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d

@@ -51,13 +51,13 @@ end
 # when running `mix release`, the first release in the file
 # will be used by default
 
-release :api do
-  set(version: current_version(:api))
+release :ds_api do
+  set(version: current_version(:ds_api))
 
   set(
     applications: [
       :runtime_tools,
-      api: :permanent,
+      ds_api: :permanent,
       digital_signature: :permanent,
       core: :permanent
     ]

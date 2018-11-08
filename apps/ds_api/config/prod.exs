@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :api, API.Web.Endpoint,
+config :ds_api, API.Web.Endpoint,
   load_from_system_env: true,
   http: [port: {:system, "PORT", "80"}],
   url: [

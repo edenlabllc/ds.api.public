@@ -25,7 +25,7 @@ defmodule API.ReleaseTasks do
 
   defp start_repo(repo) do
     start_applications([:logger, :postgrex, :ecto])
-    Application.load(:api)
+    Application.load(:ds_api)
     # If you don't include Repo in application supervisor start it here manually
     repo.start_link()
     repo

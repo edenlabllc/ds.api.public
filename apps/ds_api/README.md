@@ -10,7 +10,7 @@ by adding `api` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:api, "~> 0.1.0"}
+    {:ds_api, "~> 0.1.0"}
   ]
 end
 ```

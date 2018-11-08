@@ -4,7 +4,7 @@ defmodule Api.MixProject do
 
   def project do
     [
-      app: :api,
+      app: :ds_api,
       description: "This api allows to validate pkcs7 data and get unpacked data with signer information from it.",
       package: package(),
       version: "0.1.0",

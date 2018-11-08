@@ -2,10 +2,10 @@ defmodule API.Web.Endpoint do
   @moduledoc """
   Phoenix Endpoint for digital_signature application.
   """
-  use Phoenix.Endpoint, otp_app: :api
+  use Phoenix.Endpoint, otp_app: :ds_api
   alias Confex.Resolver
 
-  if Application.get_env(:api, :sql_sandbox) do
+  if Application.get_env(:ds_api, :sql_sandbox) do
     plug(Phoenix.Ecto.SQL.Sandbox)
   end
 
