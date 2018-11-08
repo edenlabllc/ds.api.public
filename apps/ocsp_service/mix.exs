@@ -31,7 +31,8 @@ defmodule OCSPService.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kafka_ex, "~> 0.8.3"},
+      {:kafka_ex,
+       git: "https://github.com/kafkaex/kafka_ex.git", branch: "master"},
       {:cowboy, "~> 1.1"},
       {:plug_cowboy, "~> 1.0"},
       {:httpoison, "~> 1.1.0"},

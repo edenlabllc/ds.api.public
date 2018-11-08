@@ -32,9 +32,9 @@ defmodule SynchronizerCrl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:phoenix, "~> 1.4.0-rc.3", override: true},
       {:cowboy, "~> 1.1"},
       {:plug_cowboy, "~> 1.0"},
-      {:phoenix, "~> 1.3"},
       {:plug_logger_json, "~> 0.5"},
       {:confex, "~> 3.3"},
       {:httpoison, "~> 1.1.0"},

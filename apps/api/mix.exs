@@ -55,11 +55,11 @@ defmodule Api.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kafka_ex, "~> 0.8.3"},
+      {:kafka_ex, git: "https://github.com/kafkaex/kafka_ex.git", branch: "master"},
+      {:phoenix, "~> 1.4.0-rc.3", override: true},
       {:eview, "~> 0.12.0"},
       {:cowboy, "~> 1.1"},
       {:plug_cowboy, "~> 1.0"},
-      {:phoenix, "~> 1.3"},
       {:plug_logger_json, "~> 0.5"},
       {:confex, "~> 3.3"},
       {:mox, "~> 0.3", only: :test},

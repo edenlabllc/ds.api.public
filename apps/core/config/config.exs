@@ -2,7 +2,11 @@ use Mix.Config
 
 config :core,
   ecto_repos: [Core.Repo],
-  namespace: Core
+  namespace: Core,
+  kafka: [
+    partitions: {:system, :integer, "DS_KAFKA_PARTITIONS", 10},
+    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
+  ]
 
 config :core, Core.Repo,
   adapter: Ecto.Adapters.Postgres,
