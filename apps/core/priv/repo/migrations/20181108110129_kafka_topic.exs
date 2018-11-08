@@ -2,7 +2,7 @@ defmodule Core.Repo.Migrations.KafkaTopic do
   use Ecto.Migration
 
   def change do
-    Application.ensure_started(:kafka_ex)
+    Application.ensure_all_started(:kafka_ex)
     partitions = Confex.fetch_env!(:core, :kafka)[:partitions]
     topic = "digital_signature"
 
