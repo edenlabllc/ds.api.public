@@ -11,7 +11,7 @@ defmodule OCSPService.Application do
 
     consumer_group_name = Application.fetch_env!(:kafka_ex, :consumer_group)
 
-    topic_names = [Confex.fetch_env!(:ocsp_service, :kafka)[:topic]]
+    topic_names = ["digital_signature"]
 
     consumer_group_opts = [
       heartbeat_interval: 1_000,

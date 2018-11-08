@@ -1,12 +1,6 @@
 use Mix.Config
 
-config :ocsp_service,
-  namespace: OCSPService,
-  kafka: [
-    consumer: OCSPService.Kafka.Consumer,
-    partitions: {:system, :integer, "DS_KAFKA_PARTITIONS", 10},
-    topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
-  ]
+config :ocsp_service, namespace: OCSPService
 
 config :ocsp_service, OCSPService.EmailSender,
   endpoint: {:system, "EHEALTH_EMAIL_ENDPOINT"},

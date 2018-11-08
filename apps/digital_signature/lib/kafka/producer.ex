@@ -12,7 +12,7 @@ defmodule DigitalSignature.Kafka.Producer do
 
     :ok =
       KafkaEx.produce(
-        Confex.fetch_env!(:digital_signature, :kafka)[:topic],
+        "digital_signature",
         Enum.random(0..(partitions - 1)),
         data
       )

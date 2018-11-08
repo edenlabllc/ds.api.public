@@ -4,7 +4,7 @@ defmodule Core.Repo.Migrations.KafkaTopic do
   def change do
     Application.ensure_started(:kafka_ex)
     partitions = Confex.fetch_env!(:core, :kafka)[:partitions]
-    topic = Confex.fetch_env!(:core, :kafka)[:topic]
+    topic = "digital_signature"
 
     request = %{
       topic: topic,
