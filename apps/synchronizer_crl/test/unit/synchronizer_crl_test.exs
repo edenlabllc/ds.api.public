@@ -37,7 +37,7 @@ defmodule SynchronizerCrl.Test do
       assert GenServer.whereis(CrlService)
     end)
 
-    assert urls = CoreApi.active_crls()
+    assert Enum.sort(urls) == Enum.sort(CoreApi.active_crls())
 
     assert GenServer.whereis(CrlService)
   end
