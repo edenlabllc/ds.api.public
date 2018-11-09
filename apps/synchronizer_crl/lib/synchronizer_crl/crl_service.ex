@@ -117,9 +117,59 @@ defmodule SynchronizerCrl.CrlService do
     end
   end
 
+  defp parse_script_line_value(line) do
+    case Code.format_string!(line) do
+      ["document", ".", "cookie", " =", " ", "\"", value, "\""] ->
+        %{document_cookie: value}
+
+      ["location", ".", "href", " =", " ", "\"", value, "\""] ->
+        %{location_href: value}
+
+      _ ->
+        %{}
+    end
+  end
+
+  defp process_script_line(line) do
+    case Code.string_to_quoted(line) do
+      {:ok, _} -> parse_script_line_value(line)
+      {:error, _} -> %{}
+    end
+  end
+
+  defp get_redirect_headers(%{document_cookie: document_cookie}),
+    do: [{"Cookie", document_cookie}]
+
+  defp get_redirect_headers(_), do: []
+
+  defp redirect(%{location_href: location_href} = params, _) do
+    case HTTPoison.get(location_href, get_redirect_headers(params)) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: data}} -> {:ok, data}
+      error -> error
+    end
+  end
+
+  defp redirect(_, data), do: {:ok, data}
+
+  defp handle_redirect(data) do
+    case Floki.find(data, "script") do
+      [{"script", _, [script]}] ->
+        script
+        |> String.split(";")
+        |> Enum.reduce(%{}, fn line, acc ->
+          line |> process_script_line() |> Map.merge(acc)
+        end)
+        |> redirect(data)
+
+      _ ->
+        {:ok, data}
+    end
+  end
+
   def update_crl(url) do
     with {:ok, %HTTPoison.Response{status_code: 200, body: data}} <-
            HTTPoison.get(url),
+         {:ok, data} <- handle_redirect(data),
          {:ok, next_update, serial_numbers} <- parse_crl(data) do
       CoreApi.update_serials(url, next_update, serial_numbers)
       Logger.info("CRL #{url} successfully updated")

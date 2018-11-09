@@ -38,6 +38,7 @@ defmodule SynchronizerCrl.MixProject do
       {:plug_logger_json, "~> 0.5"},
       {:confex, "~> 3.3"},
       {:httpoison, "~> 1.1.0"},
+      {:floki, "~> 0.20.4"},
       {:core, in_umbrella: true}
     ]
   end

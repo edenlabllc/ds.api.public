@@ -4,6 +4,7 @@ defmodule SynchronizerCrl.Test do
   and next update provide handling
   """
   use ExUnit.Case, async: false
+  alias Core.Api, as: CoreApi
   alias Core.Repo
   alias Ecto.Adapters.SQL.Sandbox
   alias SynchronizerCrl.CrlService
@@ -27,6 +28,7 @@ defmodule SynchronizerCrl.Test do
     http://uakey.com.ua/list-delta.crl
     https://ca.informjust.ua/download/crls/CA-9A15A67B-Delta.crl
     http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
+    https://www.masterkey.ua/ca/crls/CA-4E6929B9-Delta.crl
     )
 
     Enum.each(urls, fn url ->
@@ -34,6 +36,8 @@ defmodule SynchronizerCrl.Test do
       Process.cancel_timer(tref)
       assert GenServer.whereis(CrlService)
     end)
+
+    assert urls = CoreApi.active_crls()
 
     assert GenServer.whereis(CrlService)
   end
