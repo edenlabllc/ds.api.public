@@ -29,6 +29,7 @@ defmodule SynchronizerCrl.Test do
     https://ca.informjust.ua/download/crls/CA-9A15A67B-Delta.crl
     http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
     https://www.masterkey.ua/ca/crls/CA-4E6929B9-Delta.crl
+    http://acsk.privatbank.ua/crl/PB-S11.crl
     )
 
     Enum.each(urls, fn url ->

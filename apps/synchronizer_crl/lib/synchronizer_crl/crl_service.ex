@@ -152,7 +152,13 @@ defmodule SynchronizerCrl.CrlService do
   defp redirect(_, data), do: {:ok, data}
 
   defp handle_redirect(data) do
-    case Floki.find(data, "script") do
+    redirect_script = try do
+      Floki.find(data, "script")
+    rescue
+      _ -> nil
+    end
+
+    case redirect_script do
       [{"script", _, [script]}] ->
         script
         |> String.split(";")
