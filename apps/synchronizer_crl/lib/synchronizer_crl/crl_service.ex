@@ -152,11 +152,12 @@ defmodule SynchronizerCrl.CrlService do
   defp redirect(_, data), do: {:ok, data}
 
   defp handle_redirect(data) do
-    redirect_script = try do
-      Floki.find(data, "script")
-    rescue
-      _ -> nil
-    end
+    redirect_script =
+      try do
+        Floki.find(data, "script")
+      rescue
+        _ -> nil
+      end
 
     case redirect_script do
       [{"script", _, [script]}] ->
@@ -181,6 +182,9 @@ defmodule SynchronizerCrl.CrlService do
       Logger.info("CRL #{url} successfully updated")
       {:ok, next_update}
     else
+      {:ok, %HTTPoison.Response{status_code: 404}} ->
+        {:error, url}
+
       error ->
         retry_timeout = config()[:retry_crl_timeout]
 

@@ -15,6 +15,12 @@ config :ocsp_service, OCSPService.EmailSender,
 
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 
+config :ocsp_service, OCSPService.Application,
+  recheck_policy: [
+    recheck_timeout: {:system, :integer, "RECHEK_TIMEOUT", 300_000},
+    max_recheck_tries: {:system, :integer, "MAX_RECHEK_TRIES", 300_000}
+  ]
+
 config :kafka_ex,
   brokers: System.get_env("KAFKA_BROKERS"),
   consumer_group: System.get_env("CONSUMER_GROUP"),

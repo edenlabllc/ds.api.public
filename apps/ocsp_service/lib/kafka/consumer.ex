@@ -5,14 +5,9 @@ defmodule OCSPService.Kafka.GenConsumer do
   alias Core.InvalidContents
   alias DigitalSignature.NifServiceAPI
   alias KafkaEx.Protocol.Fetch.Message
+  alias OCSPService.ReChecker
 
   require Logger
-
-  @email_sender Application.get_env(:ocsp_service, :api_resolvers)[
-                  :email_sender
-                ]
-
-  @timeout 5000
 
   # note - messages are delivered in batches
   def handle_message_set(message_set, state) do
@@ -34,37 +29,9 @@ defmodule OCSPService.Kafka.GenConsumer do
   end
 
   def online_check_signed_content(signatures, content) do
-    expires_at =
-      NaiveDateTime.add(
-        NaiveDateTime.utc_now(),
-        @timeout,
-        :millisecond
-      )
-
-    if Enum.any?(signatures, fn %{
-                                  access: url,
-                                  data: data,
-                                  ocsp_data: ocsp_data
-                                } ->
-         {:ok, false} ==
-           NifServiceAPI.check_online(
-             url,
-             data,
-             ocsp_data,
-             expires_at,
-             @timeout
-           )
-       end) do
+    if not NifServiceAPI.signatures_valid_online?(signatures) do
       {:ok, id} = InvalidContents.store_invalid_content(signatures, content)
-
-      :erlang.spawn(@email_sender, :send, [id])
-
-      with {:ok, _} <-
-             InvalidContents.update_invalid_content(id, %{notified: true}) do
-        {:ok, id}
-      else
-        error -> error
-      end
+      send(ReChecker, {:recheck, ReChecker, id, 0, signatures})
     end
   end
 end

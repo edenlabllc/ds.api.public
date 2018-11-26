@@ -7,9 +7,34 @@ defmodule DigitalSignature.NifServiceAPI do
   require Logger
 
   @kafka_producer Application.get_env(:digital_signature, :kafka)[:producer]
+  @timeout 5000
 
   def signed_content(signed_content, signed_data, check, expires_at, timeout) do
     NifService.nif_service_call({:content, signed_content, signed_data, check, expires_at}, timeout)
+  end
+
+  def signatures_valid_online?(signatures) do
+    expires_at =
+      NaiveDateTime.add(
+        NaiveDateTime.utc_now(),
+        @timeout,
+        :millisecond
+      )
+
+    not Enum.any?(signatures, fn %{
+                                   access: url,
+                                   data: data,
+                                   ocsp_data: ocsp_data
+                                 } ->
+      {:ok, false} ==
+        check_online(
+          url,
+          data,
+          ocsp_data,
+          expires_at,
+          @timeout
+        )
+    end)
   end
 
   def check_online(url, data, ocsp_data, expires_at, timeout) do
