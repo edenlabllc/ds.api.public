@@ -15,10 +15,11 @@ config :ocsp_service, OCSPService.EmailSender,
 
 config :ocsp_service, :api_resolvers, email_sender: OCSPService.EmailSender
 
-config :ocsp_service, OCSPService.Application,
+config :ocsp_service, OCSPService.ReChecker,
   recheck_policy: [
+    start: {:system, :boolean, "START_RECHECK", true},
     recheck_timeout: {:system, :integer, "RECHEK_TIMEOUT", 300_000},
-    max_recheck_tries: {:system, :integer, "MAX_RECHEK_TRIES", 300_000}
+    max_recheck_tries: {:system, :integer, "MAX_RECHEK_TRIES", 12}
   ]
 
 config :kafka_ex,

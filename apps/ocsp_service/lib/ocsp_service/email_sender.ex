@@ -5,7 +5,7 @@ defmodule OCSPService.EmailSender do
 
   use OCSPService.API.Helpers.MicroserviceBase
 
-  @behaviour OCSPService.EmailSenderBehaviour
+  @behaviour OCSPService.SenderBehaviour
 
   def send(id) do
     template_id = Confex.fetch_env!(:ocsp_service, __MODULE__)[:template_id]

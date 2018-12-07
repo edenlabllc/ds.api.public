@@ -4,7 +4,6 @@ defmodule OCSPService.Application do
   @moduledoc false
 
   use Application
-  use Confex, otp_app: :ocsp_service
   import Supervisor.Spec, warn: false
 
   alias OCSPService.ReChecker
@@ -21,13 +20,10 @@ defmodule OCSPService.Application do
       commit_interval: 1_000
     ]
 
-    recheck_timeout = config()[:recheck_policy][:recheck_timeout]
-    max_recheck_tries = config()[:recheck_policy][:max_recheck_tries]
-
     children = [
       %{
         id: ReChecker,
-        start: {ReChecker, :start_link, [{recheck_timeout, max_recheck_tries}]}
+        start: {ReChecker, :start_link, []}
       },
       supervisor(KafkaEx.ConsumerGroup, [
         gen_consumer_impl,

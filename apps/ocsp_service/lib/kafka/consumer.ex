@@ -12,8 +12,6 @@ defmodule OCSPService.Kafka.GenConsumer do
   # note - messages are delivered in batches
   def handle_message_set(message_set, state) do
     for %Message{value: message, offset: offset} <- message_set do
-      Logger.info("Consumer message: #{inspect(message)}, offset: #{offset}")
-
       with %{signatures: signatures, content: content} <-
              :erlang.binary_to_term(message) do
         online_check_signed_content(signatures, content)

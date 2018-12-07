@@ -17,6 +17,11 @@ defmodule OCSPService.ReChecker do
     {:ok, {recheck_timeout, max_recheck_tries}}
   end
 
+  def handle_info(:start_recheck, state) do
+    if config()[:recheck_policy][:start], do: start_recheck(self())
+    {:noreply, state}
+  end
+
   def handle_info(
         {:recheck, pid, id, n, signatures},
         {recheck_timeout, max_recheck_tries} = state
@@ -49,25 +54,25 @@ defmodule OCSPService.ReChecker do
     {:noreply, state}
   end
 
-  def start_link({recheck_timeout, max_recheck_tries}) do
-    {:ok, pid} =
+  def start_link() do
+    recheck_timeout = config()[:recheck_policy][:recheck_timeout]
+    max_recheck_tries = config()[:recheck_policy][:max_recheck_tries]
+
+    {ok, pid} =
       GenServer.start_link(
         __MODULE__,
         {recheck_timeout, max_recheck_tries},
         name: __MODULE__
       )
 
-    on_start()
-    {:ok, pid}
+    send(__MODULE__, :start_recheck)
+    {ok, pid}
   end
 
-  def on_start do
-    with :prod <- config()[:env],
-         %InvalidContent{id: id, signatures: signatures} <-
-           InvalidContents.random_invalid_content() do
-      send(ReChecker, {:recheck, __MODULE__, id, 0, signatures})
-    else
-      _ -> :ok
-    end
+  def start_recheck(pid) do
+    Enum.map(InvalidContents.stored_invalid_content(), fn
+      %InvalidContent{id: id, signatures: signatures} ->
+        send(__MODULE__, {:recheck, pid, id, 0, signatures})
+    end)
   end
 end

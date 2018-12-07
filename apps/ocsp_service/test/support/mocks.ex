@@ -1,4 +1,4 @@
 Mox.defmock(
   EmailSenderMock,
-  for: OCSPService.EmailSenderBehaviour
+  for: OCSPService.SenderBehaviour
 )

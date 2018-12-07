@@ -3,21 +3,11 @@ defmodule SynchronizerCrl.Test do
   test 3rd party services: providers crl
   and next update provide handling
   """
-  use ExUnit.Case, async: false
+  use SynchronizerCrl.Web.ConnCase, async: false
   alias Core.Api, as: CoreApi
-  alias Core.Repo
-  alias Ecto.Adapters.SQL.Sandbox
   alias SynchronizerCrl.CrlService
 
   doctest SynchronizerCrl.CrlService
-
-  setup do
-    assert :ok == Sandbox.checkout(Repo)
-
-    Sandbox.mode(Repo, {:shared, self()})
-
-    :ok
-  end
 
   test "CRL Service started" do
     assert GenServer.whereis(CrlService)

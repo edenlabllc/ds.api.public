@@ -64,9 +64,17 @@ defmodule Core.InvalidContents do
 
   def random_invalid_content do
     InvalidContent
+    |> where([i], is_nil(i.notified) or i.notified == ^false)
     |> limit(1)
     |> Repo.one()
     |> invalid_content()
+  end
+
+  def stored_invalid_content do
+    InvalidContent
+    |> where([i], is_nil(i.notified) or i.notified == ^false)
+    |> Repo.all()
+    |> Enum.map(&invalid_content/1)
   end
 
   defp invalid_content(invalid_content) do

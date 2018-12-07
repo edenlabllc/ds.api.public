@@ -18,8 +18,7 @@ defmodule SynchronizerCrl.CrlService do
   def handle_info({:update, url}, state) do
     Logger.info("Update #{url}")
     new_state = update_url_state(url, state)
-    :erlang.garbage_collect()
-
+    garbage_collect()
     {:noreply, new_state}
   end
 
@@ -85,6 +84,8 @@ defmodule SynchronizerCrl.CrlService do
         _error, _reason ->
           {:error, :decode}
       end
+
+    garbage_collect()
 
     with {:CertificateList, tbs_certs, _, _} <- parsed,
          {:revoked, next_update_ts, revoked_certificates} <-
@@ -192,5 +193,9 @@ defmodule SynchronizerCrl.CrlService do
         Process.send_after(__MODULE__, {:update, url}, retry_timeout)
         {:error, url}
     end
+  end
+
+  def garbage_collect() do
+    :erlang.garbage_collect(GenServer.whereis(__MODULE__))
   end
 end

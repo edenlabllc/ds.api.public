@@ -1,21 +1,15 @@
 defmodule OCSPServiceNotifierTest do
-  use ExUnit.Case
+  use OCSPService.Case, async: false
 
   import DigitalSignatureTestHelper
   import Mox
 
   alias Core.InvalidContent
   alias Core.InvalidContents
-  alias Core.Repo
-  alias Ecto.Adapters.SQL.Sandbox
   alias OCSPService.Kafka.GenConsumer
 
-  setup do
-    :ok = Sandbox.checkout(Repo)
-
-    Sandbox.mode(Repo, {:shared, self()})
-    :ok
-  end
+  setup :set_mox_global
+  setup :verify_on_exit!
 
   describe "process_invalid_sign/0 test" do
     test "stored content is valid, delete it from db" do
@@ -32,10 +26,6 @@ defmodule OCSPServiceNotifierTest do
   end
 
   test "stored content is not valid, send email" do
-    stub(EmailSenderMock, :send, fn _id ->
-      :ok
-    end)
-
     data = get_data("test/fixtures/hello_revoked.json")
     {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 
@@ -48,10 +38,6 @@ defmodule OCSPServiceNotifierTest do
   end
 
   test "stored content is not valid, privatbank, content request json send email" do
-    stub(EmailSenderMock, :send, fn _id ->
-      :ok
-    end)
-
     data = get_data("test/fixtures/privatbank.json")
     {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 

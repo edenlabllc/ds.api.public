@@ -1,5 +1,5 @@
 defmodule CoreApiTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   alias Core.Api
   alias Core.Crl
   alias Core.Repo
