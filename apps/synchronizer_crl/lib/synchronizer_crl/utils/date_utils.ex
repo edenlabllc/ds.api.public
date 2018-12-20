@@ -34,4 +34,24 @@ defmodule SynchronizerCrl.DateUtils do
         :error
     end
   end
+
+  def next_update_time(next_update, check \\ false) do
+    case DateTime.diff(next_update, DateTime.utc_now(), :millisecond) do
+      n when n >= 0 ->
+        {:ok, n}
+
+      _n when check ->
+        {:ok, 0}
+
+      n when n > -1000 * 60 * 60 * 12 ->
+        # crl file shoul be updated less then 12 hours ago, but
+        # providers offen has little bit outdated crl files
+        # let's check this url in 30 minutes
+        {:ok, 30 * 60 * 60 * 1000}
+
+      _ ->
+        # Suspicious crl file, probaply this url never be updated, skip it
+        {:error, :outdated}
+    end
+  end
 end

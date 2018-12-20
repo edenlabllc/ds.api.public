@@ -58,6 +58,10 @@ defmodule Core.Api do
     Repo.get_by(Crl, url: url)
   end
 
+  def remove_url(url) do
+    Repo.delete(get_url(url))
+  end
+
   def write_url(url, nextUpdate) do
     case get_url(url) do
       nil ->
@@ -101,8 +105,10 @@ defmodule Core.Api do
   end
 
   def update_serials(url, nextUpdate, serialNumbers) do
-    write_url(url, nextUpdate)
-    write_serials(url, serialNumbers)
+    with {:ok, _} <- write_url(url, nextUpdate),
+         :ok <- write_serials(url, serialNumbers) do
+      :ok
+    end
   end
 
   def crl_changeset(%Crl{} = crl, attrs) do

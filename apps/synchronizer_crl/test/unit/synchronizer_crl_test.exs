@@ -6,6 +6,7 @@ defmodule SynchronizerCrl.Test do
   use SynchronizerCrl.Web.ConnCase, async: false
   alias Core.Api, as: CoreApi
   alias SynchronizerCrl.CrlService
+  alias SynchronizerCrl.DateUtils
 
   doctest SynchronizerCrl.CrlService
 
@@ -13,7 +14,7 @@ defmodule SynchronizerCrl.Test do
     assert GenServer.whereis(CrlService)
   end
 
-  test "Get CRL works" do
+  test "Get CRL, update_crl_resource works" do
     urls = ~w(
     http://uakey.com.ua/list-delta.crl
     https://ca.informjust.ua/download/crls/CA-9A15A67B-Delta.crl
@@ -23,19 +24,16 @@ defmodule SynchronizerCrl.Test do
     )
 
     Enum.each(urls, fn url ->
-      assert %{^url => tref} = CrlService.update_url_state(url, %{})
-      Process.cancel_timer(tref)
-      assert GenServer.whereis(CrlService)
+      CrlService.update_crl_resource(url)
     end)
 
     assert Enum.sort(urls) == Enum.sort(CoreApi.active_crls())
-
     assert GenServer.whereis(CrlService)
   end
 
-  test "Get wrong CRL do not crash GenServer" do
+  test "Get wrong CRL, update_crl_resource do not crash GenServer" do
     url = "http://not.existing.url"
-    CrlService.update_url_state(url, %{})
+    CrlService.update_crl_resource(url)
     assert GenServer.whereis(CrlService)
   end
 
@@ -45,7 +43,7 @@ defmodule SynchronizerCrl.Test do
       |> NaiveDateTime.add(60)
       |> DateTime.from_naive!("Etc/UTC")
 
-    assert {:ok, _} = CrlService.next_update_time(next_update)
+    assert {:ok, _} = DateUtils.next_update_time(next_update)
   end
 
   test "next update time outdated 2 hours " do
@@ -54,7 +52,7 @@ defmodule SynchronizerCrl.Test do
       |> NaiveDateTime.add(-60 * 60 * 2)
       |> DateTime.from_naive!("Etc/UTC")
 
-    assert {:ok, 108_000_000} = CrlService.next_update_time(next_update)
+    assert {:ok, 108_000_000} = DateUtils.next_update_time(next_update)
   end
 
   test "next update time outdated 60 days " do
@@ -63,6 +61,15 @@ defmodule SynchronizerCrl.Test do
       |> NaiveDateTime.add(-60 * 60 * 24 * 60)
       |> DateTime.from_naive!("Etc/UTC")
 
-    assert {:error, :outdated} = CrlService.next_update_time(next_update)
+    assert {:error, :outdated} = DateUtils.next_update_time(next_update)
+  end
+
+  test "next update time outdated 60 days if check " do
+    next_update =
+      NaiveDateTime.utc_now()
+      |> NaiveDateTime.add(-60 * 60 * 24 * 60)
+      |> DateTime.from_naive!("Etc/UTC")
+
+    assert {:ok, 0} = DateUtils.next_update_time(next_update, true)
   end
 end

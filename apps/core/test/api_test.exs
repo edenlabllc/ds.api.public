@@ -20,6 +20,12 @@ defmodule CoreApiTest do
     assert ["https://crl.com"] = Api.active_crls()
   end
 
+  test "remove_url/1 works" do
+    insert(:crl, url: "https://crl.com")
+    Api.remove_url("https://crl.com")
+    assert [] = Api.active_crls()
+  end
+
   test "get serial" do
     url = "url.com"
     sn = "1234"

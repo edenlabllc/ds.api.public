@@ -203,7 +203,7 @@ defmodule API.Web.APIControllerTest do
       http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
       http://acsk.privatbank.ua/crl/PB-S9.crl
       )
-      Enum.each(urls, fn url -> CrlService.update_crl(url) end)
+      Enum.each(urls, fn url -> CrlService.update_crl_resource(url) end)
 
       data = get_data("test/fixtures/hello_revoked.json")
       request = create_request(data)

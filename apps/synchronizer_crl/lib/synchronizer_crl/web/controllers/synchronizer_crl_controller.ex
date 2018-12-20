@@ -7,7 +7,7 @@ defmodule SynchronizerCrl.Web.SynchronizerCrlController do
   alias SynchronizerCrl.CrlService
 
   def index(conn, %{"crl_url" => url}) do
-    send(CrlService, {:update, url})
+    send(CrlService, {:sync, url})
     send_resp(conn, 201, "")
   end
 
