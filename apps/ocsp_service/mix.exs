@@ -9,7 +9,7 @@ defmodule OCSPService.MixProject do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -31,8 +31,6 @@ defmodule OCSPService.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kafka_ex,
-       git: "https://github.com/kafkaex/kafka_ex.git", branch: "master"},
       {:cowboy, "~> 1.1"},
       {:plug_cowboy, "~> 1.0"},
       {:httpoison, "~> 1.1.0"},

@@ -63,21 +63,7 @@ release :ds_api do
     ]
   )
 
-  set(
-    config_providers: [
-      {Toml.Provider, [path: "/home/ds/config.toml"]}
-    ]
-  )
-end
-
-release :core do
-  set(version: current_version(:core))
-
-  set(
-    applications: [
-      :runtime_tools
-    ]
-  )
+  set(config_providers: [ConfexConfigProvider])
 end
 
 release :digital_signature do
@@ -89,6 +75,8 @@ release :digital_signature do
       core: :permanent
     ]
   )
+
+  set(config_providers: [ConfexConfigProvider])
 end
 
 release :ocsp_service do
@@ -103,11 +91,7 @@ release :ocsp_service do
     ]
   )
 
-  set(
-    config_providers: [
-      {Toml.Provider, [path: "/home/ds/config.toml"]}
-    ]
-  )
+  set(config_providers: [ConfexConfigProvider])
 end
 
 release :synchronizer_crl do
@@ -120,4 +104,6 @@ release :synchronizer_crl do
       core: :permanent
     ]
   )
+
+  set(config_providers: [ConfexConfigProvider])
 end

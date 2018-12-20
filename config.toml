@@ -1,3 +1,0 @@
-[kafka_ex]
-brokers = "travis:9092"
-consumer_group = "digital_signature"

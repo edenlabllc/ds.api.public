@@ -22,16 +22,4 @@ config :ocsp_service, OCSPService.ReChecker,
     max_recheck_tries: {:system, :integer, "MAX_RECHEK_TRIES", 12}
   ]
 
-config :kafka_ex,
-  brokers: System.get_env("KAFKA_BROKERS"),
-  consumer_group: System.get_env("CONSUMER_GROUP"),
-  disable_default_worker: false,
-  sync_timeout: 3000,
-  max_restarts: 10,
-  max_seconds: 60,
-  commit_interval: 5_000,
-  auto_offset_reset: :earliest,
-  commit_threshold: 100,
-  kafka_version: "1.1.0"
-
 import_config "#{Mix.env()}.exs"

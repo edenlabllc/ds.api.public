@@ -11,7 +11,7 @@ defmodule OCSPService.Application do
   def start(_type, _args) do
     gen_consumer_impl = OCSPService.Kafka.GenConsumer
 
-    consumer_group_name = Application.fetch_env!(:kafka_ex, :consumer_group)
+    consumer_group_name = System.get_env("CONSUMER_GROUP")
 
     topic_names = ["digital_signature"]
 

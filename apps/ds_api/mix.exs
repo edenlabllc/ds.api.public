@@ -8,7 +8,11 @@ defmodule Api.MixProject do
       description: "This api allows to validate pkcs7 data and get unpacked data with signer information from it.",
       package: package(),
       version: "0.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
+      build_path: "../../_build",
+      config_path: "../../config/config.exs",
+      deps_path: "../../deps",
+      lockfile: "../../mix.lock",
       elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -55,7 +59,7 @@ defmodule Api.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kafka_ex, git: "https://github.com/kafkaex/kafka_ex.git", branch: "master"},
+      {:kafka_ex, "~> 0.9.0"},
       {:phoenix, "~> 1.4.0-rc.3", override: true},
       {:eview, "~> 0.12.0"},
       {:cowboy, "~> 1.1"},
