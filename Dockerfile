@@ -40,7 +40,7 @@ COPY --from=builder /home/ds/apps/digital_signature/priv/libUACryptoQ.so /usr/lo
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 COPY --from=builder /home/ds/_build/prod/rel/${APP_NAME}/releases/0.1.0/${APP_NAME}.tar.gz .
-COPY --from=builder /home/ds/commits.txt /app
+COPY --from=builder /home/ds/commits.txt .
 
 RUN tar -xzf ${APP_NAME}.tar.gz; rm ${APP_NAME}.tar.gz
 
