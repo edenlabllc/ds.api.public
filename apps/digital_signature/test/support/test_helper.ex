@@ -53,7 +53,8 @@ defmodule DigitalSignatureTestHelper do
       File.read!("test/fixtures/TSP-Server Justice.cer"),
       File.read!("test/fixtures/CATSPServer-3004751DEF2C78AE02000000010000004A000000.cer"),
       File.read!("test/fixtures/cert14491837-tsp.crt"),
-      File.read!("test/fixtures/TSA-IDDDFS-140218.cer")
+      File.read!("test/fixtures/TSA-IDDDFS-140218.cer"),
+      File.read!("test/fixtures/pb-tsp.cer")
     ]
 
     %{general: general, tsp: tsp}

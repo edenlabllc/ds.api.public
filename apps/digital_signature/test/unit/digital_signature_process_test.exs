@@ -53,17 +53,13 @@ defmodule DigitalSignatureProcessLibTest do
                )
 
       assert result.is_valid
-      assert decode_content(result) == data["content"]
-      assert result.signer == atomize_keys(data["signer"])
+      assert %{"text" => "Hello World"} == decode_content(result)
     end
 
     test "can process signed legal entity 25 times in a row" do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
       certs = get_certs()
-
-      expected_result = data["content"]
-      expected_signer = atomize_keys(data["signer"])
 
       Enum.each(1..25, fn _ ->
         assert {:ok, result} =
@@ -74,8 +70,7 @@ defmodule DigitalSignatureProcessLibTest do
                  )
 
         assert result.is_valid
-        assert decode_content(result) == expected_result
-        assert result.signer == expected_signer
+        assert %{"text" => "Hello World"} == decode_content(result)
       end)
     end
 
@@ -156,7 +151,7 @@ defmodule DigitalSignatureProcessLibTest do
 
       DigitalSignatureLib.checkCertOnline(data, ocsp_data, url)
       assert result.is_valid
-      assert result.content == "{\"hello\": \"world\"}"
+      assert %{"text" => "Hello World"} == Jason.decode!(result.content)
     end
   end
 

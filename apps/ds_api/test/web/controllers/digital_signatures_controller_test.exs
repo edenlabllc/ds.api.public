@@ -177,7 +177,7 @@ defmodule API.Web.APIControllerTest do
 
       assert signature["is_valid"]
       assert "" == signature["validation_error_message"]
-      assert resp["data"]["content"] == %{"hello" => "world"}
+      assert resp["data"]["content"] == %{"text" => "Hello World"}
     end
 
     test "can process sign and stamp in each document", %{conn: conn} do
@@ -530,6 +530,15 @@ defmodule API.Web.APIControllerTest do
     Repo.insert!(%Cert{
       name: "DFS",
       data: File.read!("test/fixtures/TSA-IDDDFS-140218.cer"),
+      parent: nil,
+      type: "tsp",
+      active: true
+    })
+
+    # Privat
+    Repo.insert!(%Cert{
+      name: "Privat",
+      data: File.read!("test/fixtures/pb-tsp.cer"),
       parent: nil,
       type: "tsp",
       active: true

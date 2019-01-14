@@ -53,18 +53,15 @@ defmodule DigitalSignatureRetriveLibTest do
                )
 
       assert result.is_valid
-      assert decode_content(result) == data["content"]
-      assert result.signer == atomize_keys(data["signer"])
 
       assert [
                %{
                  access: "http://acskidd.gov.ua/services/ocsp/",
                  crl: "http://acskidd.gov.ua/download/crls/ACSKIDDDFS-Full.crl",
                  delta_crl: "http://acskidd.gov.ua/download/crls/ACSKIDDDFS-Delta.crl",
-                 data: _,
-                 root_data: _,
                  ocsp_data: _,
-                 serial_number: "33b6cb7bf721b9ce0400000013732100dc684e00"
+                 root_data: _,
+                 serial_number: "33b6cb7bf721b9ce040000004c5a250041875900"
                }
              ] = ocsp_checklist
     end
@@ -73,9 +70,6 @@ defmodule DigitalSignatureRetriveLibTest do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
       certs = get_certs()
-
-      expected_result = data["content"]
-      expected_signer = atomize_keys(data["signer"])
 
       Enum.each(1..25, fn _ ->
         assert {:ok, result, ocsp_checklist} =
@@ -86,16 +80,13 @@ defmodule DigitalSignatureRetriveLibTest do
                  )
 
         assert result.is_valid
-        assert decode_content(result) == expected_result
-        assert result.signer == expected_signer
 
         assert [
                  %{
                    access: "http://acskidd.gov.ua/services/ocsp/",
                    crl: "http://acskidd.gov.ua/download/crls/ACSKIDDDFS-Full.crl",
                    delta_crl: "http://acskidd.gov.ua/download/crls/ACSKIDDDFS-Delta.crl",
-                   data: _,
-                   serial_number: "33b6cb7bf721b9ce0400000013732100dc684e00"
+                   serial_number: "33b6cb7bf721b9ce040000004c5a250041875900"
                  }
                ] = ocsp_checklist
       end)
@@ -192,19 +183,16 @@ defmodule DigitalSignatureRetriveLibTest do
 
     test "can validate data signed with valid Privat personal key" do
       data = File.read!("test/fixtures/hello.txt.sig")
-
       assert {:ok, result, ocsp_checklist} = DigitalSignatureLib.retrivePKCS7Data(data, get_certs(), true)
-
       assert result.is_valid
-      assert result.content == "{\"hello\": \"world\"}"
+      assert %{"text" => "Hello World"} == Jason.decode!(result.content)
 
       assert [
                %{
-                 access: "http://acsk.privatbank.ua/services/ocsp/",
-                 crl: "http://acsk.privatbank.ua/crl/PB-S9.crl",
-                 delta_crl: "http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl",
-                 data: _,
-                 serial_number: "0d84eda1bb9381e804000000adbf220045cf7100"
+                 access: "http://acskidd.gov.ua/services/ocsp/",
+                 crl: "http://acskidd.gov.ua/download/crls/ACSKIDDDFS-Full.crl",
+                 delta_crl: "http://acskidd.gov.ua/download/crls/ACSKIDDDFS-Delta.crl",
+                 serial_number: "33b6cb7bf721b9ce040000004c5a250041875900"
                }
              ] = ocsp_checklist
     end

@@ -63,7 +63,7 @@ defmodule DigitalSignatureCheckOCSPLibTest do
       assert {:ok, true} == DigitalSignatureLib.checkCertOnline(data, ocsp_data, url)
       assert result_process.is_valid
       assert result_retrive.is_valid
-      assert result_process.content == "{\"hello\": \"world\"}"
+      assert %{"text" => "Hello World"} == Jason.decode!(result_process.content)
       assert result_retrive.content == result_process.content
     end
   end
