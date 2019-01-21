@@ -264,12 +264,13 @@ defmodule API.Web.APIControllerTest do
 
       assert Enum.count(resp["data"]["signatures"]) == 2
 
-      signature = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["edrpou"] == "38782323" end)
+      signature = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["drfo"] == "3278011533" end)
+
       assert signature
       assert signature["is_valid"]
       refute signature["is_stamp"]
 
-      stamp = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["edrpou"] == "42032422" end)
+      stamp = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["edrpou"] == "41294110" end)
       assert stamp
       assert stamp["is_valid"]
       assert stamp["is_stamp"]

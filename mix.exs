@@ -1,9 +1,11 @@
 defmodule DigitalSignatureUmbrella.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
   def project do
     [
       apps_path: "apps",
+      version: @version,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
@@ -19,6 +21,7 @@ defmodule DigitalSignatureUmbrella.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
+      {:git_ops, "~> 0.5.0", only: [:dev]},
       {:distillery, "~> 2.0", runtime: false, override: true},
       {:credo, "~> 0.9.3", only: [:dev, :test]},
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
