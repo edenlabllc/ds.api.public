@@ -21,7 +21,7 @@ defmodule DigitalSignatureUmbrella.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:git_ops, "~> 0.5.0", git: "https://github.com/marinakr/git_ops.git", only: [:dev]},
+      {:git_ops, "~> 0.5.0", git: "https://github.com/marinakr/git_ops.git", only: [:dev, :test]},
       {:distillery, "~> 2.0", runtime: false, override: true},
       {:credo, "~> 0.9.3", only: [:dev, :test]},
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
