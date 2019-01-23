@@ -1,5 +1,5 @@
 # Digital Signature
-[![Build Status](https://api.travis-ci.org/edenlabllc/ds.api.svg?branch=develop)](https://travis-ci.org/edenlabllc/ds.api) [![Coverage Status](https://coveralls.io/repos/github/edenlabllc/ds.api/badge.svg?branch=develop)](https://coveralls.io/github/edenlabllc/digital_signature.api?branch=develop)
+[![Build Status](https://api.travis-ci.org/edenlabllc/ds.api.svg?branch=develop)](https://travis-ci.org/edenlabllc/ds.api) [![Coverage Status](https://coveralls.io/repos/github/edenlabllc/ds.api/badge.svg?branch=develop)](https://coveralls.io/github/edenlabllc/ds.api?branch=develop)
 
 Index page for projects that related to digital signed documents
 - Parse CA signed content
