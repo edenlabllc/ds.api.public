@@ -1,13 +1,12 @@
 defmodule API.Web.APIControllerTest do
   @moduledoc false
-
   use API.Web.ConnCase, async: false
+  import Ecto.Query
   import Mox
 
   alias Core.Api
   alias Core.Cert
   alias Core.Repo
-  alias Ecto.Adapters.SQL.Sandbox
   alias SynchronizerCrl.CrlService
 
   setup [:set_mox_global, :verify_on_exit!]
@@ -23,8 +22,6 @@ defmodule API.Web.APIControllerTest do
         DigitalSignature.Supervisor,
         DigitalSignature.NifService
       )
-
-      Sandbox.mode(Repo, {:shared, self()})
 
       assert {:ok, _} =
                Supervisor.restart_child(
@@ -67,6 +64,53 @@ defmodule API.Web.APIControllerTest do
     end
   end
 
+  describe "With/without OCSP got no segfault" do
+    setup %{conn: conn} do
+      insert_dfs_certs()
+      insert_alter_sign_certs()
+
+      Supervisor.terminate_child(
+        DigitalSignature.Supervisor,
+        DigitalSignature.NifService
+      )
+
+      assert {:ok, _} =
+               Supervisor.restart_child(
+                 DigitalSignature.Supervisor,
+                 DigitalSignature.NifService
+               )
+
+      stub(KafkaMock, :publish_sigantures, fn _ -> :ok end)
+
+      {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    end
+
+    test "processing valid altersign with OCSP", %{conn: conn} do
+      data = get_data("test/fixtures/altersign.json")
+      request = create_request(data)
+
+      resp =
+        conn
+        |> post(api_path(conn, :index), request)
+        |> json_response(200)
+
+      assert [%{"is_valid" => true}] = resp["data"]["signatures"]
+    end
+
+    test "processing valid altersign without OCSP", %{conn: conn} do
+      Repo.delete_all(from(c in Cert, where: c.type == "ocsp" and c.name == "Altersign"))
+      data = get_data("test/fixtures/altersign.json")
+      request = create_request(data)
+
+      resp =
+        conn
+        |> post(api_path(conn, :index), request)
+        |> json_response(200)
+
+      assert [%{"is_valid" => true}] = resp["data"]["signatures"]
+    end
+  end
+
   describe "With correct certs in db" do
     setup %{conn: conn} do
       insert_dfs_certs()
@@ -78,8 +122,6 @@ defmodule API.Web.APIControllerTest do
         DigitalSignature.Supervisor,
         DigitalSignature.NifService
       )
-
-      Sandbox.mode(Repo, {:shared, self()})
 
       assert {:ok, _} =
                Supervisor.restart_child(
@@ -604,6 +646,25 @@ defmodule API.Web.APIControllerTest do
       data: File.read!("test/fixtures/cert14491837-tsp.crt"),
       parent: nil,
       type: "tsp",
+      active: true
+    })
+  end
+
+  defp insert_alter_sign_certs do
+    {:ok, %{id: altersign_root_id}} =
+      Repo.insert(%Cert{
+        name: "Altersign",
+        data: File.read!("test/fixtures/CA-Altersign-2018.cer"),
+        parent: nil,
+        type: "root",
+        active: true
+      })
+
+    Repo.insert!(%Cert{
+      name: "Altersign",
+      data: File.read!("test/fixtures/OCSP-Altersign-2018.cer"),
+      parent: altersign_root_id,
+      type: "ocsp",
       active: true
     })
   end

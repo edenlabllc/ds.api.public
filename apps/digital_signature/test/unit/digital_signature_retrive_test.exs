@@ -5,6 +5,64 @@ defmodule DigitalSignatureRetriveLibTest do
   import DigitalSignatureTestHelper
   use ExUnit.Case, async: false
 
+  describe "With/Without ocsp certificate no segfault" do
+    test "with ocsp cert in db return ocsp_data in checklist" do
+      data = get_data("test/fixtures/altersign.json")
+      signed_content = get_signed_content(data)
+
+      assert {:ok, result, ocsp_checklist} =
+               DigitalSignatureLib.retrivePKCS7Data(
+                 signed_content,
+                 get_certs(),
+                 true
+               )
+
+      assert result[:is_valid]
+
+      assert [
+               %{
+                 access: "http://ocsp.altersign.com.ua/",
+                 crl: "http://altersign.com.ua/esign/crls/CA-Altersign-2018-base.crl",
+                 data: _,
+                 delta_crl: "http://altersign.com.ua/esign/crls/CA-Altersign-2018-delta.crl",
+                 ocsp_data: _,
+                 root_data: _,
+                 serial_number: "1ddd"
+               }
+             ] = ocsp_checklist
+    end
+
+    test "without ocsp cert in db does not return ocsp_data in checklist" do
+      data = get_data("test/fixtures/altersign.json")
+      signed_content = get_signed_content(data)
+      certs = get_certs()
+      general = Enum.map(certs[:general], fn %{root: root} -> %{root: root, ocsp: nil} end)
+      certs = %{certs | general: general}
+
+      assert {:ok, result, ocsp_checklist} =
+               DigitalSignatureLib.retrivePKCS7Data(
+                 signed_content,
+                 certs,
+                 true
+               )
+
+      assert result[:is_valid]
+
+      assert [
+               %{
+                 access: "http://ocsp.altersign.com.ua/",
+                 crl: "http://altersign.com.ua/esign/crls/CA-Altersign-2018-base.crl",
+                 data: _,
+                 delta_crl: "http://altersign.com.ua/esign/crls/CA-Altersign-2018-delta.crl",
+                 root_data: _,
+                 serial_number: "1ddd"
+               }
+             ] = ocsp_checklist
+
+      refute ocsp_checklist[:ocsp_data]
+    end
+  end
+
   describe "Must process all data correctly with all certs provided" do
     test "fail with incorrect data" do
       assert DigitalSignatureLib.retrivePKCS7Data([], get_certs(), true) ==

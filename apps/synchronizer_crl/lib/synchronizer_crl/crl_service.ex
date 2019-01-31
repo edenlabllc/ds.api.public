@@ -139,7 +139,7 @@ defmodule SynchronizerCrl.CrlService do
   end
 
   defp tbs_revoked_list(tbs_certs) do
-    with {:TBSCertList, _version, _signature, _issuer, _this_update, next_update, revoked_certificates, _crl_extention} <-
+    with {:TBSCertList, _version, _signature, _issuer, _this_upd, next_update, revoked_certificates, _crl_ext} <-
            tbs_certs,
          {:utcTime, next_update_ts} <- next_update,
          {:revoked_list, true} <- {:revoked_list, is_list(revoked_certificates)} do
@@ -207,7 +207,7 @@ defmodule SynchronizerCrl.CrlService do
     end
   end
 
-  def garbage_collect() do
+  def garbage_collect do
     :erlang.garbage_collect()
   end
 

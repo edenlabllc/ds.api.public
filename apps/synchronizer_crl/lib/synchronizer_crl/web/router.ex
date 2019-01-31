@@ -32,11 +32,7 @@ defmodule SynchronizerCrl.Web.Router do
     LoggerJSON.log_error(kind, reason, stacktrace)
     Logger.configure(truncate: :infinity)
 
-    Logger.error(
-      "Internal server error, reason: #{inspect(reason)}, request body: #{
-        inspect(conn.body_params)
-      }"
-    )
+    Logger.error("Internal server error, reason: #{inspect(reason)}, request body: #{inspect(conn.body_params)}")
 
     send_resp(
       conn,

@@ -21,19 +21,8 @@ defmodule DigitalSignature.NifServiceAPI do
         :millisecond
       )
 
-    not Enum.any?(signatures, fn %{
-                                   access: url,
-                                   data: data,
-                                   ocsp_data: ocsp_data
-                                 } ->
-      {:ok, false} ==
-        check_online(
-          url,
-          data,
-          ocsp_data,
-          expires_at,
-          @timeout
-        )
+    Enum.all?(signatures, fn %{access: url, data: data, ocsp_data: ocsp_data} ->
+      {:ok, true} == check_online(url, data, ocsp_data, expires_at, @timeout)
     end)
   end
 

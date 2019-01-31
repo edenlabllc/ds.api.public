@@ -45,6 +45,10 @@ defmodule DigitalSignatureTestHelper do
       %{
         root: File.read!("test/fixtures/cert1599998-root.crt"),
         ocsp: File.read!("test/fixtures/cert14493930-oscp.crt")
+      },
+      %{
+        root: File.read!("test/fixtures/CA-Altersign-2018.cer"),
+        ocsp: File.read!("test/fixtures/OCSP-Altersign-2018.cer")
       }
     ]
 

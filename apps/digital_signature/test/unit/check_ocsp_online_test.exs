@@ -7,6 +7,44 @@ defmodule DigitalSignatureCheckOCSPLibTest do
   """
   import DigitalSignatureTestHelper
   use ExUnit.Case, async: false
+  alias DigitalSignature.NifServiceAPI
+
+  describe "With/Without ocsp certificate no segfault" do
+    test "with ocsp cert in db return ocsp_data in checklist" do
+      data = get_data("test/fixtures/altersign.json")
+      signed_content = get_signed_content(data)
+
+      assert {:ok, result, signatures} =
+               DigitalSignatureLib.retrivePKCS7Data(
+                 signed_content,
+                 get_certs(),
+                 true
+               )
+
+      assert result[:is_valid]
+      assert String.length(hd(signatures)[:ocsp_data]) > 0
+      assert NifServiceAPI.signatures_valid_online?(signatures)
+    end
+
+    test "without ocsp cert in db does not return ocsp_data in checklist" do
+      data = get_data("test/fixtures/altersign.json")
+      signed_content = get_signed_content(data)
+      certs = get_certs()
+      general = Enum.map(certs[:general], fn %{root: root} -> %{root: root, ocsp: nil} end)
+      certs = %{certs | general: general}
+
+      assert {:ok, result, signatures} =
+               DigitalSignatureLib.retrivePKCS7Data(
+                 signed_content,
+                 certs,
+                 true
+               )
+
+      assert result[:is_valid]
+      assert String.length(hd(signatures)[:ocsp_data]) == 0
+      assert NifServiceAPI.signatures_valid_online?(signatures)
+    end
+  end
 
   describe "Must process all data correctly online" do
     test "can process signed legal entity" do

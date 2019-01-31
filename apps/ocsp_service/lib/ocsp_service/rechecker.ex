@@ -54,7 +54,7 @@ defmodule OCSPService.ReChecker do
     {:noreply, state}
   end
 
-  def start_link() do
+  def start_link do
     recheck_timeout = config()[:recheck_policy][:recheck_timeout]
     max_recheck_tries = config()[:recheck_policy][:max_recheck_tries]
 

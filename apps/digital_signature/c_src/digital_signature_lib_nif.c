@@ -227,22 +227,31 @@ RetrivePKCS7Data(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
     enif_make_map_put(env, osp, enif_make_atom(env, "crl"), CreateElixirString(env, baseValidationResult.certsCheckInfo[i].crlDistributionPoints), &osp);
     enif_make_map_put(env, osp, enif_make_atom(env, "delta_crl"), CreateElixirString(env, baseValidationResult.certsCheckInfo[i].crlDeltaDistributionPoints), &osp);
 
+    /* Copy der data*/
     ErlNifBinary derDataBin;
     enif_alloc_binary(baseValidationResult.certsCheckInfo[i].dataLen, &derDataBin);
     memcpy(derDataBin.data, baseValidationResult.certsCheckInfo[i].data, baseValidationResult.certsCheckInfo[i].dataLen);
     ERL_NIF_TERM derData = enif_make_binary(env, &derDataBin);
-
-    ErlNifBinary matchingCertRootBin;
-    ErlNifBinary matchingCertOCSPBin;
-    enif_alloc_binary(baseValidationResult.certsCheckInfo[i].generalCert.root.dataLen, &matchingCertRootBin);
-    enif_alloc_binary(baseValidationResult.certsCheckInfo[i].generalCert.ocsp.dataLen, &matchingCertOCSPBin);
-    memcpy(matchingCertRootBin.data, baseValidationResult.certsCheckInfo[i].generalCert.root.data, baseValidationResult.certsCheckInfo[i].generalCert.root.dataLen);
-    memcpy(matchingCertOCSPBin.data, baseValidationResult.certsCheckInfo[i].generalCert.ocsp.data, baseValidationResult.certsCheckInfo[i].generalCert.ocsp.dataLen);
-    ERL_NIF_TERM matchRootData = enif_make_binary(env, &matchingCertRootBin);
-    ERL_NIF_TERM matchOCSPData = enif_make_binary(env, &matchingCertOCSPBin);
-
     enif_make_map_put(env, osp, enif_make_atom(env, "data"), derData, &osp);
+
+    /* Copy root quarated not null  certificate*/
+    ErlNifBinary matchingCertRootBin;
+    enif_alloc_binary(baseValidationResult.certsCheckInfo[i].generalCert.root.dataLen, &matchingCertRootBin);
+    memcpy(matchingCertRootBin.data, baseValidationResult.certsCheckInfo[i].generalCert.root.data, baseValidationResult.certsCheckInfo[i].generalCert.root.dataLen);
+    ERL_NIF_TERM matchRootData = enif_make_binary(env, &matchingCertRootBin);
     enif_make_map_put(env, osp, enif_make_atom(env, "root_data"), matchRootData, &osp);
+
+    /* Copy ocsp certificate if exists */
+    ErlNifBinary matchingCertOCSPBin;
+    if (baseValidationResult.certsCheckInfo[i].generalCert.ocsp.data != NULL) {
+      enif_alloc_binary(baseValidationResult.certsCheckInfo[i].generalCert.ocsp.dataLen, &matchingCertOCSPBin);
+      memcpy(matchingCertOCSPBin.data, baseValidationResult.certsCheckInfo[i].generalCert.ocsp.data, baseValidationResult.certsCheckInfo[i].generalCert.ocsp.dataLen);
+    }
+    else {
+      enif_alloc_binary(0, &matchingCertOCSPBin);
+      memcpy(matchingCertOCSPBin.data, "", 0);
+    }
+    ERL_NIF_TERM matchOCSPData = enif_make_binary(env, &matchingCertOCSPBin);
     enif_make_map_put(env, osp, enif_make_atom(env, "ocsp_data"), matchOCSPData, &osp);
 
     checkOscpList = enif_make_list_cell(env, osp, checkOscpList);

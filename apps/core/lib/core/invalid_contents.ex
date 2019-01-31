@@ -10,8 +10,7 @@ defmodule Core.InvalidContents do
 
   def update_invalid_content(id, params) do
     with %InvalidContent{} = invalid_content <- get_by_id(id),
-         %Changeset{valid?: true} = changeset <-
-           changeset(invalid_content, params) do
+         %Changeset{valid?: true} = changeset <- changeset(invalid_content, params) do
       {:ok, _} = Repo.update(changeset)
     end
   end
