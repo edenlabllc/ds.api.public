@@ -7,7 +7,7 @@ defmodule DigitalSignature.Mixfile do
       description: "NIF validatatin pkcs7 data and get unpacked data with signer information from it.",
       package: package(),
       version: "0.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.8.1",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:elixir_make, :phoenix] ++ Mix.compilers(),
       build_embedded: Mix.env() == :prod,

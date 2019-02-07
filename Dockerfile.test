@@ -1,4 +1,4 @@
-FROM elixir:1.7
+FROM elixir:1.8.1  as builder
 
 ADD . /home/ds
 WORKDIR /home/ds
@@ -11,15 +11,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ENV MIX_ENV=test
 
-RUN mix do \
-     local.hex --force, \
-     local.rebar --force, \
-     deps.get, \
-     deps.compile
-
-
 # RUN TESTS #
-
 # Database settings
 ENV DB_HOST=travis
 ENV DB_NAME=ds
@@ -38,4 +30,8 @@ ENV KAFKA_MIGRATE=true
 
 ENV REPLACE_OS_VARS=true
 
-RUN mix test --exclude pending --trace
+RUN mix do \
+  local.hex --force, \
+  local.rebar --force, \
+  deps.get, \
+  test --exclude pending --trace

@@ -10,6 +10,7 @@ defmodule DigitalSignatureCheckOCSPLibTest do
   alias DigitalSignature.NifServiceAPI
 
   describe "With/Without ocsp certificate no segfault" do
+    @tag :pending
     test "with ocsp cert in db return ocsp_data in checklist" do
       data = get_data("test/fixtures/altersign.json")
       signed_content = get_signed_content(data)
@@ -26,6 +27,7 @@ defmodule DigitalSignatureCheckOCSPLibTest do
       assert NifServiceAPI.signatures_valid_online?(signatures)
     end
 
+    @tag :pending
     test "without ocsp cert in db does not return ocsp_data in checklist" do
       data = get_data("test/fixtures/altersign.json")
       signed_content = get_signed_content(data)
@@ -57,6 +59,7 @@ defmodule DigitalSignatureCheckOCSPLibTest do
       assert {:ok, true} == DigitalSignatureLib.checkCertOnline(certdata, ocsp_data, url)
     end
 
+    @tag :pending
     test "can process signed legal entity 25 times in a row" do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)

@@ -1,4 +1,4 @@
-FROM elixir:1.7 as builder
+FROM elixir:1.8.1 as builder
 
 ARG APP_NAME
 
@@ -25,7 +25,7 @@ RUN mix do \
 RUN mix release --name=${APP_NAME}
 RUN git log --pretty=format:"%H %cd %s" > commits.txt
 
-FROM elixir:1.7-slim
+FROM elixir:1.8.1-slim
 
 ARG APP_NAME
 

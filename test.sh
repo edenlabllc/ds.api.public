@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -rf _build/
 
 echo "Create Docker network"
 docker network create ds_test_db

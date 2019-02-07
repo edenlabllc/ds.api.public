@@ -222,6 +222,7 @@ defmodule API.Web.APIControllerTest do
       assert resp["data"]["content"] == %{"text" => "Hello World"}
     end
 
+    @tag :pending
     test "can process sign and stamp in each document", %{conn: conn} do
       data = get_data("test/fixtures/sign_and_stamp.json")
       request = create_request(data)
