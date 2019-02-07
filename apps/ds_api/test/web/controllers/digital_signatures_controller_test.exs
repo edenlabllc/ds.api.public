@@ -85,6 +85,7 @@ defmodule API.Web.APIControllerTest do
       {:ok, conn: put_req_header(conn, "accept", "application/json")}
     end
 
+    @tag :pending
     test "processing valid altersign with OCSP", %{conn: conn} do
       data = get_data("test/fixtures/altersign.json")
       request = create_request(data)
@@ -97,6 +98,7 @@ defmodule API.Web.APIControllerTest do
       assert [%{"is_valid" => true}] = resp["data"]["signatures"]
     end
 
+    @tag :pending
     test "processing valid altersign without OCSP", %{conn: conn} do
       Repo.delete_all(from(c in Cert, where: c.type == "ocsp" and c.name == "Altersign"))
       data = get_data("test/fixtures/altersign.json")
