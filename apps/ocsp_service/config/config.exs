@@ -22,4 +22,12 @@ config :ocsp_service, OCSPService.ReChecker,
     max_recheck_tries: {:system, :integer, "MAX_RECHEK_TRIES", 12}
   ]
 
+config :ocsp_service,
+  kaffe_consumer: [
+    endpoints: {:system, :string, "KAFKA_BROKERS"},
+    topics: ["digital_signature"],
+    consumer_group: {:system, :string, "CONSUMER_GROUP"},
+    message_handler: OCSPService.Kafka.GenConsumer
+  ]
+
 import_config "#{Mix.env()}.exs"

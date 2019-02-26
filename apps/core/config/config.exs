@@ -18,16 +18,12 @@ config :core, Core.Repo,
   timeout: 15_000,
   pool_timeout: 15_000
 
-config :kafka_ex,
-  brokers: {:system, :string, "KAFKA_BROKERS"},
-  disable_default_worker: false,
-  sync_timeout: 3000,
-  max_restarts: 10,
-  max_seconds: 60,
-  commit_interval: 5_000,
-  auto_offset_reset: :earliest,
-  commit_threshold: 100,
-  kafka_version: "1.1.0"
+config :kaffe,
+  kafka_mod: :brod,
+  producer: [
+    endpoints: {:system, :string, "KAFKA_BROKERS"},
+    topics: ["digital_signature"]
+  ]
 
 # Configure crl api
 config :core, Core.Api, sn_chunk_limit: 20_000

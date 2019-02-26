@@ -1,29 +1,27 @@
 defmodule OCSPService.Kafka.GenConsumer do
   @moduledoc false
-  use KafkaEx.GenConsumer
 
   alias Core.InvalidContents
   alias DigitalSignature.NifServiceAPI
-  alias KafkaEx.Protocol.Fetch.Message
   alias OCSPService.ReChecker
 
   require Logger
 
   # note - messages are delivered in batches
-  def handle_message_set(message_set, state) do
-    for %Message{value: message, offset: offset} <- message_set do
+  def handle_messages(messages) do
+    for %{value: value, offset: offset} <- messages do
       with %{signatures: signatures, content: content} <-
-             :erlang.binary_to_term(message) do
+             :erlang.binary_to_term(value) do
         online_check_signed_content(signatures, content)
       else
         _ ->
           Logger.error(
-            "Unhandled message: #{inspect(message)}, offset: #{offset}"
+            "Unhandled message: #{inspect(value)}, offset: #{offset}"
           )
       end
     end
 
-    {:async_commit, state}
+    :ok
   end
 
   def online_check_signed_content(signatures, content) do

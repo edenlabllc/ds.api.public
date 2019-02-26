@@ -19,3 +19,6 @@ config :core, Core.Repo,
   timeout: 15_000,
   pool_timeout: 15_000,
   loggers: [{Ecto.LoggerJSON, :log, [:info]}]
+
+config :kaffe,
+  producer: [endpoints: {:system, :string, "KAFKA_BROKERS"}]

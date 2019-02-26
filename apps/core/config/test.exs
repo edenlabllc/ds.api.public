@@ -9,4 +9,7 @@ config :core, Core.Repo,
   pool_timeout: 11_000,
   ownership_timeout: 60_000
 
-config :kafka_ex, brokers: System.get_env("KAFKA_BROKERS")
+config :kaffe,
+  producer: [
+    endpoints: System.get_env("KAFKA_BROKERS")
+  ]

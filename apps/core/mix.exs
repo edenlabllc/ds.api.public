@@ -35,7 +35,7 @@ defmodule Core.MixProject do
       {:postgrex, "~> 0.11"},
       {:poison, "~> 3.1"},
       {:confex_config_provider, "~> 0.1.0"},
-      {:kafka_ex, "~> 0.9.0"},
+      {:kaffe, git: "https://github.com/AlexKovalevych/kaffe.git", branch: "string_endpoints_sasl"},
       {:jason, "~> 1.0"},
       {:jvalid, "~> 0.6.0"}
     ]

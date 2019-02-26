@@ -1,6 +1,7 @@
 defmodule DigitalSignature.Kafka.Producer do
   @moduledoc false
 
+  alias Kaffe.Producer
   require Logger
 
   @behaviour DigitalSignature.Behaviours.KafkaProducerBehaviour
@@ -11,9 +12,10 @@ defmodule DigitalSignature.Kafka.Producer do
     data = :erlang.term_to_binary(certificates_info)
 
     :ok =
-      KafkaEx.produce(
+      Producer.produce_sync(
         "digital_signature",
         Enum.random(0..(partitions - 1)),
+        nil,
         data
       )
   end

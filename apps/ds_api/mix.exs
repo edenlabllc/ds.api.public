@@ -59,13 +59,14 @@ defmodule Api.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kafka_ex, "~> 0.9.0"},
+      {:kaffe, git: "https://github.com/AlexKovalevych/kaffe.git", branch: "string_endpoints_sasl"},
       {:phoenix, "~> 1.4.0-rc.3", override: true},
       {:eview, "~> 0.12.0"},
       {:cowboy, "~> 1.1"},
       {:plug_cowboy, "~> 1.0"},
       {:plug_logger_json, "~> 0.5"},
       {:confex, "~> 3.3"},
+      {:confex_config_provider, "~> 0.1.0"},
       {:mox, "~> 0.3", only: :test},
       {:digital_signature, in_umbrella: true}
     ]
