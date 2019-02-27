@@ -15,7 +15,7 @@ defmodule DigitalSignature.Kafka.Producer do
       Producer.produce_sync(
         "digital_signature",
         Enum.random(0..(partitions - 1)),
-        nil,
+        "",
         data
       )
   end
