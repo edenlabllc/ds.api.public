@@ -13,3 +13,6 @@ config :kaffe,
   producer: [
     endpoints: System.get_env("KAFKA_BROKERS")
   ]
+
+config :ex_unit, capture_log: true
+config :logger, level: :warn

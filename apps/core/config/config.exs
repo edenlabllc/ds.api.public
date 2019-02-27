@@ -28,4 +28,12 @@ config :kaffe,
 # Configure crl api
 config :core, Core.Api, sn_chunk_limit: 20_000
 
+config :logger_json, :backend,
+  formatter: EhealthLogger.Formatter,
+  metadata: :all
+
+config :logger,
+  backends: [LoggerJSON],
+  level: :info
+
 import_config "#{Mix.env()}.exs"

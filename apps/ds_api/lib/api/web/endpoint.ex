@@ -11,7 +11,7 @@ defmodule API.Web.Endpoint do
 
   plug(Plug.RequestId)
   plug(EView.Plugs.Idempotency)
-  plug(Plug.LoggerJSON, level: Logger.level())
+  plug(LoggerJSON.Plug, level: Logger.level())
 
   plug(EView)
 

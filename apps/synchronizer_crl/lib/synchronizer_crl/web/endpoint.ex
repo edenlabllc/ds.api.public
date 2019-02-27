@@ -12,7 +12,7 @@ defmodule SynchronizerCrl.Web.Endpoint do
   end
 
   plug(Plug.RequestId)
-  plug(Plug.LoggerJSON, level: Logger.level())
+  plug(LoggerJSON.Plug, level: Logger.level())
 
   plug(
     Plug.Parsers,

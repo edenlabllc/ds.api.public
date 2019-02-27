@@ -31,10 +31,8 @@ defmodule OCSPService.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:cowboy, "~> 1.1"},
-      {:plug_cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.1.0"},
-      {:confex, "~> 3.3"},
       {:digital_signature, in_umbrella: true},
       {:mox, "~> 0.3", only: :test}
     ]

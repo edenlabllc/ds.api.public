@@ -30,8 +30,8 @@ defmodule Core.MixProject do
     [
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
       {:phoenix_ecto, "~> 3.6.0"},
-      {:confex, "~> 3.3"},
-      {:ecto_logger_json, "~> 0.1"},
+      {:confex, "~> 3.4"},
+      {:ehealth_logger, git: "https://github.com/edenlabllc/ehealth_logger.git"},
       {:postgrex, "~> 0.11"},
       {:poison, "~> 3.1"},
       {:confex_config_provider, "~> 0.1.0"},
