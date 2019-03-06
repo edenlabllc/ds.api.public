@@ -2,7 +2,8 @@ use Mix.Config
 
 config :synchronizer_crl, SynchronizerCrl.Web.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "kM4g3grYc77xl0Zglf381h8g6EgOBSH18TbWwMB1UCdWHxFFkIZcF8Ci3w9ZtLCF"
+  secret_key_base: "kM4g3grYc77xl0Zglf381h8g6EgOBSH18TbWwMB1UCdWHxFFkIZcF8Ci3w9ZtLCF",
+  instrumenters: [LoggerJSON.Phoenix.Instruments]
 
 # Configures Elixir's Logger
 config :logger, :console,
