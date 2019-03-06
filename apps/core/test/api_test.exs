@@ -42,7 +42,7 @@ defmodule CoreApiTest do
   test "update existing url" do
     crl = insert(:crl)
     url = crl.url
-    dt = DateTime.utc_now()
+    dt = %{DateTime.utc_now() | microsecond: {0, 0}}
     Api.write_url(url, dt)
     assert [%Crl{url: ^url, next_update: ^dt}] = Repo.all(Crl)
   end

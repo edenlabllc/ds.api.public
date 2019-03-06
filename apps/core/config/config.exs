@@ -8,20 +8,17 @@ config :core,
   ]
 
 config :core, Core.Repo,
-  adapter: Ecto.Adapters.Postgres,
   database: System.get_env("DB_NAME"),
   username: System.get_env("DB_USER"),
   password: System.get_env("DB_PASSWORD"),
   hostname: System.get_env("DB_HOST"),
   port: System.get_env("DB_PORT"),
-  pool_size: System.get_env("DB_POOL_SIZE"),
-  timeout: 15_000,
-  pool_timeout: 15_000
+  timeout: 15_000
 
 config :kaffe,
   kafka_mod: :brod,
   producer: [
-    endpoints: {:system, :string, "KAFKA_BROKERS"},
+    endpoints: "localhost:9092",
     topics: ["digital_signature"]
   ]
 

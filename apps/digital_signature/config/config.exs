@@ -14,12 +14,6 @@ config :digital_signature,
     topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
   ]
 
-# Configures Elixir's Logger
-config :logger, :console,
-  format: "$message\n",
-  handle_otp_reports: true,
-  level: :info
-
 config :phoenix, :format_encoders, json: Jason
 
 import_config("#{Mix.env()}.exs")

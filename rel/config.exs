@@ -33,24 +33,6 @@ environment :prod do
   set(cookie: :"0*xsbIl3AS91,?[R9RMhLPs47@P3q?@cC%f0]RH})s`A4v]aU(^=b@^1sLm4RlN6")
 end
 
-# environment :default do
-#   # set(pre_start_hooks: "bin/hooks/")
-#   set(dev_mode: false)
-#   set(include_erts: true)
-#   set(include_src: false)
-#
-#   set(
-#     overlays: [
-#       {:template, "rel/templates/vm.args.eex", "releases/<%= release_version %>/vm.args"}
-#     ]
-#   )
-# end
-
-# You may define one or more releases in this file.
-# If you have not set a default release, or selected one
-# when running `mix release`, the first release in the file
-# will be used by default
-
 release :ds_api do
   set(version: current_version(:ds_api))
 

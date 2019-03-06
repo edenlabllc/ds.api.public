@@ -11,7 +11,7 @@ defmodule SynchronizerCrl.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.8.1",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix | Mix.compilers()],
+      compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases()

@@ -13,19 +13,20 @@ defmodule SynchronizerCrl.DateUtils do
         "month" => month,
         "second" => second,
         "year" => year
-      } ->
-        with {:ok, ecto_datetime} <-
-               Ecto.DateTime.cast(
-                 # XXI century, works only for 2001-2099
-                 {{"20" <> year, month, day}, {hour, minute, second}}
-               ) do
-          dt =
-            ecto_datetime
-            |> Ecto.DateTime.to_erl()
-            |> NaiveDateTime.from_erl!()
-            |> DateTime.from_naive!("Etc/UTC")
+      } = fields ->
+        fields =
+          Enum.into(fields, %{}, fn
+            # XXI century, works only for 2001-2099
+            {"year", v} -> {"year", String.to_integer("20" <> v)}
+            {k, v} -> {k, String.to_integer(v)}
+          end)
 
-          {:ok, dt}
+        with {:ok, naive_datetime} <-
+               NaiveDateTime.from_erl(
+                 {{fields["year"], fields["month"], fields["day"]},
+                  {fields["hour"], fields["minute"], fields["second"]}}
+               ) do
+          {:ok, DateTime.from_naive!(naive_datetime, "Etc/UTC")}
         else
           _ -> :error
         end

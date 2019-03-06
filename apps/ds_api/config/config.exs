@@ -8,4 +8,6 @@ config :ds_api, API.Web.Endpoint,
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)],
   instrumenters: [LoggerJSON.Phoenix.Instruments]
 
+config :phoenix, :format_encoders, json: Jason
+
 import_config "#{Mix.env()}.exs"

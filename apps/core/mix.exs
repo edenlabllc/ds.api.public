@@ -29,15 +29,15 @@ defmodule Core.MixProject do
   defp deps do
     [
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
-      {:phoenix_ecto, "~> 3.6.0"},
+      {:phoenix_ecto, "~> 4.0"},
+      {:ecto_sql, "~> 3.0"},
       {:confex, "~> 3.4"},
       {:ehealth_logger, git: "https://github.com/edenlabllc/ehealth_logger.git"},
-      {:postgrex, "~> 0.11"},
-      {:poison, "~> 3.1"},
+      {:postgrex, "~> 0.14.1"},
       {:confex_config_provider, "~> 0.1.0"},
       {:kaffe, "~> 1.11"},
-      {:jason, "~> 1.0"},
-      {:jvalid, "~> 0.6.0"}
+      {:jason, "~> 1.1"},
+      {:jvalid, "~> 0.7.0"}
     ]
   end
 

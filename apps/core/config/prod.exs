@@ -7,18 +7,14 @@ config :core, ecto_repos: [Core.Repo], namespace: Core
 # Configure crl api
 config :core, Core.Api, sn_chunk_limit: 20_000
 
-# Databases configuration
 config :core, Core.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  database: "${DB_NAME}",
-  username: "${DB_USER}",
-  password: "${DB_PASSWORD}",
-  hostname: "${DB_HOST}",
-  port: "${DB_PORT}",
-  pool_size: "${DB_POOL_SIZE}",
-  timeout: 15_000,
-  pool_timeout: 15_000,
-  loggers: [{EhealthLogger.Ecto, :log, [:info]}]
+  database: {:system, :string, "DB_NAME"},
+  username: {:system, :string, "DB_USER"},
+  password: {:system, :string, "DB_PASSWORD"},
+  hostname: {:system, :string, "DB_HOST"},
+  port: {:system, :integer, "DB_PORT", 5432},
+  pool_size: {:system, :integer, "DB_POOL_SIZE", 10},
+  timeout: 15_000
 
 config :kaffe,
   producer: [endpoints: {:system, :string, "KAFKA_BROKERS"}]
