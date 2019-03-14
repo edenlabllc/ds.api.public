@@ -14,11 +14,9 @@ defmodule OCSPServiceTest do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
 
-      {:ok, content, [signature] = signatures} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+      {:ok, content, [signature] = signatures} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
-      assert {:ok, id} =
-               InvalidContents.store_invalid_content(signatures, content)
+      assert {:ok, id} = InvalidContents.store_invalid_content(signatures, content)
 
       %InvalidContent{signatures: [db_signature], content: db_content} =
         invalid_conetn_record = InvalidContents.get_by_id(id)
@@ -35,11 +33,9 @@ defmodule OCSPServiceTest do
     test "update content" do
       assert {:ok, id} = InvalidContents.store_invalid_content([], "")
 
-      assert {:ok, _} =
-               InvalidContents.update_invalid_content(id, %{notified: true})
+      assert {:ok, _} = InvalidContents.update_invalid_content(id, %{notified: true})
 
-      assert %InvalidContent{notified: true, id: ^id} =
-               InvalidContents.get_by_id(id)
+      assert %InvalidContent{notified: true, id: ^id} = InvalidContents.get_by_id(id)
     end
   end
 end

@@ -11,21 +11,18 @@ echo "Run Kafka container"
  docker run -d \
      -e CONSUMER_THREADS=1 \
      --env GROUP_ID="digital_signature" \
-     --env TOPICS=digital_signature \
-     --env NUM_PARTITIONS=20 \
      --net=ds_test_db \
      --name=ds_test_kafka \
      spotify/kafka
+
+# docker exec -it ds_test_kafka /bin/bash
+# /opt/kafka_2.11-0.10.1.0/bin/kafka-console-consumer.sh --new-consumer --bootstrap-server localhost:9092 --topic digital_signature
+
 
 echo "Build App test image"
 IMAGE=$(docker build -f Dockerfile.local . | tail -1 | awk '{ print $NF }')
 
 echo "Run App test image"
-
-# docker run \
-#   -e DB_HOST=ds_test_db \
-#   -e KAFKA_BROKERS="ds_test_kafka:9092" \
-#   --rm -it --net ds_test_db $IMAGE /bin/bash -c 'cd /home/ds; for i in {1..20}; do mix test; done;'
 
 docker run \
   -e ERLANG_COOKIE=elixir \

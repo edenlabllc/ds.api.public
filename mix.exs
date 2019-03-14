@@ -24,7 +24,7 @@ defmodule DigitalSignatureUmbrella.MixProject do
       {:git_ops, "~> 0.6.0", only: [:dev]},
       {:distillery, "~> 2.0", runtime: false, override: true},
       {:credo, "~> 0.9.3", only: [:dev, :test]},
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
+      {:excoveralls, "~> 0.10.6", only: [:dev, :test]}
     ]
   end
 

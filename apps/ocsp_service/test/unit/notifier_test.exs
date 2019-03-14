@@ -16,8 +16,7 @@ defmodule OCSPServiceNotifierTest do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
 
-      {:ok, content, [signature]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+      {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
       GenConsumer.online_check_signed_content([signature], content)
 
@@ -30,8 +29,7 @@ defmodule OCSPServiceNotifierTest do
     data = get_data("test/fixtures/hello_revoked.json")
     {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 
-    {:ok, content, [signature]} =
-      DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+    {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
     GenConsumer.online_check_signed_content([signature], content)
     assert InvalidContents.random_invalid_content()
@@ -41,13 +39,11 @@ defmodule OCSPServiceNotifierTest do
     data = get_data("test/fixtures/privatbank.json")
     {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 
-    {:ok, content, [signature]} =
-      DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+    {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
     GenConsumer.online_check_signed_content([signature], content)
 
-    assert %InvalidContent{content: content} =
-             InvalidContents.random_invalid_content()
+    assert %InvalidContent{content: content} = InvalidContents.random_invalid_content()
 
     assert {:ok, %{"content" => _}} = Poison.decode(content)
   end

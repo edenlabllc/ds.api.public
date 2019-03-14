@@ -19,8 +19,7 @@ defmodule OCSPServiceRecheckerTest do
       data = get_data("test/fixtures/hello_revoked.json")
       {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 
-      {:ok, content, [signature]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+      {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
       {:ok, id} = InvalidContents.store_invalid_content([signature], content)
       send(ReChecker, {:recheck, self(), id, 0, [signature]})
@@ -32,8 +31,7 @@ defmodule OCSPServiceRecheckerTest do
       data = get_data("test/fixtures/hello_revoked.json")
       {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 
-      {:ok, content, [signature]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+      {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
       {:ok, id} = InvalidContents.store_invalid_content([signature], content)
       send(ReChecker, {:recheck, self(), id, 1, [signature]})
@@ -44,8 +42,7 @@ defmodule OCSPServiceRecheckerTest do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
 
-      {:ok, content, [signature]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+      {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
       {:ok, id} = InvalidContents.store_invalid_content([signature], content)
       send(ReChecker, {:recheck, self(), id, 1, [signature]})
@@ -58,8 +55,7 @@ defmodule OCSPServiceRecheckerTest do
       data = get_data("test/fixtures/hello_revoked.json")
       {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 
-      {:ok, content, [signature]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+      {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
       {:ok, id} = InvalidContents.store_invalid_content([signature], content)
       InvalidContents.update_invalid_content(id, %{notified: true})
@@ -71,8 +67,7 @@ defmodule OCSPServiceRecheckerTest do
       data = get_data("test/fixtures/hello_revoked.json")
       {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
 
-      {:ok, content, [signature]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+      {:ok, content, [signature]} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
       {:ok, _id} = InvalidContents.store_invalid_content([signature], content)
       ReChecker.start_recheck(self())

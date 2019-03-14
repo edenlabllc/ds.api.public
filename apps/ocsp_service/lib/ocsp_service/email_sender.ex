@@ -11,8 +11,7 @@ defmodule OCSPService.EmailSender do
     template_id = Confex.fetch_env!(:ocsp_service, __MODULE__)[:template_id]
     sender = Confex.fetch_env!(:ocsp_service, __MODULE__)[:sender]
 
-    warning_receivers =
-      Confex.fetch_env!(:ocsp_service, __MODULE__)[:warning_receivers]
+    warning_receivers = Confex.fetch_env!(:ocsp_service, __MODULE__)[:warning_receivers]
 
     params = %{
       subject: "Invalid Digital Signature",

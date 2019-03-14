@@ -29,8 +29,12 @@ ENV CONSUMER_GROUP=digital_signature
 
 ENV REPLACE_OS_VARS=true
 
+ENV COVERALLS_REPO_TOKEN=${COVERALLS}
+ENV COVERALLS_SERVICE_NAME=travis
+
 RUN mix do \
   local.hex --force, \
   local.rebar --force, \
   deps.get, \
   test --exclude pending --trace
+#  coveralls.travis --exclude pending --umbrella

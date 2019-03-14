@@ -15,9 +15,7 @@ defmodule OCSPService.Kafka.GenConsumer do
         online_check_signed_content(signatures, content)
       else
         _ ->
-          Logger.error(
-            "Unhandled message: #{inspect(value)}, offset: #{offset}"
-          )
+          Logger.error("Unhandled message: #{inspect(value)}, offset: #{offset}")
       end
     end
 

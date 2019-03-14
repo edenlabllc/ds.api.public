@@ -9,9 +9,7 @@ defmodule OCSPService.ReChecker do
   alias Core.InvalidContents
   alias DigitalSignature.NifServiceAPI
 
-  @email_sender Application.get_env(:ocsp_service, :api_resolvers)[
-                  :email_sender
-                ]
+  @email_sender Application.get_env(:ocsp_service, :api_resolvers)[:email_sender]
 
   def init({recheck_timeout, max_recheck_tries}) do
     {:ok, {recheck_timeout, max_recheck_tries}}

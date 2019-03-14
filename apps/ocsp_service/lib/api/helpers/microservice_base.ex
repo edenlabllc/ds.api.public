@@ -55,8 +55,7 @@ defmodule OCSPService.API.Helpers.MicroserviceBase do
 
       def request(method, url, body \\ "", headers \\ [], options \\ []) do
         with {:ok, params} <- check_params(options) do
-          query_string =
-            if Enum.empty?(params), do: "", else: "?#{URI.encode_query(params)}"
+          query_string = if Enum.empty?(params), do: "", else: "?#{URI.encode_query(params)}"
 
           Logger.info(fn ->
             Jason.encode!(%{
