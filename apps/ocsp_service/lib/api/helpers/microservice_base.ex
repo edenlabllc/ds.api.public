@@ -52,7 +52,7 @@ defmodule OCSPService.API.Helpers.MicroserviceBase do
 
           Logger.info(
             "Microservice #{method} request to #{config()[:endpoint]}, on #{Enum.join([process_url(url), query_string])}
-            with body: #{body}, headers: #{process_log_headers(headers)}"
+            with body: #{body}, headers: #{inspect(process_log_headers(headers))}"
           )
 
           super(method, url, body, headers, options)
