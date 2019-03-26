@@ -39,7 +39,8 @@ defmodule DigitalSignature.Mixfile do
     [
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
       {:elixir_make, "~> 0.4", runtime: false},
-      {:core, in_umbrella: true}
+      {:core, in_umbrella: true},
+      {:kaffe, "~> 1.11"}
     ]
   end
 

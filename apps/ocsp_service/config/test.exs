@@ -12,7 +12,5 @@ config :ocsp_service, OCSPService.ReChecker,
 config :ocsp_service,
   kaffe_consumer: [
     endpoints: System.get_env("KAFKA_BROKERS"),
-    topics: ["digital_signature"],
-    consumer_group: System.get_env("CONSUMER_GROUP"),
-    message_handler: OCSPService.Kafka.GenConsumer
+    consumer_group: System.get_env("CONSUMER_GROUP")
   ]

@@ -21,20 +21,8 @@ defmodule DigitalSignature.NifAPI do
   defp nif_serice_options(check) do
     timeout = Confex.fetch_env!(:digital_signature, :service_call_timeout)
     call_response_threshold = Confex.fetch_env!(:digital_signature, :call_response_threshold)
-
-    expires_at =
-      NaiveDateTime.add(
-        NaiveDateTime.utc_now(),
-        timeout - call_response_threshold,
-        :millisecond
-      )
-
-    {:ok,
-     %{
-       check: check,
-       expires_at: expires_at,
-       timeout: timeout
-     }}
+    expires_at = NaiveDateTime.add(NaiveDateTime.utc_now(), timeout - call_response_threshold, :millisecond)
+    {:ok, %{check: check, expires_at: expires_at, timeout: timeout}}
   end
 
   def retrive_signed_data(signed_content, signed_data, params) do
@@ -51,34 +39,25 @@ defmodule DigitalSignature.NifAPI do
 
   defp map_signed_data({:ok, data}, _, _), do: {:ok, SignedData.get_map(data)}
 
-  defp map_signed_data(
-         {:ok, data, certificates_info},
-         signed_data,
-         %{expires_at: expires_at, timeout: timeout} = params
-       ) do
-    valid? =
-      NifServiceAPI.provider_cert?(
-        certificates_info,
-        timeout,
-        expires_at,
-        data[:content]
-      )
+  defp map_signed_data({:ok, data, certificates_info}, signed_data, params) do
+    valid? = NifServiceAPI.provider_cert?(certificates_info, params[:timeout], params[:expires_at], data[:content])
 
     if valid? do
       retrive_signed_data(data.content, SignedData.update(signed_data, data), params)
     else
       data = Map.merge(data, %{is_valid: false, validation_error_message: "Certificate verificaton failed"})
-
       {:ok, signed_data |> SignedData.update(data) |> SignedData.get_map()}
     end
   end
 
-  defp map_signed_data({:error, {:n, n}}, signed_data, _),
-    do:
-      {:ok,
-       signed_data
-       |> SignedData.add_sign_error("envelope contains #{n} signatures instead of 1")
-       |> SignedData.get_map()}
+  defp map_signed_data({:error, {:n, n}}, signed_data, _) do
+    data =
+      signed_data
+      |> SignedData.add_sign_error("envelope contains #{n} signatures instead of 1")
+      |> SignedData.get_map()
+
+    {:ok, data}
+  end
 
   defp map_signed_data(nif_error, _, _), do: nif_error
 

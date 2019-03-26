@@ -7,7 +7,7 @@ defmodule SynchronizerCrl.Web.SynchronizerCrlController do
   alias SynchronizerCrl.CrlService
 
   def index(conn, %{"crl_url" => url}) do
-    send(CrlService, {:sync, url})
+    CrlService.synchronize_certificate_revoked_list(url)
     send_resp(conn, 201, "")
   end
 

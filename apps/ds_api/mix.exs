@@ -57,7 +57,6 @@ defmodule Api.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kaffe, "~> 1.11"},
       {:phoenix, "~> 1.4.0"},
       {:plug_cowboy, "~> 2.0"},
       {:eview, "~> 0.15.0"},

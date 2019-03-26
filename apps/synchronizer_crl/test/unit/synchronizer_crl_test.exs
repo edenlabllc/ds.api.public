@@ -24,11 +24,7 @@ defmodule SynchronizerCrl.Test do
     https://www.masterkey.ua/ca/crls/CA-4E6929B9-Delta.crl
     http://acsk.privatbank.ua/crl/PB-S11.crl
     )
-
-    Enum.each(urls, fn url ->
-      CrlService.update_crl_resource(url)
-    end)
-
+    Enum.each(urls, &CrlService.update_crl_resource(&1, %{}))
     assert Enum.sort(urls) == Enum.sort(CoreApi.active_crls())
     assert GenServer.whereis(CrlService)
   end
@@ -36,7 +32,7 @@ defmodule SynchronizerCrl.Test do
   @tag :pending
   test "Get wrong CRL, update_crl_resource do not crash GenServer" do
     url = "http://not.existing.url"
-    CrlService.update_crl_resource(url)
+    CrlService.update_crl_resource(url, %{})
     assert GenServer.whereis(CrlService)
   end
 

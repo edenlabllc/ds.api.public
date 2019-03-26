@@ -41,7 +41,7 @@ defmodule API.Web.APIControllerTest do
     )
 
       Enum.each(urls, fn url ->
-        Api.write_url(url, DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) + 60 * 60))
+        Api.write_crl(url, DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) + 60 * 60))
       end)
 
       data = get_data("test/fixtures/privatbank.json")
@@ -248,7 +248,7 @@ defmodule API.Web.APIControllerTest do
       http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
       http://acsk.privatbank.ua/crl/PB-S9.crl
       )
-      Enum.each(urls, fn url -> CrlService.update_crl_resource(url) end)
+      Enum.each(urls, &CrlService.update_crl_resource(&1, %{}))
 
       data = get_data("test/fixtures/hello_revoked.json")
       request = create_request(data)

@@ -15,14 +15,11 @@ defmodule Core.Certificates do
 
   # CRL Revoked certificate serial numbers ideintified  url API
   def check_revoked?(url, serial_number) do
-    case CoreApi.get_url(url) do
+    case CoreApi.get_crl(url) do
       %Crl{next_update: next_update} ->
         case DateTime.compare(next_update, DateTime.utc_now()) do
-          :gt ->
-            CoreApi.revoked?(url, serial_number)
-
-          _ ->
-            {:error, :outdated}
+          :gt -> CoreApi.revoked?(url, serial_number)
+          _ -> {:error, :outdated}
         end
 
       _ ->
@@ -40,12 +37,8 @@ defmodule Core.Certificates do
           response
 
         {:error, reason} ->
-          # fil this url for feature requests, with outdated next_update
-          CoreApi.write_url(
-            url,
-            DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) - 60 * 60)
-          )
-
+          # store this url for feature requests, with outdated next_update
+          CoreApi.write_crl(url, DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) - 60 * 60))
           {:error, reason}
       end
     else

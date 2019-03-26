@@ -7,11 +7,7 @@ defmodule OCSPService.Application do
   alias OCSPService.ReChecker
 
   def start(_type, _args) do
-    Application.put_env(
-      :kaffe,
-      :consumer,
-      Application.get_env(:ocsp_service, :kaffe_consumer)
-    )
+    Application.put_env(:kaffe, :consumer, Application.get_env(:ocsp_service, :kaffe_consumer))
 
     children = [
       %{

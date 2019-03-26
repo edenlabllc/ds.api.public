@@ -17,14 +17,11 @@ defmodule Core.Api do
         select: {p.type, p.data, c.data}
       )
 
-    query
-    |> Repo.all()
+    Repo.all(query)
   end
 
   def process_cert({"root", root_cert, ocsp_ert}, %{general: general} = map) do
-    new_root = %{root: root_cert, ocsp: ocsp_ert}
-
-    Map.put(map, :general, [new_root | general])
+    Map.put(map, :general, [%{root: root_cert, ocsp: ocsp_ert} | general])
   end
 
   def process_cert({"tsp", tsp_cert, _}, %{tsp: tsp} = map) do
@@ -54,16 +51,16 @@ defmodule Core.Api do
     )
   end
 
-  def get_url(url) do
+  def get_crl(url) do
     Repo.get_by(Crl, url: url)
   end
 
-  def remove_url(url) do
-    Repo.delete(get_url(url))
+  def remove_crl(url) do
+    Repo.delete(get_crl(url))
   end
 
-  def write_url(url, nextUpdate) do
-    case get_url(url) do
+  def write_crl(url, nextUpdate) do
+    case get_crl(url) do
       nil ->
         %Crl{}
         |> crl_changeset(%{url: url, next_update: nextUpdate})
@@ -105,10 +102,10 @@ defmodule Core.Api do
   end
 
   def update_serials(url, nextUpdate, serialNumbers) do
-    with {:ok, _} <- write_url(url, nextUpdate),
-         :ok <- write_serials(url, serialNumbers) do
-      :ok
-    end
+    Repo.transaction(fn ->
+      write_serials(url, serialNumbers)
+      write_crl(url, nextUpdate)
+    end)
   end
 
   def crl_changeset(%Crl{} = crl, attrs) do

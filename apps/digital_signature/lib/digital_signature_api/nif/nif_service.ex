@@ -12,7 +12,6 @@ defmodule DigitalSignature.NifService do
   def init(certs_cache_ttl) do
     certs = Certificates.get_certificates()
     Process.send_after(self(), :refresh, certs_cache_ttl)
-
     {:ok, {certs_cache_ttl, certs}}
   end
 
@@ -32,17 +31,13 @@ defmodule DigitalSignature.NifService do
   @doc """
   Get signed content with nifs
   """
-  def handle_call(
-        {:content, signed_content, signed_data, check, expires_at},
-        _from,
-        {certs_cache_ttl, certs}
-      ) do
+  def handle_call({:content, signed_content, signed_data, check, expires_at}, _, {_, certs} = state) do
     processing_result =
       with :ok <- check_time(expires_at) do
         get_signed_content(signed_content, signed_data, certs, check)
       end
 
-    {:reply, processing_result, {certs_cache_ttl, certs}}
+    {:reply, processing_result, state}
   end
 
   def handle_call(_, _from, state), do: {:reply, :not_implemented, state}

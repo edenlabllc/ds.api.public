@@ -35,7 +35,6 @@ defmodule Core.MixProject do
       {:ehealth_logger, git: "https://github.com/edenlabllc/ehealth_logger.git"},
       {:postgrex, "~> 0.14.1"},
       {:confex_config_provider, "~> 0.1.0"},
-      {:kaffe, "~> 1.11"},
       {:jason, "~> 1.1"},
       {:jvalid, "~> 0.7.0"}
     ]

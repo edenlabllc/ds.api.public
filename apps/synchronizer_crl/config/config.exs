@@ -5,7 +5,7 @@ config :synchronizer_crl, SynchronizerCrl.Web.Endpoint,
   secret_key_base: "kM4g3grYc77xl0Zglf381h8g6EgOBSH18TbWwMB1UCdWHxFFkIZcF8Ci3w9ZtLCF",
   instrumenters: [LoggerJSON.Phoenix.Instruments]
 
-config :phoenix, :format_encoders, json: Jason
+config :phoenix, :json_library, Jason
 
 # Configure crl scheduler
 config :synchronizer_crl, SynchronizerCrl.CrlService,

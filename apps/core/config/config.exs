@@ -15,15 +15,8 @@ config :core, Core.Repo,
   port: System.get_env("DB_PORT"),
   timeout: 15_000
 
-config :kaffe,
-  kafka_mod: :brod,
-  producer: [
-    endpoints: "localhost:9092",
-    topics: ["digital_signature"]
-  ]
-
 # Configure crl api
-config :core, Core.Api, sn_chunk_limit: 20_000
+config :core, Core.Api, sn_chunk_limit: {:system, :integer, "SERIAL_NUMBERS_CHUNK_LIMIT", 100}
 
 config :logger_json, :backend,
   formatter: EhealthLogger.Formatter,
@@ -31,6 +24,6 @@ config :logger_json, :backend,
 
 config :logger,
   backends: [LoggerJSON],
-  level: :info
+  level: :warn
 
 import_config "#{Mix.env()}.exs"

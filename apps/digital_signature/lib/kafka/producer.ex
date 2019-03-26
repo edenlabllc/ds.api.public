@@ -8,16 +8,8 @@ defmodule DigitalSignature.Kafka.Producer do
 
   def publish_sigantures(%{signatures: _signaures, content: _content} = certificates_info) do
     partitions = Confex.fetch_env!(:digital_signature, :kafka)[:partitions]
-
     data = :erlang.term_to_binary(certificates_info)
-
-    :ok =
-      Producer.produce_sync(
-        "digital_signature",
-        Enum.random(0..(partitions - 1)),
-        "",
-        data
-      )
+    :ok = Producer.produce_sync("digital_signature", Enum.random(0..(partitions - 1)), "", data)
   end
 
   def publish_sigantures(error),

@@ -16,4 +16,11 @@ config :digital_signature,
 
 config :phoenix, :format_encoders, json: Jason
 
+config :kaffe,
+  kafka_mod: :brod,
+  producer: [
+    endpoints: "localhost:9092",
+    topics: ["digital_signature"]
+  ]
+
 import_config("#{Mix.env()}.exs")

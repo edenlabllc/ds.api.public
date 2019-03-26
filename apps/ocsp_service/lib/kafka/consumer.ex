@@ -7,15 +7,14 @@ defmodule OCSPService.Kafka.GenConsumer do
 
   require Logger
 
-  # note - messages are delivered in batches
+  # note - messages(are(delivered in batches))
   def handle_messages(messages) do
     for %{value: value, offset: offset} <- messages do
       with %{signatures: signatures, content: content} <-
              :erlang.binary_to_term(value) do
         online_check_signed_content(signatures, content)
       else
-        _ ->
-          Logger.error("Unhandled message: #{inspect(value)}, offset: #{offset}")
+        _ -> Logger.error("Unhandled message: #{inspect(value)}, offset: #{offset}")
       end
     end
 

@@ -7,12 +7,12 @@ defmodule SynchronizerCrl.DateUtils do
            to_string(date)
          ) do
       %{
-        "day" => day,
-        "hour" => hour,
-        "minute" => minute,
-        "month" => month,
-        "second" => second,
-        "year" => year
+        "day" => _day,
+        "hour" => _hour,
+        "minute" => _minute,
+        "month" => _month,
+        "second" => _second,
+        "year" => _year
       } = fields ->
         fields =
           Enum.into(fields, %{}, fn
@@ -36,12 +36,12 @@ defmodule SynchronizerCrl.DateUtils do
     end
   end
 
-  def next_update_time(next_update, check \\ false) do
+  def next_update_time(next_update, force_synchronization \\ false) do
     case DateTime.diff(next_update, DateTime.utc_now(), :millisecond) do
       n when n >= 0 ->
         {:ok, n}
 
-      _n when check ->
+      _n when force_synchronization ->
         {:ok, 0}
 
       n when n > -1000 * 60 * 60 * 12 ->

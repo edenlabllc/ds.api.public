@@ -119,7 +119,6 @@ defmodule Core.InvalidContents do
   end
 
   defp changeset(%InvalidContent{} = invalid_content, attrs) do
-    invalid_content
-    |> cast(attrs, [:signatures, :content, :notified, :received])
+    cast(invalid_content, attrs, [:signatures, :content, :notified, :received])
   end
 end

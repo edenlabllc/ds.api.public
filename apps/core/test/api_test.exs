@@ -20,9 +20,9 @@ defmodule CoreApiTest do
     assert ["https://crl.com"] = Api.active_crls()
   end
 
-  test "remove_url/1 works" do
+  test "remove_crl/1 works" do
     insert(:crl, url: "https://crl.com")
-    Api.remove_url("https://crl.com")
+    Api.remove_crl("https://crl.com")
     assert [] = Api.active_crls()
   end
 
@@ -35,7 +35,7 @@ defmodule CoreApiTest do
 
   test "write new url" do
     url = "crl.com"
-    Api.write_url(url, DateTime.utc_now())
+    Api.write_crl(url, DateTime.utc_now())
     assert [^url] = Api.active_crls()
   end
 
@@ -43,7 +43,7 @@ defmodule CoreApiTest do
     crl = insert(:crl)
     url = crl.url
     dt = %{DateTime.utc_now() | microsecond: {0, 0}}
-    Api.write_url(url, dt)
+    Api.write_crl(url, dt)
     assert [%Crl{url: ^url, next_update: ^dt}] = Repo.all(Crl)
   end
 
