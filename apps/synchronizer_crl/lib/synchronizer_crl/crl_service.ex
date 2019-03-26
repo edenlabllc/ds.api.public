@@ -23,8 +23,9 @@ defmodule SynchronizerCrl.CrlService do
   @impl true
   def handle_info({:synchronize, url}, state) do
     if is_reference(state[url]), do: Process.cancel_timer(state[url])
+    updated_state = update_crl_resource(url, state)
     garbage_collect()
-    {:noreply, update_crl_resource(url, state)}
+    {:noreply, updated_state}
   end
 
   def handle_info(_, state), do: {:noreply, state}
@@ -36,27 +37,25 @@ defmodule SynchronizerCrl.CrlService do
     |> process_state_update(url, state)
   end
 
-  defp process_state_update(:outdated, url, state) do
-    CoreApi.remove_crl(url)
-    state
-  end
-
-  defp process_state_update({:next_update, timeout}, url, state) do
+  defp process_state_update({:ok, timeout}, url, state) do
     Logger.info("CRL #{url} will be updated in #{timeout} millisecond(s)")
     crl_timer = Process.send_after(__MODULE__, {:synchronize, url}, timeout)
     Map.put(state, url, crl_timer)
   end
 
+  defp process_state_update({:error, :outdated}, url, state) do
+    CoreApi.remove_crl(url)
+    Map.delete(state, url)
+  end
+
+  defp process_state_update(_, url, state), do: process_state_update({:ok, config()[:retry_crl_timeout]}, url, state)
+
   defp next_crl_update(%Crl{next_update: next_update}, _), do: DateUtils.next_update_time(next_update, true)
 
   defp next_crl_update(nil, url) do
     with {:ok, next_update, serial_numbers} <- Provider.get_revoked_certificates(url),
-         {:ok, _} <- CoreApi.update_serials(url, next_update, serial_numbers),
-         {:ok, update_timeout} <- DateUtils.next_update_time(next_update) do
-      {:next_update, update_timeout}
-    else
-      {:error, :outdated} -> :outdated
-      _ -> {:next_update, config()[:retry_crl_timeout]}
+         {:ok, _} <- CoreApi.update_serials(url, next_update, serial_numbers) do
+      DateUtils.next_update_time(next_update)
     end
   end
 

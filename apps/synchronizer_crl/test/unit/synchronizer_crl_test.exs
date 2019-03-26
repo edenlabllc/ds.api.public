@@ -4,71 +4,74 @@ defmodule SynchronizerCrl.Test do
   and next update provide handling
   """
   use SynchronizerCrl.Web.ConnCase, async: false
+
+  import Core.Factory
+
   alias Core.Api, as: CoreApi
   alias SynchronizerCrl.CrlService
-  alias SynchronizerCrl.DateUtils
 
   doctest SynchronizerCrl.CrlService
 
-  @tag :pending
-  test "CRL Service started" do
-    assert GenServer.whereis(CrlService)
+  describe "gen server" do
+    @tag :pending
+    test "CRL Service started" do
+      assert GenServer.whereis(CrlService)
+    end
+
+    @tag :pending
+    test "Get CRL, update_crl_resource works" do
+      urls = ~w(
+        http://uakey.com.ua/list-delta.crl
+        https://ca.informjust.ua/download/crls/CA-9A15A67B-Delta.crl
+        http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
+        https://www.masterkey.ua/ca/crls/CA-4E6929B9-Delta.crl
+        http://acsk.privatbank.ua/crl/PB-S11.crl
+      )
+      Enum.each(urls, &CrlService.update_crl_resource(&1, %{}))
+      assert Enum.sort(urls) == Enum.sort(CoreApi.active_crls())
+      assert GenServer.whereis(CrlService)
+    end
+
+    @tag :pending
+    test "Get wrong CRL, update_crl_resource do not crash GenServer" do
+      url = "http://not.existing.url"
+      CrlService.update_crl_resource(url, %{})
+      assert GenServer.whereis(CrlService)
+    end
   end
 
-  @tag :pending
-  test "Get CRL, update_crl_resource works" do
-    urls = ~w(
-    http://uakey.com.ua/list-delta.crl
-    https://ca.informjust.ua/download/crls/CA-9A15A67B-Delta.crl
-    http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
-    https://www.masterkey.ua/ca/crls/CA-4E6929B9-Delta.crl
-    http://acsk.privatbank.ua/crl/PB-S11.crl
-    )
-    Enum.each(urls, &CrlService.update_crl_resource(&1, %{}))
-    assert Enum.sort(urls) == Enum.sort(CoreApi.active_crls())
-    assert GenServer.whereis(CrlService)
-  end
+  describe "updates crl" do
+    test "synchronize with existing crl" do
+      insert(:crl,
+        url: "abc",
+        next_update: DateTime.from_naive!(NaiveDateTime.add(NaiveDateTime.utc_now(), 6000), "Etc/UTC")
+      )
 
-  @tag :pending
-  test "Get wrong CRL, update_crl_resource do not crash GenServer" do
-    url = "http://not.existing.url"
-    CrlService.update_crl_resource(url, %{})
-    assert GenServer.whereis(CrlService)
-  end
+      ref = make_ref()
+      assert %{"abc" => tref} = CrlService.update_crl_resource("abc", %{"abc" => ref})
+      refute ref == tref
+      assert Process.cancel_timer(tref)
+    end
 
-  test "next update time ok" do
-    next_update =
-      NaiveDateTime.utc_now()
-      |> NaiveDateTime.add(60)
-      |> DateTime.from_naive!("Etc/UTC")
+    test "synchronize with new invalid crl do retry" do
+      ref = make_ref()
+      invalid_url = "ht://invalid.url"
+      assert %{^invalid_url => tref} = CrlService.update_crl_resource(invalid_url, %{invalid_url => ref})
+      refute ref == tref
+      assert Process.cancel_timer(tref)
+    end
 
-    assert {:ok, _} = DateUtils.next_update_time(next_update)
-  end
+    @tag :pending
+    test "synchronize with new valid crl success" do
+      ref = make_ref()
+      url = "http://uakey.com.ua/list-delta.crl"
 
-  test "next update time outdated 2 hours " do
-    next_update =
-      NaiveDateTime.utc_now()
-      |> NaiveDateTime.add(-60 * 60 * 2)
-      |> DateTime.from_naive!("Etc/UTC")
+      assert %{^url => tref, "a" => 1, "b" => 2} =
+               CrlService.update_crl_resource(url, %{url => ref, "a" => 1, "b" => 2})
 
-    assert {:ok, 108_000_000} = DateUtils.next_update_time(next_update)
-  end
-
-  test "next update time outdated 60 days " do
-    next_update =
-      NaiveDateTime.utc_now()
-      |> NaiveDateTime.add(-60 * 60 * 24 * 60)
-      |> DateTime.from_naive!("Etc/UTC")
-
-    assert {:error, :outdated} = DateUtils.next_update_time(next_update)
-  end
-
-  test "next update time outdated 60 days if check " do
-    next_update =
-      NaiveDateTime.utc_now()
-      |> NaiveDateTime.add(-60 * 60 * 24 * 60)
-      |> DateTime.from_naive!("Etc/UTC")
-
-    assert {:ok, 0} = DateUtils.next_update_time(next_update, true)
+      refute ref == tref
+      assert Process.cancel_timer(tref)
+      assert [url] == CoreApi.active_crls()
+    end
   end
 end
