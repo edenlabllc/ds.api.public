@@ -12,3 +12,5 @@ config :synchronizer_crl, SynchronizerCrl.Web.Endpoint,
   code_reloader: false
 
 config :phoenix, :serve_endpoints, true
+
+config :logger, level: :info

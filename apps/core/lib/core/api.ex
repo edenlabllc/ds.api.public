@@ -84,7 +84,7 @@ defmodule Core.Api do
     end)
     |> chunk_records([])
     |> Enum.each(fn revoked_sns ->
-      Repo.insert_all(RevokedSN, revoked_sns, [])
+      {_, nil} = Repo.insert_all(RevokedSN, revoked_sns, [])
     end)
   end
 
@@ -102,10 +102,8 @@ defmodule Core.Api do
   end
 
   def update_serials(url, nextUpdate, serialNumbers) do
-    Repo.transaction(fn ->
-      write_serials(url, serialNumbers)
-      write_crl(url, nextUpdate)
-    end)
+    write_serials(url, serialNumbers)
+    write_crl(url, nextUpdate)
   end
 
   def crl_changeset(%Crl{} = crl, attrs) do

@@ -24,6 +24,6 @@ config :logger_json, :backend,
 
 config :logger,
   backends: [LoggerJSON],
-  level: :warn
+  level: :info
 
 import_config "#{Mix.env()}.exs"
