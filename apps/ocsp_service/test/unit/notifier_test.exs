@@ -45,6 +45,6 @@ defmodule OCSPServiceNotifierTest do
 
     assert %InvalidContent{content: content} = InvalidContents.random_invalid_content()
 
-    assert {:ok, %{"content" => _}} = Poison.decode(content)
+    assert {:ok, %{"content" => _}} = Jason.decode(content)
   end
 end

@@ -21,9 +21,17 @@ defmodule SynchronizerCrl.CrlService do
 
   @impl true
   def handle_info({:synchronize, url}, state) do
-    if state |> Map.get(url) |> is_reference() do
-      Logger.info("CRL #{url} already in state")
-      {:noreply, state}
+    if is_reference(state[url]) do
+      timeout = :erlang.read_timer(state[url])
+
+      if timeout do
+        Logger.info("CRL #{url} already in state")
+        {:noreply, state}
+      else
+        :erlang.cancel_timer(state[url])
+        new_state = Map.put(state, url, update_crl_resource(url))
+        {:noreply, new_state}
+      end
     else
       new_state = Map.put(state, url, update_crl_resource(url))
       {:noreply, new_state}
