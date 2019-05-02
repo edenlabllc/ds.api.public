@@ -1,8 +1,9 @@
 defmodule API.Web.APIController do
   @moduledoc false
+
   use API.Web, :controller
   use JValid
-  alias DigitalSignature.NifAPI
+  alias API.ContentDecoder
   require Logger
 
   action_fallback(API.Web.FallbackController)
@@ -14,8 +15,7 @@ defmodule API.Web.APIController do
 
   def index(conn, params) do
     with :ok <- validate_schema(:digital_signatures, params),
-         {:ok, signed_content} <- Base.decode64(Map.get(params, "signed_content")),
-         {:ok, result} <- NifAPI.process_signed_content(signed_content, params["check"] || true) do
+         {:ok, result} <- ContentDecoder.decode(Map.get(params, "signed_content")) do
       render_response(result, conn)
     else
       :error ->

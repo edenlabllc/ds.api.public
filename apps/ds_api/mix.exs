@@ -62,6 +62,7 @@ defmodule Api.MixProject do
       {:eview, "~> 0.15.0"},
       {:confex_config_provider, "~> 0.1.0"},
       {:mox, "~> 0.3", only: :test},
+      {:kube_rpc, "~> 0.2.0"},
       {:digital_signature, in_umbrella: true}
     ]
   end

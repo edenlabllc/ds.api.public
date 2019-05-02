@@ -13,12 +13,12 @@ defmodule DigitalSignature.Mixfile do
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps(),
-      docs: [
-        source_ref: "v#\{@version\}",
-        main: "readme",
-        extras: ["README.md"]
-      ]
+      deps: deps()
+      # docs: [
+      #   source_ref: "v#\{@version\}",
+      #   main: "readme",
+      #   extras: ["README.md"]
+      # ]
     ]
   end
 

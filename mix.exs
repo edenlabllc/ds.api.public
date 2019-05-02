@@ -10,7 +10,10 @@ defmodule DigitalSignatureUmbrella.MixProject do
       deps: deps(),
       aliases: aliases(),
       preferred_cli_env: [coveralls: :test],
-      test_coverage: [tool: ExCoveralls]
+      test_coverage: [tool: ExCoveralls],
+      docs: [
+        filter_prefix: "*.Rpc"
+      ]
     ]
   end
 
@@ -24,7 +27,8 @@ defmodule DigitalSignatureUmbrella.MixProject do
       {:git_ops, "~> 0.6.0", only: [:dev]},
       {:distillery, "~> 2.0", runtime: false, override: true},
       {:credo, "~> 0.9.3", only: [:dev, :test]},
-      {:excoveralls, "~> 0.10.6", only: [:dev, :test]}
+      {:excoveralls, "~> 0.10.6", only: [:dev, :test]},
+      {:ex_doc, "~> 0.20.2", only: :dev, runtime: false}
     ]
   end
 
