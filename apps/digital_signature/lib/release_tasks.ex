@@ -22,13 +22,13 @@ defmodule DigitalSignature.ReleaseTasks do
   ]
 
   def migrate do
-    IO.puts("Loading digital_signature..")
-    # Load the code for digital_signature, but don't start it
-    :ok = Application.load(:digital_signature)
-
     IO.puts("Starting dependencies..")
     # Start apps necessary for executing migrations
     Enum.each(@start_apps, &Application.ensure_all_started/1)
+
+    IO.puts("Loading digital_signature..")
+    # Load the code for digital_signature, but don't start it
+    :ok = Application.load(:digital_signature)
 
     # Start the Repo(s) for digital_signature
     IO.puts("Starting repos..")
