@@ -31,6 +31,12 @@ environment :prod do
   set(include_erts: true)
   set(include_src: false)
   set(cookie: :"0*xsbIl3AS91,?[R9RMhLPs47@P3q?@cC%f0]RH})s`A4v]aU(^=b@^1sLm4RlN6")
+
+  set(
+    overlays: [
+      {:template, "rel/templates/vm.args.eex", "releases/<%= release_version %>/vm.args"}
+    ]
+  )
 end
 
 release :ds_api do
