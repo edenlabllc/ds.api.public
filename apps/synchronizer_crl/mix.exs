@@ -11,7 +11,7 @@ defmodule SynchronizerCrl.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.8.1",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix] ++ Mix.compilers(),
+      compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases()
@@ -32,8 +32,7 @@ defmodule SynchronizerCrl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix, "~> 1.4.0"},
-      {:plug_cowboy, "~> 2.0"},
+      {:kube_rpc, "~> 0.2.0"},
       {:httpoison, "~> 1.1.0"},
       {:floki, "~> 0.20.4"},
       {:core, in_umbrella: true}

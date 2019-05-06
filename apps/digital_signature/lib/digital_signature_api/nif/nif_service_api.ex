@@ -2,7 +2,7 @@ defmodule DigitalSignature.NifServiceAPI do
   @moduledoc """
   API for GenServer NifService
   """
-  alias Core.Certificates
+  alias Core.RevokedSerialNumbers
   alias DigitalSignature.NifService
   require Logger
 
@@ -14,12 +14,7 @@ defmodule DigitalSignature.NifServiceAPI do
   end
 
   def signatures_valid_online?(signatures) do
-    expires_at =
-      NaiveDateTime.add(
-        NaiveDateTime.utc_now(),
-        @timeout,
-        :millisecond
-      )
+    expires_at = NaiveDateTime.add(NaiveDateTime.utc_now(), @timeout, :millisecond)
 
     Enum.all?(signatures, fn %{access: url, data: data, ocsp_data: ocsp_data} ->
       {:ok, true} == check_online(url, data, ocsp_data, expires_at, @timeout)
@@ -35,16 +30,9 @@ defmodule DigitalSignature.NifServiceAPI do
     end
   end
 
-  defp check_offline(url, serial_number) do
-    Certificates.revoked(url, serial_number)
-  end
+  defp check_offline(url, serial_number), do: RevokedSerialNumbers.check_revoked(url, serial_number)
 
-  def provider_cert?(
-        certificates_info,
-        timeout,
-        expires_at,
-        content
-      ) do
+  def provider_cert?(certificates_info, timeout, expires_at, content) do
     Enum.all?(certificates_info, fn cert_info ->
       %{
         delta_crl: delta_crl,

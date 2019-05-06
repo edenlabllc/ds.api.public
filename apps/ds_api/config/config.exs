@@ -8,6 +8,20 @@ config :ds_api, API.Web.Endpoint,
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)],
   instrumenters: [LoggerJSON.Phoenix.Instruments]
 
+config :ds_api,
+  topologies: [
+    k8s_ops: [
+      strategy: Elixir.Cluster.Strategy.Kubernetes,
+      config: [
+        mode: :dns,
+        kubernetes_node_basename: "ds",
+        kubernetes_selector: "app=api",
+        kubernetes_namespace: "ops",
+        polling_interval: 10_000
+      ]
+    ]
+  ]
+
 config :phoenix, :format_encoders, json: Jason
 
 import_config "#{Mix.env()}.exs"

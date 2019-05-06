@@ -3,7 +3,6 @@ defmodule DigitalSignature do
   This is an entry point of digital_signature application.
   """
   use Application
-  alias Confex.Resolver
 
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
@@ -16,9 +15,5 @@ defmodule DigitalSignature do
 
     opts = [strategy: :one_for_one, name: DigitalSignature.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  def init(_key, config) do
-    Resolver.resolve(config)
   end
 end

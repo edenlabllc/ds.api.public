@@ -39,7 +39,8 @@ defmodule SynchronizerCrl.DateUtils do
   def next_update_time(next_update, force_synchronization \\ false) do
     case DateTime.diff(next_update, DateTime.utc_now(), :millisecond) do
       n when n >= 0 ->
-        {:ok, n}
+        # rechech 60 seconds after next update
+        {:ok, n + 60 * 1000}
 
       _n when force_synchronization ->
         {:ok, 0}

@@ -14,8 +14,6 @@ config :digital_signature,
     topic: {:system, "DS_KAFKA_TOPIC", "digital_signature"}
   ]
 
-config :phoenix, :format_encoders, json: Jason
-
 config :kaffe,
   kafka_mod: :brod,
   producer: [
