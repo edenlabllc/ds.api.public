@@ -15,15 +15,12 @@ config :core, Core.Repo,
   port: System.get_env("DB_PORT"),
   timeout: 15_000
 
-# Configure crl api
-config :core, Core.Api, sn_chunk_limit: {:system, :integer, "SERIAL_NUMBERS_CHUNK_LIMIT", 100}
-
 config :logger_json, :backend,
   formatter: EhealthLogger.Formatter,
   metadata: :all
 
 config :logger,
   backends: [LoggerJSON],
-  level: :info
+  level: :error
 
 import_config "#{Mix.env()}.exs"

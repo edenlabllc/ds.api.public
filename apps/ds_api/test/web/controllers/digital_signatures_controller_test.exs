@@ -4,10 +4,11 @@ defmodule API.Web.APIControllerTest do
   import Ecto.Query
   import Mox
 
-  alias Core.Api
+  alias Core.CRLs
   alias Core.Cert
+  alias Core.RevokedSerialNumbers
   alias Core.Repo
-  alias SynchronizerCrl.CrlService
+  alias SynchronizerCrl.Worker
 
   setup [:set_mox_global, :verify_on_exit!]
 
@@ -34,14 +35,12 @@ defmodule API.Web.APIControllerTest do
 
     test "revoked invalid sign  push content to kafka and return true", %{conn: conn} do
       expect(KafkaMock, :publish_sigantures, fn _ -> :ok end)
-
-      urls = ~w(
-    http://acsk.privatbank.ua/crldelta/PB-Delta-S11.crl
-    http://acsk.privatbank.ua/crl/PB-S11.crl
-    )
+      urls = ~w(http://acsk.privatbank.ua/crldelta/PB-Delta-S11.crl http://acsk.privatbank.ua/crl/PB-S11.crl)
 
       Enum.each(urls, fn url ->
-        Api.write_crl(url, DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) + 60 * 60))
+        next_update = DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) + 60 * 60)
+        RevokedSerialNumbers.store(url, next_update, [])
+        CRLs.store(url, next_update)
       end)
 
       data = get_data("test/fixtures/privatbank.json")
@@ -61,6 +60,10 @@ defmodule API.Web.APIControllerTest do
                "person" => %{"first_name" => "ТестНКР"},
                "scope" => "family_doctor"
              } = resp["data"]["content"]
+
+      Enum.each(urls, fn url ->
+        RevokedSerialNumbers.delete(url)
+      end)
     end
   end
 
@@ -248,7 +251,7 @@ defmodule API.Web.APIControllerTest do
       http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
       http://acsk.privatbank.ua/crl/PB-S9.crl
       )
-      Enum.each(urls, &CrlService.update_crl_resource(&1))
+      Enum.each(urls, &Worker.update_crl_resource(&1))
 
       data = get_data("test/fixtures/hello_revoked.json")
       request = create_request(data)

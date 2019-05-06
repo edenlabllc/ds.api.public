@@ -1,4 +1,4 @@
-defmodule Core.Crl do
+defmodule Core.CRL do
   @moduledoc false
   use Ecto.Schema
 

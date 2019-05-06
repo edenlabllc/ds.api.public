@@ -24,9 +24,9 @@ defmodule OCSPService.ReChecker do
         {:recheck, pid, id, n, signatures},
         {recheck_timeout, max_recheck_tries} = state
       ) do
-    is_invalid? = NifServiceAPI.signatures_valid_online?(signatures)
+    valid? = NifServiceAPI.signatures_valid_online?(signatures)
 
-    case {is_invalid?, n} do
+    case {valid?, n} do
       {true, _} ->
         send(pid, :valid)
         InvalidContents.delete(id)

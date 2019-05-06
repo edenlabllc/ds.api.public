@@ -1,48 +1,33 @@
 defmodule Core.Certificates do
   @moduledoc false
 
-  alias Core.Api, as: CoreApi
-  alias Core.Crl
+  import Ecto.Query
+  alias Core.Cert
+  alias Core.Repo
 
   # Certificates API
   def get_certificates do
     Enum.reduce(
-      CoreApi.get_certs(),
+      get_certs(),
       %{general: [], tsp: []},
-      &CoreApi.process_cert(&1, &2)
+      &process_cert(&1, &2)
     )
   end
 
-  # CRL Revoked certificate serial numbers ideintified  url API
-  def check_revoked?(url, serial_number) do
-    case CoreApi.get_crl(url) do
-      %Crl{next_update: next_update} ->
-        case DateTime.compare(next_update, DateTime.utc_now()) do
-          :gt -> CoreApi.revoked?(url, serial_number)
-          _ -> {:error, :outdated}
-        end
-
-      _ ->
-        {:error, :not_found}
-    end
+  # Certificates
+  defp get_certs do
+    Cert
+    |> where([p], p.type in ["root", "tsp"] and p.active)
+    |> join(:left, [p], c in Cert, on: c.parent == p.id and c.type == "ocsp" and c.active)
+    |> select([p, c], [p.type, p.data, c.data])
+    |> Repo.all()
   end
 
-  def revoked(url, serial_number) do
-    with {serial_number, ""} <-
-           serial_number
-           |> String.upcase()
-           |> Integer.parse(16) do
-      case check_revoked?(url, serial_number) do
-        {:ok, _} = response ->
-          response
+  defp process_cert(["root", root_cert, ocsp_ert], %{general: general} = map) do
+    Map.put(map, :general, [%{root: root_cert, ocsp: ocsp_ert} | general])
+  end
 
-        {:error, reason} ->
-          # store this url for feature requests, with outdated next_update
-          CoreApi.write_crl(url, DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) - 60 * 60))
-          {:error, reason}
-      end
-    else
-      _ -> {:error, {:hex_decode, serial_number}}
-    end
+  defp process_cert(["tsp", tsp_cert, _], %{tsp: tsp} = map) do
+    Map.put(map, :tsp, [tsp_cert | tsp])
   end
 end
