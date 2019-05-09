@@ -5,12 +5,16 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
-## [0.2.0](https://github.com/edenlabllc/ds.api/compare/0.1.1...0.2.0) (2019-3-27)
+## [0.2.0](https://github.com/edenlabllc/ds.api/compare/0.2.0...0.2.0) (2019-5-9)
 
 
 
 
 ### Features:
+
+* fix CRL synchronization (#61)
+
+* Rpc (#58)
 
 * ecto 3 (#40)
 
@@ -24,22 +28,16 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes:
 
+* run ecto_sql app in release task (#62)
+
+* migration task (#60)
+
+* migration task (#59)
+
+* crl synchronization (#53)
+
 * logging (#48)
 
 * phoenix errors logging (#42)
 
 * no segfault if no ocsp
-
-## [v0.1.1](https://github.com/edenlabllc/ds.api/compare/0.1.0...v0.1.1) (2019-1-21)
-
-
-
-
-### Bug Fixes:
-
-* ds.api caveralls
-
-## [v0.1.0](https://github.com/edenlabllc/ds.api/compare/v0.1.0...v0.1.0) (2019-1-21)
-
-
-
