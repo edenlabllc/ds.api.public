@@ -33,9 +33,12 @@ defmodule API.Web.APIControllerTest do
       {:ok, conn: put_req_header(conn, "accept", "application/json")}
     end
 
-    test "revoked invalid sign  push content to kafka and return true", %{conn: conn} do
+    test "revoked invalid sign - push content to kafka and return true", %{conn: conn} do
       expect(KafkaMock, :publish_sigantures, fn _ -> :ok end)
-      urls = ~w(http://acsk.privatbank.ua/crldelta/PB-Delta-S11.crl http://acsk.privatbank.ua/crl/PB-S11.crl)
+      urls = ~w(
+      http://acsk.privatbank.ua/crldelta/PB-Delta-S13.crl
+      http://acsk.privatbank.ua/crl/PB-S13.crl
+      )
 
       Enum.each(urls, fn url ->
         next_update = DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) + 60 * 60)
@@ -43,7 +46,7 @@ defmodule API.Web.APIControllerTest do
         CRLs.store(url, next_update)
       end)
 
-      data = get_data("test/fixtures/privatbank.json")
+      data = get_data("test/fixtures/hello_revoked.json")
       request = create_request(data)
 
       resp =
@@ -52,14 +55,8 @@ defmodule API.Web.APIControllerTest do
         |> json_response(200)
 
       [signature] = resp["data"]["signatures"]
-
       assert signature["is_valid"]
-
-      assert %{
-               "declaration_number" => "0001-3X4M-M000",
-               "person" => %{"first_name" => "ТестНКР"},
-               "scope" => "family_doctor"
-             } = resp["data"]["content"]
+      assert %{"text" => "Hello World"} = resp["data"]["content"]
 
       Enum.each(urls, fn url ->
         RevokedSerialNumbers.delete(url)
@@ -246,10 +243,10 @@ defmodule API.Web.APIControllerTest do
       assert false in stamps?
     end
 
-    test "processing signed with revoked Privat personal key", %{conn: conn} do
+    test "processing signed with revoked Privat personal key and actual revoked info", %{conn: conn} do
       urls = ~w(
-      http://acsk.privatbank.ua/crldelta/PB-Delta-S9.crl
-      http://acsk.privatbank.ua/crl/PB-S9.crl
+      http://acsk.privatbank.ua/services/ocsp/
+      http://acsk.privatbank.ua/crldelta/PB-Delta-S13.crl
       )
       Enum.each(urls, &Worker.update_crl_resource(&1))
 
@@ -267,8 +264,8 @@ defmodule API.Web.APIControllerTest do
       assert "Certificate verificaton failed" == signature["validation_error_message"]
     end
 
-    test "processing revoked signed data works online (privatbank)", %{conn: conn} do
-      data = get_data("test/fixtures/privatbank.json")
+    test "processing revoked signed data works online", %{conn: conn} do
+      data = get_data("test/fixtures/hello_revoked.json")
       request = create_request(data)
 
       resp =
@@ -281,11 +278,7 @@ defmodule API.Web.APIControllerTest do
       refute signature["is_valid"]
       assert "Certificate verificaton failed" == signature["validation_error_message"]
 
-      assert %{
-               "declaration_number" => "0001-3X4M-M000",
-               "person" => %{"first_name" => "ТестНКР"},
-               "scope" => "family_doctor"
-             } = resp["data"]["content"]
+      assert %{"text" => "Hello World"} = resp["data"]["content"]
     end
 
     test "processing double signed valid data works", %{conn: conn} do
