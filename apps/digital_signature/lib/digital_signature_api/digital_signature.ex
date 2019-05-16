@@ -76,8 +76,7 @@ defmodule DigitalSignature.NifAPI do
         {:ok, decoded_content}
 
       {:error, reason} ->
-        Logger.error("Content cannot be decoded from Json, error: #{inspect(reason)}, content: #{content}")
-
+        Logger.error("Content cannot be decoded from Json, error: #{inspect(reason)}")
         {:error, {:invalid_content, @invalid_content_error_message <> " Error: #{inspect(reason)}", inspect(content)}}
     end
   end
