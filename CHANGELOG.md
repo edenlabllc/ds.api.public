@@ -5,6 +5,29 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [0.3.0](https://github.com/edenlabllc/ds.api/compare/0.2.0...0.3.0) (2019-5-16)
+
+
+
+
+### Features:
+
+* fix CRL synchronization (#61)
+
+* Rpc (#58)
+
+### Bug Fixes:
+
+* logger inspect information (#66)
+
+* run ecto_sql app in release task (#62)
+
+* migration task (#60)
+
+* migration task (#59)
+
+* crl synchronization (#53)
+
 ## [0.2.0](https://github.com/edenlabllc/ds.api/compare/0.2.0...0.2.0) (2019-5-9)
 
 
