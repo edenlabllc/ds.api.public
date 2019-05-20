@@ -1,13 +1,15 @@
 defmodule SynchronizerCrl.Provider do
   @moduledoc false
 
+  alias HTTPoison.Response
   alias SynchronizerCrl.DateUtils
+  require Logger
 
   def get_revoked_certificates(url) do
     with :ok <- validate_authority(url),
          {:ok, response} <- HTTPoison.get(url),
          {:ok, provider_data} <- validate_data(response),
-         {:ok, data} <- handle_redirect(provider_data),
+         {:ok, data} <- handle_redirect_script(provider_data),
          {:CertificateList, tbs_certs, _, _} <- parse(data),
          {:TBSCertList, _, _, _, _, {:utcTime, ts}, certs, _} <- tbs_certs,
          true <- is_list(certs),
@@ -28,11 +30,27 @@ defmodule SynchronizerCrl.Provider do
     _ -> :error
   end
 
-  defp validate_data(%HTTPoison.Response{status_code: 200, body: data}), do: {:ok, data}
-  defp validate_data(%HTTPoison.Response{status_code: 404}), do: :outdated
+  defp validate_data(%Response{status_code: 200, body: data}), do: {:ok, data}
+  defp validate_data(%Response{status_code: 404}), do: :outdated
+
+  defp validate_data(%Response{status_code: 301, headers: headers, request_url: url} = response) do
+    location_href =
+      Enum.reduce_while(headers, nil, fn
+        {"Location", location_href}, _ -> {:halt, location_href}
+        _, _ -> {:cont, nil}
+      end)
+
+    if location_href do
+      redirect(%{location_href: location_href}, nil)
+    else
+      Logger.warn("Can't redirect for #{url}: #{inspect(response)}")
+      :error
+    end
+  end
+
   defp validate_data(_), do: :error
 
-  defp handle_redirect(data) do
+  defp handle_redirect_script(data) do
     case redirect_script(data) do
       [{"script", _, [script]}] ->
         script
@@ -78,7 +96,7 @@ defmodule SynchronizerCrl.Provider do
 
   defp redirect(%{location_href: location_href} = params, _) do
     case HTTPoison.get(location_href, get_redirect_headers(params)) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: data}} -> {:ok, data}
+      {:ok, %Response{status_code: 200, body: data}} -> {:ok, data}
       error -> error
     end
   end

@@ -7,6 +7,7 @@ defmodule SynchronizerCrl.Test do
 
   alias Core.CRL
   alias Core.CRLs
+  alias SynchronizerCrl.Provider
   alias SynchronizerCrl.Worker
 
   describe "gen server" do
@@ -49,6 +50,13 @@ defmodule SynchronizerCrl.Test do
       url = "http://uakey.com.ua/list-delta.crl"
       Worker.update_crl_resource(url)
       assert [%CRL{url: ^url}] = CRLs.active_crls()
+    end
+
+    @tag :pending
+    test "Handle redirect 301 works" do
+      url = "http://masterkey.ua/download/crls/CA-4E6929B9-Full.crl"
+      assert {:ok, %HTTPoison.Response{status_code: 301}} = HTTPoison.get(url)
+      assert {:ok, _, _} = Provider.get_revoked_certificates(url)
     end
   end
 end
