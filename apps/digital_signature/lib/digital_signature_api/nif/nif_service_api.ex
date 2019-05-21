@@ -16,9 +16,13 @@ defmodule DigitalSignature.NifServiceAPI do
   def signatures_valid_online?(signatures) do
     expires_at = NaiveDateTime.add(NaiveDateTime.utc_now(), @timeout, :millisecond)
 
-    Enum.all?(signatures, fn %{access: url, data: data, ocsp_data: ocsp_data} ->
-      {:ok, true} == check_online(url, data, ocsp_data, expires_at, @timeout)
-    end)
+    valid? =
+      Enum.all?(signatures, fn %{access: url, data: data, ocsp_data: ocsp_data} ->
+        {:ok, true} == check_online(url, data, ocsp_data, expires_at, @timeout)
+      end)
+
+    unless valid?, do: Logger.warn("Invalid signature(s): OSCP provider response")
+    valid?
   end
 
   def check_online(url, data, ocsp_data, expires_at, timeout) do
@@ -29,8 +33,6 @@ defmodule DigitalSignature.NifServiceAPI do
       _ -> {:ok, false}
     end
   end
-
-  defp check_offline(url, serial_number), do: RevokedSerialNumbers.check_revoked(url, serial_number)
 
   def provider_cert?(certificates_info, timeout, expires_at, content) do
     Enum.all?(certificates_info, fn cert_info ->
@@ -44,13 +46,14 @@ defmodule DigitalSignature.NifServiceAPI do
         root_data: _
       } = cert_info
 
-      with {:ok, false} <- check_offline(crl, serial_number),
-           {:ok, false} <- check_offline(delta_crl, serial_number) do
+      with {:ok, false} <- RevokedSerialNumbers.check_revoked(crl, serial_number),
+           {:ok, false} <- RevokedSerialNumbers.check_revoked(delta_crl, serial_number) do
         :ok = push_signed_content(%{signatures: certificates_info, content: content})
 
         true
       else
         {:ok, true} ->
+          Logger.warn("Invalid signature(s):  CRL offline check")
           false
 
         {:error, reason} when reason in ~w(outdated not_found)a ->
