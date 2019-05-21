@@ -140,6 +140,8 @@ CheckPKCS7Data(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
 static ERL_NIF_TERM CheckCertOnline(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
+   struct OCSPCheckInfo ocspCheckInfo = {false, ""};
+
    ErlNifBinary contentData;
    if (!enif_inspect_binary(env, argv[0], &contentData))
    {
@@ -162,9 +164,21 @@ static ERL_NIF_TERM CheckCertOnline(ErlNifEnv *env, int argc, const ERL_NIF_TERM
    UAC_BLOB ocspCert = {ocspCertData.data, ocspCertData.size};
    char *accessUrl = calloc(url.size+1, 1);
 
-   bool verify_result = CheckOCSPRequest(strncpy(accessUrl, url.data, url.size), ocspDataRequest, ocspCert, true);
+   ocspCheckInfo = CheckOCSPRequest(strncpy(accessUrl, url.data, url.size), ocspDataRequest, ocspCert, true);
 
-   return enif_make_tuple2(env, enif_make_atom(env, "ok"),  enif_make_atom(env, verify_result ? "true" : "false"));
+  if (ocspCheckInfo.isValid)
+  {
+    return enif_make_tuple2(env,
+      enif_make_atom(env, "ok"),
+      enif_make_atom(env, "true"));
+  }
+  else
+  {
+    return enif_make_tuple3(env,
+      enif_make_atom(env, "ok"),
+      enif_make_atom(env, "false"),
+      CreateElixirString(env, ocspCheckInfo.validationErrorMessage));
+  }
 }
 
 static ERL_NIF_TERM

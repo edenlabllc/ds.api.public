@@ -30,16 +30,16 @@ defmodule SynchronizerCrl.Worker do
   end
 
   def update_crl_resource(url) do
-    Logger.info("Update #{url}")
+    Logger.warn("Update #{url}")
 
     with {:ok, next_update, serial_numbers} <- Provider.get_revoked_certificates(url),
          {:ok, _timeout} <- DateUtils.next_update_time(next_update),
          :ok <- RevokedSerialNumbers.store(url, next_update, serial_numbers),
          {:ok, _} <- CRLs.store(url, next_update) do
-      Logger.info("CRL #{url} successfully updated")
+      Logger.warn("CRL #{url} successfully updated")
     else
       error ->
-        Logger.info("CRL #{url} can't be updated, got: #{inspect(error)}")
+        Logger.warn("CRL #{url} can't be updated, got: #{inspect(error)}")
         CRLs.remove(url)
     end
 

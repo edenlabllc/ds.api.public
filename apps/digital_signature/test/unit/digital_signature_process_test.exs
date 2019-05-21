@@ -149,7 +149,7 @@ defmodule DigitalSignatureProcessLibTest do
       {:ok, _, [%{access: url, ocsp_data: ocsp_data, data: data}]} =
         DigitalSignatureLib.retrivePKCS7Data(data, get_certs(), true)
 
-      DigitalSignatureLib.checkCertOnline(data, ocsp_data, url)
+      assert {:ok, true} == DigitalSignatureLib.checkCertOnline(data, ocsp_data, url)
       assert result.is_valid
       assert %{"text" => "Hello World"} == Jason.decode!(result.content)
     end

@@ -120,7 +120,9 @@ defmodule DigitalSignatureCheckOCSPLibTest do
         DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
       # OCSP (check online) return false, certificate is revoked
-      assert {:ok, false} == DigitalSignatureLib.checkCertOnline(certdata, ocsp_data, url)
+      assert {:ok, false, "OCSP: Certificate status error"} ==
+               DigitalSignatureLib.checkCertOnline(certdata, ocsp_data, url)
+
       refute result_process.is_valid
 
       # retrive pkcs7 data do not make online and offline check, so is_valid = true

@@ -278,10 +278,9 @@ bool CheckOCSP(UAC_BLOB cert, UAC_CERT_INFO certInfo, UAC_BLOB ocspCert, bool ve
   return validation_result && (ocspResponseInfo.certStatus == 0);
 }
 
-bool CheckOCSPRequest(char* url, UAC_BLOB ocspRequest, UAC_BLOB ocspCert, bool verify)
+struct OCSPCheckInfo CheckOCSPRequest(char* url, UAC_BLOB ocspRequest, UAC_BLOB ocspCert, bool verify)
 {
-  bool validation_result = true;
-
+  struct OCSPCheckInfo ocsp_check_info = {true, ""};
   UAC_BLOB ocspResponse = SendOCSPRequest(url, ocspRequest);
   UAC_OCSP_RESPONSE_INFO ocspResponseInfo = {0};
 
@@ -302,19 +301,27 @@ bool CheckOCSPRequest(char* url, UAC_BLOB ocspRequest, UAC_BLOB ocspCert, bool v
       DWORD signResult = UAC_OcspResponseVerify(&ocspResponse, &resp_cert);
       if (UAC_ERROR_NO_SIGNATURE == signResult || UAC_SUCCESS != signResult)
       {
-        validation_result = false;
+        ocsp_check_info.isValid = false;
+        ocsp_check_info.validationErrorMessage = "OCSP: Response false";
       }
     }
   }
   else
   {
-    validation_result = false;
+    ocsp_check_info.isValid = false;
+    ocsp_check_info.validationErrorMessage = "OCSP: Respone load error";
   }
 
   if (ocspResponse.data)
     enif_free(ocspResponse.data);
 
-  return validation_result && (ocspResponseInfo.certStatus == 0);
+  if (ocspResponseInfo.certStatus != 0)
+  {
+    ocsp_check_info.isValid = false;
+    ocsp_check_info.validationErrorMessage = "OCSP: Certificate status error";
+  };
+
+  return ocsp_check_info;
 }
 
 //Check signature without oscp
