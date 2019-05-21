@@ -21,8 +21,15 @@ defmodule SynchronizerCrl.Worker do
   def init(_), do: {:ok, %{}}
 
   @impl true
+  def handle_info(:start, state) do
+    synchronize_crl(CRLs.active_crls())
+    ref = Process.send_after(self(), :sync, config()[:resync_timeout])
+    garbage_collect()
+    {:noreply, %{ref: ref}}
+  end
+
   def handle_info(:sync, state) do
-    if state[:ref], do: Process.cancel_timer(state[:ref])
+    if is_reference(state[:ref]), do: Process.cancel_timer(state[:ref])
     synchronize_crl(CRLs.get_urls_for_update())
     ref = Process.send_after(self(), :sync, config()[:resync_timeout])
     garbage_collect()
@@ -49,7 +56,7 @@ defmodule SynchronizerCrl.Worker do
   def garbage_collect, do: :erlang.garbage_collect()
 
   defp start({:ok, pid}) do
-    if config()[:sync], do: send(pid, :sync)
+    if config()[:sync], do: send(pid, :start)
     {:ok, pid}
   end
 
