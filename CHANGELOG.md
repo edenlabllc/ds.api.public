@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [0.3.1](https://github.com/edenlabllc/ds.api/compare/0.3.0...0.3.1) (2019-5-21)
+
+
+
+
+### Bug Fixes:
+
+* add 301 handle redirect (#72)
+
+* logger inspect information (#66)
+
 ## [0.3.0](https://github.com/edenlabllc/ds.api/compare/0.2.0...0.3.0) (2019-5-16)
 
 
