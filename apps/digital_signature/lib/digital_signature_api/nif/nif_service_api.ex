@@ -16,21 +16,23 @@ defmodule DigitalSignature.NifServiceAPI do
   def signatures_valid_online?(signatures) do
     expires_at = NaiveDateTime.add(NaiveDateTime.utc_now(), @timeout, :millisecond)
 
-    valid? =
-      Enum.all?(signatures, fn %{access: url, data: data, ocsp_data: ocsp_data} ->
-        {:ok, true} == check_online(url, data, ocsp_data, expires_at, @timeout)
-      end)
-
-    unless valid?, do: Logger.warn("Invalid signature(s): OSCP provider response")
-    valid?
+    Enum.all?(signatures, fn %{access: url, data: data, ocsp_data: ocsp_data} ->
+      {:ok, true} == check_online(url, data, ocsp_data, expires_at, @timeout)
+    end)
   end
 
   def check_online(url, data, ocsp_data, expires_at, timeout) do
-    with {:ok, valid?} <- NifService.nif_service_call({:ocsp, url, data, ocsp_data, expires_at}, timeout),
-         true <- is_boolean(valid?) do
-      {:ok, valid?}
-    else
-      _ -> {:ok, false}
+    case NifService.nif_service_call({:ocsp, url, data, ocsp_data, expires_at}, timeout) do
+      {:ok, true} ->
+        {:ok, true}
+
+      {:ok, false, validation_error} ->
+        Logger.warn("Invalid signature(s): OSCP provider response #{validation_error}")
+        {:ok, false}
+
+      error ->
+        Logger.warn("Unable to call provider: #{inspect(error)}")
+        {:ok, false}
     end
   end
 
@@ -49,17 +51,16 @@ defmodule DigitalSignature.NifServiceAPI do
       with {:ok, false} <- RevokedSerialNumbers.check_revoked(crl, serial_number),
            {:ok, false} <- RevokedSerialNumbers.check_revoked(delta_crl, serial_number) do
         :ok = push_signed_content(%{signatures: certificates_info, content: content})
-
+        Logger.warn("Success offline check")
         true
       else
         {:ok, true} ->
-          Logger.warn("Invalid signature(s):  CRL offline check")
+          Logger.warn("Invalid signature(s): CRL offline check")
           false
 
         {:error, reason} when reason in ~w(outdated not_found)a ->
+          Logger.warn("No crl found for #{url}, #{delta_crl}")
           {:ok, valid?} = check_online(url, data, ocsp_data, expires_at, timeout)
-          Logger.warn("No crl found for #{url}, #{delta_crl}, online check: #{valid?}")
-
           valid?
       end
     end)

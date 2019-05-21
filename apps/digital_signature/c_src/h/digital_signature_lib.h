@@ -41,6 +41,14 @@ struct CertificateCheckInfo
   struct GeneralCert generalCert;
 };
 
+struct OCSPCheckInfo
+{
+  bool isValid;
+  char *validationErrorMessage;
+};
+
+struct OCSPCheckInfo CheckOCSPRequest(char* url, UAC_BLOB ocspRequest, UAC_BLOB ocspCert, bool verify);
+
 struct BaseValidationResult
 {
   bool isStamp;

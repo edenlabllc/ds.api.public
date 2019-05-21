@@ -20,10 +20,7 @@ defmodule DigitalSignature.NifService do
   """
   def handle_call({:ocsp, url, data, ocsp_data, expires_at}, _from, state) do
     processing_result =
-      with :ok <- check_time(expires_at),
-           {:ok, valid?} <- DigitalSignatureLib.checkCertOnline(data, ocsp_data, url) do
-        valid?
-      end
+      with :ok <- check_time(expires_at), do: DigitalSignatureLib.checkCertOnline(data, ocsp_data, url)
 
     {:reply, processing_result, state}
   end
@@ -66,15 +63,13 @@ defmodule DigitalSignature.NifService do
   Catch error in case message expired or gen server internal error
   """
   def nif_service_call(requets, timeout) do
-    nif_responce = GenServer.call(__MODULE__, requets, timeout)
-    {:ok, nif_responce}
+    GenServer.call(__MODULE__, requets, timeout)
   catch
     :exit, {:timeout, error} ->
       {:error, {:nif_service_timeout, error}}
 
     what, why ->
       Logger.error("Could not get gen_server #{__MODULE__} call: #{inspect(what)} :: #{inspect(why)}")
-
       {:error, :unavailable}
   end
 

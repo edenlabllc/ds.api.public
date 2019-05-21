@@ -26,15 +26,11 @@ defmodule DigitalSignature.NifAPI do
   end
 
   def retrive_signed_data(signed_content, signed_data, params) do
-    %{
-      check: check,
-      expires_at: expires_at,
-      timeout: timeout
-    } = params
+    %{check: check, expires_at: expires_at, timeout: timeout} = params
 
-    with {:ok, nif_responce} <- NifServiceAPI.signed_content(signed_content, signed_data, check, expires_at, timeout) do
-      map_signed_data(nif_responce, signed_data, params)
-    end
+    signed_content
+    |> NifServiceAPI.signed_content(signed_data, check, expires_at, timeout)
+    |> map_signed_data(signed_data, params)
   end
 
   defp map_signed_data({:ok, data}, _, _), do: {:ok, SignedData.get_map(data)}
