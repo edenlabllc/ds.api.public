@@ -24,6 +24,7 @@ defmodule DigitalSignature.NifServiceAPI do
   def check_online(url, data, ocsp_data, expires_at, timeout) do
     case NifService.nif_service_call({:ocsp, url, data, ocsp_data, expires_at}, timeout) do
       {:ok, true} ->
+        Logger.warn("Online check success")
         {:ok, true}
 
       {:ok, false, validation_error} ->
@@ -39,9 +40,9 @@ defmodule DigitalSignature.NifServiceAPI do
   def provider_cert?(certificates_info, timeout, expires_at, content) do
     Enum.all?(certificates_info, fn cert_info ->
       %{
+        crl: crl,
         delta_crl: delta_crl,
         serial_number: serial_number,
-        crl: crl,
         access: url,
         data: data,
         ocsp_data: ocsp_data,
@@ -59,7 +60,7 @@ defmodule DigitalSignature.NifServiceAPI do
           false
 
         {:error, reason} when reason in ~w(outdated not_found)a ->
-          Logger.warn("No crl found for #{url}, #{delta_crl}")
+          Logger.warn("No crl found for #{crl}, #{delta_crl}")
           {:ok, valid?} = check_online(url, data, ocsp_data, expires_at, timeout)
           valid?
       end
