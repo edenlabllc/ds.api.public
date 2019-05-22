@@ -5,6 +5,19 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [0.4.0](https://github.com/edenlabllc/ds.api/compare/0.3.1...0.4.0) (2019-5-22)
+
+
+
+
+### Features:
+
+* extended info about OCSP check (#76)
+
+### Bug Fixes:
+
+* add 301 handle redirect (#72)
+
 ## [0.3.1](https://github.com/edenlabllc/ds.api/compare/0.3.0...0.3.1) (2019-5-21)
 
 
