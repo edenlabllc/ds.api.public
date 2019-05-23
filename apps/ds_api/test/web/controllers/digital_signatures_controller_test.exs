@@ -4,11 +4,8 @@ defmodule API.Web.APIControllerTest do
   import Ecto.Query
   import Mox
 
-  alias Core.CRLs
   alias Core.Cert
-  alias Core.RevokedSerialNumbers
   alias Core.Repo
-  alias SynchronizerCrl.Worker
 
   setup [:set_mox_global, :verify_on_exit!]
 
@@ -35,15 +32,9 @@ defmodule API.Web.APIControllerTest do
 
     test "revoked invalid sign - push content to kafka and return true", %{conn: conn} do
       expect(KafkaMock, :publish_sigantures, fn _ -> :ok end)
-      urls = ~w(
-      http://acsk.privatbank.ua/crldelta/PB-Delta-S13.crl
-      http://acsk.privatbank.ua/crl/PB-S13.crl
-      )
 
-      Enum.each(urls, fn url ->
-        next_update = DateTime.from_unix!(DateTime.to_unix(DateTime.utc_now()) + 60 * 60)
-        RevokedSerialNumbers.store(url, next_update, [])
-        CRLs.store(url, next_update)
+      expect(APIRpcWorkerMock, :run, 2, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:ok, false}
       end)
 
       data = get_data("test/fixtures/hello_revoked.json")
@@ -57,10 +48,6 @@ defmodule API.Web.APIControllerTest do
       [signature] = resp["data"]["signatures"]
       assert signature["is_valid"]
       assert %{"text" => "Hello World"} = resp["data"]["content"]
-
-      Enum.each(urls, fn url ->
-        RevokedSerialNumbers.delete(url)
-      end)
     end
   end
 
@@ -87,6 +74,10 @@ defmodule API.Web.APIControllerTest do
 
     @tag :pending
     test "processing valid altersign with OCSP", %{conn: conn} do
+      expect(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       data = get_data("test/fixtures/altersign.json")
       request = create_request(data)
 
@@ -100,6 +91,10 @@ defmodule API.Web.APIControllerTest do
 
     @tag :pending
     test "processing valid altersign without OCSP", %{conn: conn} do
+      expect(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       Repo.delete_all(from(c in Cert, where: c.type == "ocsp" and c.name == "Altersign"))
       data = get_data("test/fixtures/altersign.json")
       request = create_request(data)
@@ -209,6 +204,10 @@ defmodule API.Web.APIControllerTest do
     end
 
     test "processing signed valid data works", %{conn: conn} do
+      expect(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       data = get_data("test/fixtures/hello.json")
       request = create_request(data)
 
@@ -226,6 +225,10 @@ defmodule API.Web.APIControllerTest do
 
     @tag :pending
     test "can process sign and stamp in each document", %{conn: conn} do
+      stub(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       data = get_data("test/fixtures/sign_and_stamp.json")
       request = create_request(data)
 
@@ -244,11 +247,9 @@ defmodule API.Web.APIControllerTest do
     end
 
     test "processing signed with revoked Privat personal key and actual revoked info", %{conn: conn} do
-      urls = ~w(
-      http://acsk.privatbank.ua/services/ocsp/
-      http://acsk.privatbank.ua/crldelta/PB-Delta-S13.crl
-      )
-      Enum.each(urls, &Worker.update_crl_resource(&1))
+      expect(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
 
       data = get_data("test/fixtures/hello_revoked.json")
       request = create_request(data)
@@ -264,7 +265,15 @@ defmodule API.Web.APIControllerTest do
       assert "Certificate verificaton failed" == signature["validation_error_message"]
     end
 
-    test "processing revoked signed data works online", %{conn: conn} do
+    test "processing revoked signed data works online, crl: first false second not found", %{conn: conn} do
+      expect(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:ok, false}
+      end)
+
+      expect(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       data = get_data("test/fixtures/hello_revoked.json")
       request = create_request(data)
 
@@ -282,6 +291,10 @@ defmodule API.Web.APIControllerTest do
     end
 
     test "processing double signed valid data works", %{conn: conn} do
+      expect(APIRpcWorkerMock, :run, 2, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       data = get_data("test/fixtures/double_hello.json")
       request = create_request(data)
 
@@ -295,6 +308,10 @@ defmodule API.Web.APIControllerTest do
     end
 
     test "processing signed valid data with digital stamp works and returns valid isStamp attribute", %{conn: conn} do
+      expect(APIRpcWorkerMock, :run, 2, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       data = get_data("test/fixtures/sign_with_stamp.json")
       request = create_request(data)
 
@@ -334,6 +351,10 @@ defmodule API.Web.APIControllerTest do
 
     @tag :pending
     test "processing valid encoded data 25 times in a row", %{conn: conn} do
+      stub(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:ok, false}
+      end)
+
       data = get_data("test/fixtures/hello.json")
       request = create_request(data)
 
@@ -349,6 +370,10 @@ defmodule API.Web.APIControllerTest do
 
     @tag :pending
     test "processing valid encoded data 25 times in parallel", %{conn: conn} do
+      stub(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:error, :not_found}
+      end)
+
       data = get_data("test/fixtures/hello.json")
       request = create_request(data)
 
@@ -399,6 +424,10 @@ defmodule API.Web.APIControllerTest do
       request = create_request(data)
 
       System.put_env("SERVICE_CALL_TIMEOUT", "110")
+
+      stub(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+        {:ok, false}
+      end)
 
       1..100
       |> Enum.map(fn _ ->

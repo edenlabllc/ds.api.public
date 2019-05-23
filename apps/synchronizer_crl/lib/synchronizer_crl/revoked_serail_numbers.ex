@@ -1,8 +1,9 @@
-defmodule Core.RevokedSerialNumbers do
+defmodule SynchronizerCrl.RevokedSerialNumbers do
   @moduledoc """
   store revoked numbers for app in persistent_term
   """
   alias Core.CRLs
+  require Logger
 
   def store(url, next_update, serial_numbers) do
     # the fastest way to get number
@@ -17,14 +18,18 @@ defmodule Core.RevokedSerialNumbers do
     with {:ok, serial_number} <- parse_serial(number),
          %{next_update: next_update, sns: sns} <- :persistent_term.get(url, :not_found),
          :valid <- next_update_valid(next_update) do
-      revoked?(sns, serial_number)
+      is_revoked = revoked?(sns, serial_number)
+      Logger.warn("Check revoked #{number} for #{url}: #{is_revoked}")
+      is_revoked
     else
       :not_found ->
         # store url, and worker will synchronize this url later
+        Logger.warn("Store url #{url} for syncs")
         unless CRLs.get_by_url(url), do: CRLs.store(url, DateTime.utc_now())
         {:error, :not_found}
 
       error ->
+        Logger.warn("Error on get #{number} for #{url}, #{inspect(error)}")
         {:error, error}
     end
   end

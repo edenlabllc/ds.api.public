@@ -2,12 +2,12 @@ defmodule DigitalSignature.NifServiceAPI do
   @moduledoc """
   API for GenServer NifService
   """
-  alias Core.RevokedSerialNumbers
   alias DigitalSignature.NifService
   require Logger
 
   @kafka_producer Application.get_env(:digital_signature, :kafka)[:producer]
   @timeout 5000
+  @rpc_worker Application.get_env(:ds_api, :rpc_worker)
 
   def signed_content(signed_content, signed_data, check, expires_at, timeout) do
     NifService.nif_service_call({:content, signed_content, signed_data, check, expires_at}, timeout)
@@ -37,6 +37,10 @@ defmodule DigitalSignature.NifServiceAPI do
     end
   end
 
+  defp check_revoked(crl, serial_number) do
+    @rpc_worker.run("synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [crl, serial_number])
+  end
+
   def provider_cert?(certificates_info, timeout, expires_at, content) do
     Enum.all?(certificates_info, fn cert_info ->
       %{
@@ -49,8 +53,8 @@ defmodule DigitalSignature.NifServiceAPI do
         root_data: _
       } = cert_info
 
-      with {:ok, false} <- RevokedSerialNumbers.check_revoked(crl, serial_number),
-           {:ok, false} <- RevokedSerialNumbers.check_revoked(delta_crl, serial_number) do
+      with {:ok, false} <- check_revoked(crl, serial_number),
+           {:ok, false} <- check_revoked(delta_crl, serial_number) do
         :ok = push_signed_content(%{signatures: certificates_info, content: content})
         Logger.warn("Success offline check")
         true

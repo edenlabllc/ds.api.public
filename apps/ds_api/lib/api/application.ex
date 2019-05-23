@@ -11,12 +11,8 @@ defmodule API do
     endpoint = supervisor(API.Web.Endpoint, [])
 
     children =
-      if Application.get_env(:person_deactivator, :env) == :prod do
-        [
-          endpoint
-          | {Cluster.Supervisor,
-             [Application.get_env(:person_deactivator, :topologies), [name: DS.API.ClusterSupervisor]]}
-        ]
+      if Application.get_env(:ds_api, :env) == :prod do
+        [endpoint, {Cluster.Supervisor, [Application.get_env(:ds_api, :topologies), [name: API.ClusterSupervisor]]}]
       else
         [endpoint]
       end
