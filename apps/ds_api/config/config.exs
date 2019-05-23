@@ -9,14 +9,16 @@ config :ds_api, API.Web.Endpoint,
   instrumenters: [LoggerJSON.Phoenix.Instruments]
 
 config :ds_api,
+  env: Mix.env(),
+  rpc_worker: API.Rpc.Worker,
   topologies: [
-    k8s_ops: [
+    k8s_ds: [
       strategy: Elixir.Cluster.Strategy.Kubernetes,
       config: [
         mode: :dns,
-        kubernetes_node_basename: "ds",
-        kubernetes_selector: "app=api",
-        kubernetes_namespace: "ops",
+        kubernetes_node_basename: "synchronizer_crl",
+        kubernetes_selector: "app=synchronizer-crl",
+        kubernetes_namespace: "digital-signature",
         polling_interval: 10_000
       ]
     ]
