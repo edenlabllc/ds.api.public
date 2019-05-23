@@ -17,7 +17,7 @@ config :ds_api,
       config: [
         mode: :dns,
         kubernetes_node_basename: "synchronizer_crl",
-        kubernetes_selector: "app=synchronizer-crl",
+        kubernetes_selector: "app=crl-svc",
         kubernetes_namespace: "digital-signature",
         polling_interval: 10_000
       ]
