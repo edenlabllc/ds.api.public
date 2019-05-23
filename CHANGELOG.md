@@ -5,6 +5,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [0.5.0](https://github.com/edenlabllc/ds.api/compare/0.4.0...0.5.0) (2019-5-23)
+
+
+
+
+### Features:
+
+* check revoked  rpc call (#82)
+
 ## [0.4.0](https://github.com/edenlabllc/ds.api/compare/0.3.1...0.4.0) (2019-5-22)
 
 
