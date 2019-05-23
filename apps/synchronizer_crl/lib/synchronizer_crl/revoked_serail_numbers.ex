@@ -17,10 +17,10 @@ defmodule SynchronizerCrl.RevokedSerialNumbers do
   def check_revoked(url, number) do
     with {:ok, serial_number} <- parse_serial(number),
          %{next_update: next_update, sns: sns} <- :persistent_term.get(url, :not_found),
-         :valid <- next_update_valid(next_update) do
-      is_revoked = revoked?(sns, serial_number)
-      Logger.warn("Check revoked #{number} for #{url}: #{is_revoked}")
-      is_revoked
+         :valid <- next_update_valid(next_update),
+         {:ok, is_revoked?} <- revoked?(sns, serial_number) do
+      Logger.warn("Check revoked #{number} for #{url}: #{is_revoked?}")
+      {:ok, is_revoked?}
     else
       :not_found ->
         # store url, and worker will synchronize this url later

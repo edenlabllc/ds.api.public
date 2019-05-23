@@ -5,8 +5,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.20.2">
-    <meta name="project" content=" v0.2.0">
-    <title>API.Rpc —  v0.2.0</title>
+    <meta name="project" content=" v0.4.0">
+    <title>API.Rpc —  v0.4.0</title>
     <link rel="stylesheet" href="dist/html-d9f58a6320b5bfa6dd77.css" />
     <script src="dist/sidebar_items-e273d4f672.js"></script>
       <script src="docs_config.js"></script>
@@ -44,7 +44,7 @@
       <a href="api-reference.html" class="sidebar-projectName">
       </a>
       <h2 class="sidebar-projectVersion">
-        v0.2.0
+        v0.4.0
       </h2>
     </div>
   </div>
@@ -66,7 +66,7 @@
 
 
       <h1>
-        <small class="app-vsn"> v0.2.0</small>
+        <small class="app-vsn"> v0.4.0</small>
 API.Rpc              </h1>
 
 
@@ -208,15 +208,15 @@ Functions          </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">API.Rpc</span><span class="o">.</span><span class="n">decode_signed_content</span><span class="p" data-group-id="6401719428-1">(</span><span class="s">&quot;...&quot;</span><span class="p" data-group-id="6401719428-1">)</span><span class="w">
-</span><span class="p" data-group-id="6401719428-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w">
-  </span><span class="p" data-group-id="6401719428-3">%{</span><span class="w">
-    </span><span class="ss">content</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="6401719428-4">%{</span><span class="s">&quot;text&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;Hello World&quot;</span><span class="p" data-group-id="6401719428-4">}</span><span class="p">,</span><span class="w">
-    </span><span class="ss">signatures</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="6401719428-5">[</span><span class="w">
-      </span><span class="p" data-group-id="6401719428-6">%{</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">API.Rpc</span><span class="o">.</span><span class="n">decode_signed_content</span><span class="p" data-group-id="7754824252-1">(</span><span class="s">&quot;...&quot;</span><span class="p" data-group-id="7754824252-1">)</span><span class="w">
+</span><span class="p" data-group-id="7754824252-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w">
+  </span><span class="p" data-group-id="7754824252-3">%{</span><span class="w">
+    </span><span class="ss">content</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7754824252-4">%{</span><span class="s">&quot;text&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;Hello World&quot;</span><span class="p" data-group-id="7754824252-4">}</span><span class="p">,</span><span class="w">
+    </span><span class="ss">signatures</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7754824252-5">[</span><span class="w">
+      </span><span class="p" data-group-id="7754824252-6">%{</span><span class="w">
         </span><span class="ss">is_stamp</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="p">,</span><span class="w">
         </span><span class="ss">is_valid</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p">,</span><span class="w">
-        </span><span class="ss">signer</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="6401719428-7">%{</span><span class="w">
+        </span><span class="ss">signer</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7754824252-7">%{</span><span class="w">
           </span><span class="ss">common_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">,</span><span class="w">
           </span><span class="ss">country_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;UA&quot;</span><span class="p">,</span><span class="w">
           </span><span class="ss">drfo</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">,</span><span class="w">
@@ -228,11 +228,11 @@ Functions          </h1>
           </span><span class="ss">state_or_province_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w">
           </span><span class="ss">surname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">,</span><span class="w">
           </span><span class="ss">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;директор&quot;</span><span class="w">
-        </span><span class="p" data-group-id="6401719428-7">}</span><span class="p">,</span><span class="w">
+        </span><span class="p" data-group-id="7754824252-7">}</span><span class="p">,</span><span class="w">
         </span><span class="ss">validation_error_message</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w">
-      </span><span class="p" data-group-id="6401719428-6">}</span><span class="w">
-    </span><span class="p" data-group-id="6401719428-5">]</span><span class="w">
-  </span><span class="p" data-group-id="6401719428-3">}</span><span class="p" data-group-id="6401719428-2">}</span></code></pre>
+      </span><span class="p" data-group-id="7754824252-6">}</span><span class="w">
+    </span><span class="p" data-group-id="7754824252-5">]</span><span class="w">
+  </span><span class="p" data-group-id="7754824252-3">}</span><span class="p" data-group-id="7754824252-2">}</span></code></pre>
   </section>
 </section>
           </div>
