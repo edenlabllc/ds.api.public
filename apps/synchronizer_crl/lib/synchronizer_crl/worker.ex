@@ -6,9 +6,9 @@ defmodule SynchronizerCrl.Worker do
 
   alias Core.CRL
   alias Core.CRLs
-  alias SynchronizerCrl.RevokedSerialNumbers
   alias SynchronizerCrl.DateUtils
   alias SynchronizerCrl.Provider
+  alias SynchronizerCrl.RevokedSerialNumbers
 
   def start_link do
     __MODULE__
@@ -21,7 +21,7 @@ defmodule SynchronizerCrl.Worker do
   def init(_), do: {:ok, %{}}
 
   @impl true
-  def handle_info(:start, state) do
+  def handle_info(:start, _state) do
     synchronize_crl(CRLs.active_crls())
     ref = Process.send_after(self(), :sync, config()[:resync_timeout])
     garbage_collect()
