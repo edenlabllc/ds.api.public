@@ -11,22 +11,7 @@ defmodule API.Web.APIControllerTest do
 
   describe "push fake valid sign into kafka" do
     setup %{conn: conn} do
-      insert_dfs_certs()
-      insert_justice_certs()
-      insert_ucsku_certs()
-      insert_privat_certs()
-
-      Supervisor.terminate_child(
-        DigitalSignature.Supervisor,
-        DigitalSignature.NifService
-      )
-
-      assert {:ok, _} =
-               Supervisor.restart_child(
-                 DigitalSignature.Supervisor,
-                 DigitalSignature.NifService
-               )
-
+      insert_certs()
       {:ok, conn: put_req_header(conn, "accept", "application/json")}
     end
 
@@ -37,7 +22,7 @@ defmodule API.Web.APIControllerTest do
         {:ok, false}
       end)
 
-      data = get_data("test/fixtures/hello_revoked.json")
+      data = get_data("../digital_signature/test/fixtures/hello_revoked.json")
       request = create_request(data)
 
       resp =
@@ -53,22 +38,8 @@ defmodule API.Web.APIControllerTest do
 
   describe "With/without OCSP got no segfault" do
     setup %{conn: conn} do
-      insert_dfs_certs()
-      insert_alter_sign_certs()
-
-      Supervisor.terminate_child(
-        DigitalSignature.Supervisor,
-        DigitalSignature.NifService
-      )
-
-      assert {:ok, _} =
-               Supervisor.restart_child(
-                 DigitalSignature.Supervisor,
-                 DigitalSignature.NifService
-               )
-
+      insert_certs()
       stub(KafkaMock, :publish_sigantures, fn _ -> :ok end)
-
       {:ok, conn: put_req_header(conn, "accept", "application/json")}
     end
 
@@ -78,7 +49,7 @@ defmodule API.Web.APIControllerTest do
         {:error, :not_found}
       end)
 
-      data = get_data("test/fixtures/altersign.json")
+      data = get_data("../digital_signature/test/fixtures/altersign.json")
       request = create_request(data)
 
       resp =
@@ -96,7 +67,7 @@ defmodule API.Web.APIControllerTest do
       end)
 
       Repo.delete_all(from(c in Cert, where: c.type == "ocsp" and c.name == "Altersign"))
-      data = get_data("test/fixtures/altersign.json")
+      data = get_data("../digital_signature/test/fixtures/altersign.json")
       request = create_request(data)
 
       resp =
@@ -110,24 +81,8 @@ defmodule API.Web.APIControllerTest do
 
   describe "With correct certs in db" do
     setup %{conn: conn} do
-      insert_dfs_certs()
-      insert_justice_certs()
-      insert_ucsku_certs()
-      insert_privat_certs()
-
-      Supervisor.terminate_child(
-        DigitalSignature.Supervisor,
-        DigitalSignature.NifService
-      )
-
-      assert {:ok, _} =
-               Supervisor.restart_child(
-                 DigitalSignature.Supervisor,
-                 DigitalSignature.NifService
-               )
-
+      insert_certs()
       stub(KafkaMock, :publish_sigantures, fn _ -> :ok end)
-
       {:ok, conn: put_req_header(conn, "accept", "application/json")}
     end
 
@@ -204,11 +159,11 @@ defmodule API.Web.APIControllerTest do
     end
 
     test "processing signed valid data works", %{conn: conn} do
-      expect(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
+      expect(APIRpcWorkerMock, :run, 2, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
         {:error, :not_found}
       end)
 
-      data = get_data("test/fixtures/hello.json")
+      data = get_data("../digital_signature/test/fixtures/double_hello.json")
       request = create_request(data)
 
       resp =
@@ -216,34 +171,11 @@ defmodule API.Web.APIControllerTest do
         |> post(api_path(conn, :index), request)
         |> json_response(200)
 
-      [signature] = resp["data"]["signatures"]
+      [%{"is_valid" => true} = signature, %{"is_valid" => true}] = resp["data"]["signatures"]
 
       assert signature["is_valid"]
       assert "" == signature["validation_error_message"]
-      assert resp["data"]["content"] == %{"text" => "Hello World"}
-    end
-
-    @tag :pending
-    test "can process sign and stamp in each document", %{conn: conn} do
-      stub(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
-        {:error, :not_found}
-      end)
-
-      data = get_data("test/fixtures/sign_and_stamp.json")
-      request = create_request(data)
-
-      resp =
-        conn
-        |> post(api_path(conn, :index), request)
-        |> json_response(200)
-
-      stamps? =
-        Enum.reduce(resp["data"]["signatures"], [], fn %{"is_valid" => true, "is_stamp" => is_stamp}, acc ->
-          [is_stamp | acc]
-        end)
-
-      assert true in stamps?
-      assert false in stamps?
+      assert resp["data"]["content"] == %{"double" => "hello world"}
     end
 
     test "processing signed with revoked Privat personal key and actual revoked info", %{conn: conn} do
@@ -251,7 +183,7 @@ defmodule API.Web.APIControllerTest do
         {:error, :not_found}
       end)
 
-      data = get_data("test/fixtures/hello_revoked.json")
+      data = get_data("../digital_signature/test/fixtures/hello_revoked.json")
       request = create_request(data)
 
       resp =
@@ -274,7 +206,7 @@ defmodule API.Web.APIControllerTest do
         {:error, :not_found}
       end)
 
-      data = get_data("test/fixtures/hello_revoked.json")
+      data = get_data("../digital_signature/test/fixtures/hello_revoked.json")
       request = create_request(data)
 
       resp =
@@ -295,7 +227,7 @@ defmodule API.Web.APIControllerTest do
         {:error, :not_found}
       end)
 
-      data = get_data("test/fixtures/double_hello.json")
+      data = get_data("../digital_signature/test/fixtures/double_hello.json")
       request = create_request(data)
 
       resp =
@@ -312,7 +244,7 @@ defmodule API.Web.APIControllerTest do
         {:error, :not_found}
       end)
 
-      data = get_data("test/fixtures/sign_with_stamp.json")
+      data = get_data("../digital_signature/test/fixtures/sign_and_stamp.json")
       request = create_request(data)
 
       resp =
@@ -322,7 +254,7 @@ defmodule API.Web.APIControllerTest do
 
       assert Enum.count(resp["data"]["signatures"]) == 2
 
-      signature = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["drfo"] == "3278011533" end)
+      signature = Enum.find(resp["data"]["signatures"], fn signature -> signature["signer"]["drfo"] == "3039902252" end)
 
       assert signature
       assert signature["is_valid"]
@@ -335,7 +267,7 @@ defmodule API.Web.APIControllerTest do
     end
 
     test "processing envelope with more than one signature returns correct error", %{conn: conn} do
-      data = get_data("test/fixtures/tripple_hello.json")
+      data = get_data("../digital_signature/test/fixtures/tripple_hello.json")
       request = create_request(data)
 
       resp =
@@ -355,7 +287,7 @@ defmodule API.Web.APIControllerTest do
         {:ok, false}
       end)
 
-      data = get_data("test/fixtures/hello.json")
+      data = get_data("../digital_signature/test/fixtures/double_hello.json")
       request = create_request(data)
 
       Enum.each(1..25, fn _ ->
@@ -369,15 +301,15 @@ defmodule API.Web.APIControllerTest do
     end
 
     @tag :pending
-    test "processing valid encoded data 25 times in parallel", %{conn: conn} do
+    test "processing valid encoded data 15 times in parallel", %{conn: conn} do
       stub(APIRpcWorkerMock, :run, fn "synchronizer_crl", SynchronizerCrl.Rpc, :check_revoked, [_, _] ->
         {:error, :not_found}
       end)
 
-      data = get_data("test/fixtures/hello.json")
+      data = get_data("../digital_signature/test/fixtures/double_hello.json")
       request = create_request(data)
 
-      1..25
+      1..15
       |> Enum.map(fn _ ->
         Task.async(fn ->
           conn
@@ -398,7 +330,7 @@ defmodule API.Web.APIControllerTest do
     test "test NIF gen_server call timeout leads to correct response", %{
       conn: conn
     } do
-      data = get_data("test/fixtures/hello.json")
+      data = get_data("../digital_signature/test/fixtures/double_hello.json")
       request = create_request(data)
 
       System.put_env("SERVICE_CALL_TIMEOUT", "10")
@@ -420,7 +352,7 @@ defmodule API.Web.APIControllerTest do
 
     @tag :pending
     test "test NIF gen_server messages timestamp works", %{conn: conn} do
-      data = get_data("test/fixtures/hello.json")
+      data = get_data("../digital_signature/test/fixtures/double_hello.json")
       request = create_request(data)
 
       System.put_env("SERVICE_CALL_TIMEOUT", "110")
@@ -466,7 +398,7 @@ defmodule API.Web.APIControllerTest do
     test "processign valid signed declaration with outdated signature", %{
       conn: conn
     } do
-      data = get_data("test/fixtures/outdated_cert.json")
+      data = get_data("../digital_signature/test/fixtures/outdated_cert.json")
 
       resp =
         conn
@@ -501,22 +433,20 @@ defmodule API.Web.APIControllerTest do
     end
 
     test "Can return correct error", %{conn: conn} do
-      data = get_data("test/fixtures/hello.json")
+      data = get_data("../digital_signature/test/fixtures/double_hello.json")
 
       resp =
         conn
         |> post(api_path(conn, :index), data)
         |> json_response(200)
 
-      [signature] = resp["data"]["signatures"]
-
+      [signature | _] = resp["data"]["signatures"]
       refute signature["is_valid"]
-
       assert signature["validation_error_message"] == "matching ROOT certificate not found"
     end
 
     test "Can process data signed with key where some info fieds are invalid and certificate is absent", %{conn: conn} do
-      data = get_data("test/fixtures/no_cert_and_invalid_signer.json")
+      data = get_data("../digital_signature/test/fixtures/no_cert_and_invalid_signer.json")
       conn = post(conn, api_path(conn, :index), data)
 
       resp = json_response(conn, 200)
@@ -551,176 +481,8 @@ defmodule API.Web.APIControllerTest do
     }
   end
 
-  defp insert_dfs_certs do
-    # Original Root with updated OCSP
-    {:ok, %{id: dfs_root_id}} =
-      Repo.insert(%Cert{
-        name: "DFS",
-        data: File.read!("test/fixtures/CA-DFS.cer"),
-        parent: nil,
-        type: "root",
-        active: true
-      })
-
-    Repo.insert!(%Cert{
-      name: "DFS",
-      data: File.read!("test/fixtures/OCSP-IDDDFS-080218.cer"),
-      parent: dfs_root_id,
-      type: "ocsp",
-      active: true
-    })
-
-    # Original OCSP - disabled
-    Repo.insert!(%Cert{
-      name: "DFS",
-      data: File.read!("test/fixtures/CA-OCSP-DFS.cer"),
-      parent: dfs_root_id,
-      type: "ocsp",
-      active: false
-    })
-
-    # Updated Root with updates OCSP
-    {:ok, %{id: new_dfs_root_id}} =
-      Repo.insert(%Cert{
-        name: "DFS_NEW",
-        data: File.read!("test/fixtures/CA-IDDDFS-080218.cer"),
-        parent: nil,
-        type: "root",
-        active: true
-      })
-
-    Repo.insert!(%Cert{
-      name: "DFS_NEW",
-      data: File.read!("test/fixtures/OCSP-IDDDFS-080218.cer"),
-      parent: new_dfs_root_id,
-      type: "ocsp",
-      active: true
-    })
-
-    # TSP
-    Repo.insert!(%Cert{
-      name: "DFS",
-      data: File.read!("test/fixtures/TSA-IDDDFS-140218.cer"),
-      parent: nil,
-      type: "tsp",
-      active: true
-    })
-
-    # Privat
-    Repo.insert!(%Cert{
-      name: "Privat",
-      data: File.read!("test/fixtures/pb-tsp.cer"),
-      parent: nil,
-      type: "tsp",
-      active: true
-    })
-
-    Repo.insert!(%Cert{
-      name: "DFS_OLD",
-      data: File.read!("test/fixtures/CA-TSP-DFS.cer"),
-      parent: nil,
-      type: "tsp",
-      active: true
-    })
-  end
-
-  defp insert_justice_certs do
-    {:ok, %{id: j_root_id}} =
-      Repo.insert(%Cert{
-        name: "Justice",
-        data: File.read!("test/fixtures/CA-Justice.cer"),
-        parent: nil,
-        type: "root",
-        active: true
-      })
-
-    Repo.insert!(%Cert{
-      name: "Justice",
-      data: File.read!("test/fixtures/OCSP-Server Justice.cer"),
-      parent: j_root_id,
-      type: "ocsp",
-      active: true
-    })
-
-    Repo.insert!(%Cert{
-      name: "Justice",
-      data: File.read!("test/fixtures/TSP-Server Justice.cer"),
-      parent: nil,
-      type: "tsp",
-      active: true
-    })
-  end
-
-  defp insert_ucsku_certs do
-    {:ok, %{id: ucsk_root_id}} =
-      Repo.insert(%Cert{
-        name: "ucsku",
-        data: File.read!("test/fixtures/cert1599998-root.crt"),
-        parent: nil,
-        type: "root",
-        active: true
-      })
-
-    Repo.insert!(%Cert{
-      name: "ucsku",
-      data: File.read!("test/fixtures/cert14493930-oscp.crt"),
-      parent: ucsk_root_id,
-      type: "ocsp",
-      active: true
-    })
-
-    Repo.insert!(%Cert{
-      name: "ucsku",
-      data: File.read!("test/fixtures/cert14491837-tsp.crt"),
-      parent: nil,
-      type: "tsp",
-      active: true
-    })
-  end
-
-  defp insert_alter_sign_certs do
-    {:ok, %{id: altersign_root_id}} =
-      Repo.insert(%Cert{
-        name: "Altersign",
-        data: File.read!("test/fixtures/CA-Altersign-2018.cer"),
-        parent: nil,
-        type: "root",
-        active: true
-      })
-
-    Repo.insert!(%Cert{
-      name: "Altersign",
-      data: File.read!("test/fixtures/OCSP-Altersign-2018.cer"),
-      parent: altersign_root_id,
-      type: "ocsp",
-      active: true
-    })
-  end
-
-  defp insert_privat_certs do
-    {:ok, %{id: ucsk_root_id}} =
-      Repo.insert(%Cert{
-        name: "Privat",
-        data: File.read!("test/fixtures/CA-3004751DEF2C78AE010000000100000049000000.cer"),
-        parent: nil,
-        type: "root",
-        active: true
-      })
-
-    Repo.insert!(%Cert{
-      name: "Privat",
-      data: File.read!("test/fixtures/CAOCSPServer-D84EDA1BB9381E802000000010000001A000000.cer"),
-      parent: ucsk_root_id,
-      type: "ocsp",
-      active: true
-    })
-
-    Repo.insert!(%Cert{
-      name: "Privat",
-      data: File.read!("test/fixtures/CATSPServer-3004751DEF2C78AE02000000010000004A000000.cer"),
-      parent: nil,
-      type: "tsp",
-      active: true
-    })
+  defp insert_certs do
+    DigitalSignatureTestHelper.insert_certs()
+    DigitalSignatureTestHelper.reload_state()
   end
 end

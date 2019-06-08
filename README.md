@@ -25,7 +25,7 @@ You can use official Docker container to deploy this service, it can be found on
   2. 1. b) Signed contend certificate info pushed into kafka, and later online certificate check (OCSP) will be applied. If sign is not actual, admin receive email notification
   2. 2. If no CRL file for content found or CRL outdated, online certificate status check (OCSP) will be done immediately and notify synchronizer_crl service about new CRL
 - ocsp_service: makes OCSP online status certificate protocol check with digital_signature to corresponding provider
-- synchronizer_crl: download providers certificate revoked list, parse, store revoked certificates serial numbers and continues doing after   next_update time when provider will update CRL file 
+- synchronizer_crl: download providers certificate revoked list, parse, store revoked certificates serial numbers and continues doing after   next_update time when provider will update CRL file
 
 ### Dependencies
 
@@ -39,3 +39,6 @@ See [ENVIRONMENT.md](docs/ENVIRONMENT.md).
 ## License
 
 See [LICENSE.md](LICENSE.md).
+
+Validy
+element(6,element(2,public_key:pem_entry_decode(Key)))

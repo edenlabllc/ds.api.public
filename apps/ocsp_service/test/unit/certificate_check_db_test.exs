@@ -10,8 +10,14 @@ defmodule OCSPServiceTest do
   setup :set_mox_global
 
   describe "store content to db" do
+    setup do
+      DigitalSignatureTestHelper.insert_certs()
+      DigitalSignatureTestHelper.reload_state()
+      :ok
+    end
+
     test "success store content" do
-      data = get_data("test/fixtures/signed_le1.json")
+      data = get_data("../digital_signature/test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
       {:ok, content, [signature] = signatures} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
       assert {:ok, id} = InvalidContents.store_invalid_content(signatures, content)

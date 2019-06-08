@@ -6,7 +6,7 @@ defmodule SynchronizerCrl.Worker do
 
   alias Core.CRL
   alias Core.CRLs
-  alias SynchronizerCrl.DateUtils
+  alias Core.DateUtils
   alias SynchronizerCrl.Provider
   alias SynchronizerCrl.RevokedSerialNumbers
 

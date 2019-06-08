@@ -312,23 +312,9 @@ defmodule DigitalSignatureRetriveLibTest do
     test "Validates signed data with only ROOT certs provided" do
       data = get_data("test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
-
-      general = [
-        %{
-          root: File.read!("test/fixtures/CA-DFS.cer"),
-          ocsp: nil
-        }
-      ]
-
-      {:ok, result, _} =
-        DigitalSignatureLib.retrivePKCS7Data(
-          signed_content,
-          %{general: general, tsp: []},
-          true
-        )
-
+      %{general: general, tsp: _tsp} = get_certs()
+      {:ok, result, _} = DigitalSignatureLib.retrivePKCS7Data(signed_content, %{general: general, tsp: []}, true)
       refute result.is_valid
-
       assert result.validation_error_message == "matching TSP certificate not found"
     end
 

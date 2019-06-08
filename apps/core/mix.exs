@@ -36,7 +36,8 @@ defmodule Core.MixProject do
       {:postgrex, "~> 0.14.1"},
       {:confex_config_provider, "~> 0.1.0"},
       {:jason, "~> 1.1"},
-      {:jvalid, "~> 0.7.0"}
+      {:jvalid, "~> 0.7.0"},
+      {:mox, "~> 0.3", only: :test}
     ]
   end
 

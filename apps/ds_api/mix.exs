@@ -61,7 +61,6 @@ defmodule Api.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:eview, "~> 0.15.0"},
       {:confex_config_provider, "~> 0.1.0"},
-      {:mox, "~> 0.3", only: :test},
       {:kube_rpc, "~> 0.2.0"},
       {:libcluster, "~> 3.0", git: "https://github.com/AlexKovalevych/libcluster.git", branch: "kube_namespaces"},
       {:digital_signature, in_umbrella: true}

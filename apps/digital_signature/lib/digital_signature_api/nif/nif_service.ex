@@ -5,6 +5,7 @@ defmodule DigitalSignature.NifService do
   """
   use GenServer
   alias Core.Certificates
+  alias Core.ProviderCertificates
 
   require Logger
 
@@ -12,15 +13,18 @@ defmodule DigitalSignature.NifService do
   def init(certs_cache_ttl) do
     certs = Certificates.get_certificates()
     Process.send_after(self(), :refresh, certs_cache_ttl)
+    :erlang.garbage_collect(self())
     {:ok, {certs_cache_ttl, certs}}
   end
 
   @doc """
   RFC2650: implementation OCSP with nifs
   """
-  def handle_call({:ocsp, url, data, ocsp_data, expires_at}, _from, state) do
+  def handle_call({:ocsp, url, data, ocsp_data, expires_at}, _from, {_, certs} = state) do
     processing_result =
-      with :ok <- check_time(expires_at), do: DigitalSignatureLib.checkCertOnline(data, ocsp_data, url)
+      with :ok <- check_time(expires_at) do
+        ocsp_reduce_while_match(url, data, ocsp_data, certs[:ocsp])
+      end
 
     {:reply, processing_result, state}
   end
@@ -93,6 +97,42 @@ defmodule DigitalSignature.NifService do
 
       {:error, :signed_data_load} ->
         {:ok, signed_data}
+    end
+  end
+
+  def ocsp_reduce_while_match(url, data, empty, _) when empty in [nil, ""] do
+    DigitalSignatureLib.checkCertOnline(data, "", url)
+  end
+
+  def ocsp_reduce_while_match(url, data, ocsp, chain) do
+    # find lates by valid_from certificate with same subject
+    # Providers use wrong OCSP certificate and OCSP check when encode content instead of corresponding!
+    # This code is unhealty, but provider use incorrecr OCSP certificate
+    case DigitalSignatureLib.checkCertOnline(data, ocsp, url) do
+      {:ok, false, "OCSP: Response false"} = error ->
+        {crt, from, to} = ProviderCertificates.decode_certificate_entry(ocsp)
+
+        %{organization: organization, subject: subject} = ProviderCertificates.form_key_info(crt, ocsp, from, to)
+        chain = Enum.filter(chain[organization] || [], &(&1[:subject] == subject))
+
+        if [] != chain do
+          latest = Enum.min_by(chain, &DateTime.diff(DateTime.utc_now(), &1[:valid][:from])).data
+          # Make order for reduce: first check latest, than corresponding, than rest
+          rest = [latest | chain |> Enum.map(& &1.data) |> List.delete(ocsp) |> List.delete(latest) |> Enum.uniq()]
+
+          # In case provider use random OCSP sign (neither latest and no corresponding) check with resp OCSP certs
+          Enum.reduce_while(rest, {:ok, false, "OCSP chain error"}, fn cert, _ ->
+            case DigitalSignatureLib.checkCertOnline(data, cert, url) do
+              {:ok, false, "OCSP: Response false"} = error -> {:cont, error}
+              result -> {:halt, result}
+            end
+          end)
+        else
+          error
+        end
+
+      response ->
+        response
     end
   end
 end

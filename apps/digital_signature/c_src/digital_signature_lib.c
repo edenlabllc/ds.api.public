@@ -374,6 +374,8 @@ struct BaseValidationResult BaseCheck(UAC_BLOB signedData, UAC_SIGNED_DATA_INFO 
 
     validationResult.isStamp = (certInfo.keyUsage & UAC_KU_EXTENDED) == UAC_KU_STAMP;
 
+     // fprintf(stderr, "\n%s \n",certInfo.accessCaIssuers) - url for download certs;
+
     memcpy(subjectInfo, &certInfo.subject, sizeof(UAC_SUBJECT_INFO));
     struct GeneralCert matchingCert = FindMatchingRootCertificate(cert, certs.general,
                                                                   certs.generalLength);
@@ -434,7 +436,7 @@ struct BaseValidationResult BaseCheck(UAC_BLOB signedData, UAC_SIGNED_DATA_INFO 
     DWORD ocspRequestCreateResult = UAC_OcspRequestCreate(&cert, NULL, 0, &ocspRequest);
     if (ocspRequestCreateResult != UAC_SUCCESS)
     {
-      validationResult.validationErrorMessage = "OCSP certificate verificaton failed";
+      validationResult.validationErrorMessage = "prepare OCSP certificate failed";
       return validationResult;
     }
 

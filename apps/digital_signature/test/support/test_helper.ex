@@ -2,6 +2,10 @@ defmodule DigitalSignatureTestHelper do
   @moduledoc """
   common test functions
   """
+  alias Core.Cert
+  alias Core.Certificates
+  alias Core.Repo
+
   def atomize_keys(map) do
     map
     |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
@@ -25,42 +29,74 @@ defmodule DigitalSignatureTestHelper do
   end
 
   def get_certs do
-    general = [
+    files = ["../digital_signature/test/fixtures/acsk-chain.pem", "../digital_signature/test/fixtures/privat-chain.pem"]
+
+    %{general: general, tsp: tsp} =
+      Enum.reduce(files, %{general: [], tsp: []}, fn pem, acc ->
+        %{general: general, tsp: tsp} = pem |> File.read!() |> Core.ProviderCertificates.pem_certificate_chain_data()
+        %{general: acc.general ++ general, tsp: acc.tsp ++ tsp}
+      end)
+
+    partial_general = [
       %{
-        root: File.read!("test/fixtures/CA-DFS.cer"),
-        ocsp: File.read!("test/fixtures/OCSP-IDDDFS-080218.cer")
-      },
-      %{
-        root: File.read!("test/fixtures/CA-IDDDFS-080218.cer"),
-        ocsp: File.read!("test/fixtures/OCSP-IDDDFS-080218.cer")
-      },
-      %{
-        root: File.read!("test/fixtures/CA-Justice.cer"),
-        ocsp: File.read!("test/fixtures/OCSP-Server Justice.cer")
-      },
-      %{
-        root: File.read!("test/fixtures/CA-3004751DEF2C78AE010000000100000049000000.cer"),
-        ocsp: File.read!("test/fixtures/CAOCSPServer-D84EDA1BB9381E802000000010000001A000000.cer")
-      },
-      %{
-        root: File.read!("test/fixtures/cert1599998-root.crt"),
-        ocsp: File.read!("test/fixtures/cert14493930-oscp.crt")
-      },
-      %{
-        root: File.read!("test/fixtures/CA-Altersign-2018.cer"),
-        ocsp: File.read!("test/fixtures/OCSP-Altersign-2018.cer")
+        root: File.read!("../digital_signature/test/fixtures/CA-Altersign-2018.cer"),
+        ocsp: File.read!("../digital_signature/test/fixtures/OCSP-Altersign-2017.cer")
       }
     ]
 
-    tsp = [
-      File.read!("test/fixtures/CA-TSP-DFS.cer"),
-      File.read!("test/fixtures/TSP-Server Justice.cer"),
-      File.read!("test/fixtures/CATSPServer-3004751DEF2C78AE02000000010000004A000000.cer"),
-      File.read!("test/fixtures/cert14491837-tsp.crt"),
-      File.read!("test/fixtures/TSA-IDDDFS-140218.cer"),
-      File.read!("test/fixtures/pb-tsp.cer")
-    ]
+    partial_tsp = [File.read!("../digital_signature/test/fixtures/TSP-Altersign-2018.cer")]
+    general = partial_general ++ general
+    tsp = tsp ++ partial_tsp
+    ocsp_extended = general |> Enum.map(& &1[:ocsp]) |> Certificates.group_ocsp_certificate_by_organization()
 
-    %{general: general, tsp: tsp}
+    %{general: general, tsp: tsp, ocsp: ocsp_extended}
+  end
+
+  def insert_certs do
+    files = ["../digital_signature/test/fixtures/acsk-chain.pem", "../digital_signature/test/fixtures/privat-chain.pem"]
+
+    Enum.each(files, fn file ->
+      pem = File.read!(file)
+
+      Repo.insert!(%Cert{
+        name: file,
+        data: pem,
+        parent: nil,
+        type: "pem",
+        active: true
+      })
+    end)
+
+    %{id: altersign_root_id} =
+      Repo.insert!(%Cert{
+        name: "Altersign",
+        data: File.read!("../digital_signature/test/fixtures/CA-Altersign-2018.cer"),
+        parent: nil,
+        type: "root",
+        active: true
+      })
+
+    Repo.insert!(%Cert{
+      name: "Altersign",
+      data: File.read!("../digital_signature/test/fixtures/OCSP-Altersign-2018.cer"),
+      parent: altersign_root_id,
+      type: "ocsp",
+      active: true
+    })
+  end
+
+  def reload_state do
+    Supervisor.terminate_child(
+      DigitalSignature.Supervisor,
+      DigitalSignature.NifService
+    )
+
+    DigitalSignatureTestHelper.insert_certs()
+
+    {:ok, _} =
+      Supervisor.restart_child(
+        DigitalSignature.Supervisor,
+        DigitalSignature.NifService
+      )
   end
 end

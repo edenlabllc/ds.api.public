@@ -10,7 +10,8 @@ defmodule DigitalSignature.NifAPI do
   def process_signed_content(signed_content, check) do
     with {:ok, nif_options} <- nif_serice_options(check),
          {:ok, result} <- retrive_signed_data(signed_content, SignedData.new(), nif_options),
-         {:ok, content} <- decode_content(result.content) do
+         {:ok, content} <-
+           decode_content(result.content) do
       result = Map.put(result, :content, content)
       {:ok, result}
     end

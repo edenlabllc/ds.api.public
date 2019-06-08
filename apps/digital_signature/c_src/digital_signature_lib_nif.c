@@ -52,16 +52,20 @@ struct Certs GetCertsFromArg(ErlNifEnv *env, const ERL_NIF_TERM arg)
     enif_inspect_binary(env, rootCertTerm, &rootCertData);
     UAC_BLOB rootCert = {rootCertData.data, rootCertData.size};
 
-    // Oscp cert
+    // OCSP cert
     ERL_NIF_TERM ocspCertTerm;
     enif_get_map_value(env, firstItem, enif_make_atom(env, "ocsp"), &ocspCertTerm);
 
     ErlNifBinary ocspCertData;
-    enif_inspect_binary(env, ocspCertTerm, &ocspCertData);
+
+    if (ocspCertTerm){
+      enif_inspect_binary(env, ocspCertTerm, &ocspCertData);
+    }
+
     UAC_BLOB ocspCert = {ocspCertData.data, ocspCertData.size};
+    certs.general[i].ocsp = ocspCert;
 
     certs.general[i].root = rootCert;
-    certs.general[i].ocsp = ocspCert;
     generalCerts = rest;
   }
 

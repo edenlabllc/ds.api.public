@@ -35,8 +35,7 @@ defmodule SynchronizerCrl.MixProject do
       {:kube_rpc, "~> 0.2.0"},
       {:httpoison, "~> 1.1.0"},
       {:floki, "~> 0.20.4"},
-      {:core, in_umbrella: true},
-      {:mox, "~> 0.3", only: :test}
+      {:core, in_umbrella: true}
     ]
   end
 

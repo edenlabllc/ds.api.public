@@ -33,8 +33,7 @@ defmodule OCSPService.MixProject do
     [
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.1.0"},
-      {:digital_signature, in_umbrella: true},
-      {:mox, "~> 0.3", only: :test}
+      {:digital_signature, in_umbrella: true}
     ]
   end
 

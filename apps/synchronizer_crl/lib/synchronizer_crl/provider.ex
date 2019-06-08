@@ -1,8 +1,8 @@
 defmodule SynchronizerCrl.Provider do
   @moduledoc false
 
+  alias Core.DateUtils
   alias HTTPoison.Response
-  alias SynchronizerCrl.DateUtils
   require Logger
 
   def get_revoked_certificates(url) do

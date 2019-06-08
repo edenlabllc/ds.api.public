@@ -13,4 +13,7 @@ defmodule Core.Cert do
 
     timestamps()
   end
+
+  @fields ~w(name data parent type active)a
+  def fields, do: @fields
 end

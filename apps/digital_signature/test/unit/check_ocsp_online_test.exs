@@ -7,21 +7,16 @@ defmodule DigitalSignatureCheckOCSPLibTest do
   """
   import DigitalSignatureTestHelper
   use ExUnit.Case, async: false
+
+  alias DigitalSignature.NifService
   alias DigitalSignature.NifServiceAPI
 
   describe "With/Without ocsp certificate no segfault" do
     @tag :pending
-    test "with ocsp cert in db return ocsp_data in checklist" do
-      data = get_data("test/fixtures/altersign.json")
+    test "OCSP exists and return ocsp_data in checklist" do
+      data = get_data("../digital_signature/test/fixtures/altersign.json")
       signed_content = get_signed_content(data)
-
-      assert {:ok, result, signatures} =
-               DigitalSignatureLib.retrivePKCS7Data(
-                 signed_content,
-                 get_certs(),
-                 true
-               )
-
+      assert {:ok, result, signatures} = DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
       assert result[:is_valid]
       assert String.length(hd(signatures)[:ocsp_data]) > 0
       assert NifServiceAPI.signatures_valid_online?(signatures)
@@ -29,7 +24,7 @@ defmodule DigitalSignatureCheckOCSPLibTest do
 
     @tag :pending
     test "without ocsp cert in db does not return ocsp_data in checklist" do
-      data = get_data("test/fixtures/altersign.json")
+      data = get_data("../digital_signature/test/fixtures/altersign.json")
       signed_content = get_signed_content(data)
       certs = get_certs()
       general = Enum.map(certs[:general], fn %{root: root} -> %{root: root, ocsp: nil} end)
@@ -50,80 +45,65 @@ defmodule DigitalSignatureCheckOCSPLibTest do
 
   describe "Must process all data correctly online" do
     test "can process signed legal entity" do
-      data = get_data("test/fixtures/signed_le1.json")
+      data = get_data("../digital_signature/test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
+      certs = get_certs()
 
       {:ok, _, [%{access: url, ocsp_data: ocsp_data, data: certdata}]} =
         DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
 
-      assert {:ok, true} == DigitalSignatureLib.checkCertOnline(certdata, ocsp_data, url)
+      assert {:ok, true} == NifService.ocsp_reduce_while_match(url, certdata, ocsp_data, certs.ocsp)
     end
 
     @tag :pending
     test "can process signed legal entity 25 times in a row" do
-      data = get_data("test/fixtures/signed_le1.json")
+      data = get_data("../digital_signature/test/fixtures/signed_le1.json")
       signed_content = get_signed_content(data)
+      certs = get_certs()
 
       Enum.each(1..25, fn _ ->
         {:ok, _, [%{access: url, ocsp_data: ocsp_data, data: certdata}]} =
-          DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+          DigitalSignatureLib.retrivePKCS7Data(signed_content, certs, true)
 
-        assert {:ok, true} == DigitalSignatureLib.checkCertOnline(certdata, ocsp_data, url)
+        assert {:ok, true} == NifService.ocsp_reduce_while_match(url, certdata, ocsp_data, certs.ocsp)
       end)
     end
 
     test "can process second signed legal entity" do
-      data = get_data("test/fixtures/signed_le2.json")
+      data = get_data("../digital_signature/test/fixtures/signed_le2.json")
       signed_content = get_signed_content(data)
-
-      {:ok, result} =
-        DigitalSignatureLib.processPKCS7Data(
-          signed_content,
-          get_certs(),
-          true
-        )
+      certs = get_certs()
 
       {:ok, _, [%{access: url, ocsp_data: ocsp_data, data: certdata}]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+        DigitalSignatureLib.retrivePKCS7Data(signed_content, certs, true)
 
-      assert {:ok, true} == DigitalSignatureLib.checkCertOnline(certdata, ocsp_data, url)
-
-      assert result.is_valid
-      assert decode_content(result) == data["content"]
-      assert result.signer == atomize_keys(data["signer"])
+      assert {:ok, true} == NifService.ocsp_reduce_while_match(url, certdata, ocsp_data, certs.ocsp)
     end
 
     test "can validate data signed with valid Privat personal key" do
-      data = File.read!("test/fixtures/hello.txt.sig")
-
-      {:ok, result_process} = DigitalSignatureLib.processPKCS7Data(data, get_certs(), true)
+      data = File.read!("../digital_signature/test/fixtures/hello.txt.sig")
+      certs = get_certs()
 
       {:ok, result_retrive, [%{access: url, ocsp_data: ocsp_data, data: data}]} =
-        DigitalSignatureLib.retrivePKCS7Data(data, get_certs(), true)
+        DigitalSignatureLib.retrivePKCS7Data(data, certs, true)
 
-      assert {:ok, true} == DigitalSignatureLib.checkCertOnline(data, ocsp_data, url)
-      assert result_process.is_valid
+      assert {:ok, true} == NifService.ocsp_reduce_while_match(url, data, ocsp_data, certs.ocsp)
       assert result_retrive.is_valid
-      assert %{"text" => "Hello World"} == Jason.decode!(result_process.content)
-      assert result_retrive.content == result_process.content
     end
   end
 
   describe "test revoked certificate online ocsp" do
     test "processing signed with revoked Privat personal key" do
-      data = get_data("test/fixtures/hello_revoked.json")
+      data = get_data("../digital_signature/test/fixtures/hello_revoked.json")
       {:ok, signed_content} = Base.decode64(Map.get(data, "signed_content"))
-
-      {:ok, result_process} = DigitalSignatureLib.processPKCS7Data(signed_content, get_certs(), true)
+      certs = get_certs()
 
       {:ok, result_retrive, [%{access: url, ocsp_data: ocsp_data, data: certdata}]} =
-        DigitalSignatureLib.retrivePKCS7Data(signed_content, get_certs(), true)
+        DigitalSignatureLib.retrivePKCS7Data(signed_content, certs, true)
 
       # OCSP (check online) return false, certificate is revoked
       assert {:ok, false, "OCSP: Certificate status error"} ==
-               DigitalSignatureLib.checkCertOnline(certdata, ocsp_data, url)
-
-      refute result_process.is_valid
+               NifService.ocsp_reduce_while_match(url, certdata, ocsp_data, certs.ocsp)
 
       # retrive pkcs7 data do not make online and offline check, so is_valid = true
       assert result_retrive.is_valid
